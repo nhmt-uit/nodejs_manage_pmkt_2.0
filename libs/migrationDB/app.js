@@ -1,6 +1,5 @@
-import query from './query/getData'
+import Sync from './query/getData'
 
-// Start Htpp Server
-query.getData()
+Sync.Users()
     
 

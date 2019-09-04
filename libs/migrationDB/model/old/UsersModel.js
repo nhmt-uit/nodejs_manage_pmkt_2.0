@@ -1,7 +1,7 @@
 
 
-import mongoose from '../query/mongoose'
-import {BaseModel, BaseSchema } from "../cores/baseModel"
+import mongoose from '../../query/mongoose'
+import {BaseModel, BaseSchema } from "../../cores/baseModel"
 
 // Define collection name
 const collectionName = "user"

@@ -43,7 +43,6 @@ const BaseSchema_N = schema => {
 
 // export default BaseModel_N
 export {
-    BaseModel_N,
     BaseSchema_N,
     BaseFields
 }
