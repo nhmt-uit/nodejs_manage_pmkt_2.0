@@ -1,8 +1,9 @@
 class Session {
+    session: any
     constructor() {
     }
 
-    instance(session) {
+    instance(session : any) {
         this.session = session
     }
 
