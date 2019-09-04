@@ -23,6 +23,19 @@ UsersSchema.statics.findAll = (username) => {
 	// })
 }
 
+UsersSchema.statics.checkUniqueUsername = (username) => {
+	return this.default.find({
+		username: username,
+	})
+		.then(function (users) {
+			if(users.length !== 0){
+				if(users[0].status === 'active'){
+					return false
+				} else return true
+			} else return true
+		})
+};
+
 
 // Export Model
 export default mongoose.model(collectionName, UsersSchema, collectionName)
