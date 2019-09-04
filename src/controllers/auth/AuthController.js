@@ -30,22 +30,43 @@ class AuthController {
         }
     }
 
-    refreshToken (req, res, next) {
-        const user = {
-            "email": req.body.email,
-            "password": req.body.password
-        }
-
+    logout (req, res, next) {
         try {
-            
+            Session.destroy()
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
-                // data: { token, refresh_token}
-                data : token
+                message: ExceptionConfig.COMMON.REQUEST_SUCCESS
             })
         } catch (err) {
             next(err)
         }
+        
+    }
+
+    refreshToken (req, res, next) {
+        const { refresh_token } = req.body
+
+        try {
+            return res.jsonSuccess({
+                message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
+                data : {
+                    // token: token,
+                    refresh_token: refresh_token
+                }
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    checkSecureCode (req, res, next) {
+        try {
+            return res.jsonSuccess({
+                message: ExceptionConfig.COMMON.REQUEST_SUCCESS
+            })
+        } catch (err) {
+            next(err)
+        }
+        
     }
 }
 

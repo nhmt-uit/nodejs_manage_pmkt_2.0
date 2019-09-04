@@ -19,14 +19,25 @@ const AuthValidator = {
 
     /*
     |--------------------------------------------------------------------------
-    | Routes /api/v1/auth/refreshToken
+    | Routes /api/v1/auth/refresh-token
     | Method: POST
     |--------------------------------------------------------------------------
     */
     postRefreshToken: [
-        check("refreshToken")
+        check("refresh_token")
             .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD),
-    ]
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/auth/check-secure-code
+    | Method: POST
+    |--------------------------------------------------------------------------
+    */
+    postCheckSecureCode: [
+        check("secure_code")
+            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD),
+    ],
 }
 
 export default AuthValidator
