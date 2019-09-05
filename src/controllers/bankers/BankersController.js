@@ -28,16 +28,6 @@ class BankersController {
         }
     }
 
-    async detail (req, res, next) {
-        try {
-            return res.jsonSuccess({
-                message: "You requested detail users controller",
-                errors: "You requested detail users controller"
-            })
-        } catch (err) {
-            next(err)
-        }
-    }
 }
 
 export default new BankersController()

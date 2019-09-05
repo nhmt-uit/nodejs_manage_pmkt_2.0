@@ -8,7 +8,7 @@ router.get("/", BankersController.listBankers)
 router.put("/", BankersController.updateBanker)
 // router.post("/", BankersController.save)
 // router.delete("/:id", BankersController.delete)
-router.get("/:id", BankersController.detail)
+// router.get("/:id", BankersController.detail)
 
 
 export default router
