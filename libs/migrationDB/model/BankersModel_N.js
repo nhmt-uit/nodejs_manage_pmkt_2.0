@@ -9,13 +9,13 @@ const collectionName_N = "bankers"
 const Bankers_NSchema = new mongoose.Schema({
 	_id: mongoose.Schema.Types.ObjectId,
 	book_id: mongoose.Schema.Types.ObjectId,
-	name: { type: String, unique: true },
-	short_name: { type: String, unique: true },
+	name: String,
+	short_name: String,
 	need_security: Boolean,
 	agent_host: [
 		{
-			url: { type: String, unique: true },
-			status: { type: String, lowercase: true, trim: true, enum: ["active", "inactive", "delete"], default: "active" }
+			_id: mongoose.Schema.Types.ObjectId,
+			url: String
 		}
 	],
 	url: String,

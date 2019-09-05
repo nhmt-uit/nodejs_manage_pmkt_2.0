@@ -7,9 +7,8 @@ const collectionName_N = "exclude_bankers"
 
 // Define collection schema
 const ExcludeBankers_NSchema = new mongoose.Schema({
-	_id: mongoose.Schema.Types.ObjectId,
 	user_id: mongoose.Schema.Types.ObjectId,
-	banker_ids: mongoose.Schema.Types.ObjectId,
+	banker_ids: mongoose.Schema.Types.Mixed,
 
 })
 // Load BaseModel
