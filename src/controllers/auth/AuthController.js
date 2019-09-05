@@ -17,7 +17,7 @@ class AuthController {
             const refresh_token = Authentication.getRefreshToken(user)
             Session.set("token", token)
             Session.set("refresh_token", refresh_token)
-            Session.set("user", user)
+            Session.set("user", { ...user, id: "5d6f71f58103e130a00ffad8" })
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
                 data : {
