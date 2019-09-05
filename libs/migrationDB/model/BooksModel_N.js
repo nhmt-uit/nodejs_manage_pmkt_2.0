@@ -8,7 +8,7 @@ const collectionName_N = "books"
 // Define collection schema
 const Books_NSchema = new mongoose.Schema({
 	_id: mongoose.Schema.Types.ObjectId,
-	name: { type: String, unique: true },
+	name: String,
 
 })
 // Load BaseModel

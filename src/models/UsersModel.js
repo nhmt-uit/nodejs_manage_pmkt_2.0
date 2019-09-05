@@ -5,7 +5,7 @@ import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 import Session from "../utils/Session"
 
 // Define collection name
-const collectionName = "user"
+const collectionName = "users"
 
 // Define collection schema
 const UsersSchema = new mongoose.Schema({
