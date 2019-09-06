@@ -1,4 +1,5 @@
 import { check } from "express-validator"
+import UsersSchema from "../../models/UsersModel"
 
 const UserValidator = {
 
