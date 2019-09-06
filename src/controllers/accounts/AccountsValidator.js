@@ -1,4 +1,7 @@
 import { check } from "express-validator"
+import ExceptionConfig from "../../configs/ExceptionConfig";
+
+import AccountsModel from '../../models/AccountsModel'
 
 const AccountValidator = {
 
@@ -9,12 +12,27 @@ const AccountValidator = {
     |--------------------------------------------------------------------------
     */
     postCreateAccount: [
-        check("email")
-            .isLength({ min: 5 }).withMessage("must be at least 5 chars long")
-            .isEmail().withMessage("have to email"),
-        check("sub_email")
-            .isLength({ min: 5 }).withMessage("must be at least 5 chars long")
-            .isEmail().withMessage("have to email"),
+        check('banker_id')
+            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD),
+        check('sub_user')
+            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD)
+            .custom(async (subUser, { req }) => {
+                try {
+                    const formData = {
+                        banker_id: req.body.banker_id,
+                        sub_user: req.body.sub_user,
+                        sub_pass: req.body.sub_pass
+                    };
+
+                    const account = await AccountsModel.checkExisted(formData);
+
+                    if (!account) throw new Error();
+                } catch (e) {
+                    throw e;
+                }
+            }).withMessage('Account is existed'),
+        check('sub_pass')
+            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD),
     ]
 };
 
