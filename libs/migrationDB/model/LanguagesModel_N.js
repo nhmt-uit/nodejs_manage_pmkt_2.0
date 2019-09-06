@@ -10,6 +10,7 @@ const Languages_NSchema = new mongoose.Schema({
 	_id: mongoose.Types.ObjectId,
     name: String,
     code: String,
+    order: Number
 })
 // Load BaseModel
 Languages_NSchema.plugin(BaseSchema_N)
