@@ -8,15 +8,23 @@ import CongthuctinModel from "./model/old/CongthuctinModel"
 import AccountFormulaModel_N from './model/AccountFormulaModel_N'
 
 class SyncAccount {
-	async Account() {
+	async Truncate() {
+		return Promise.all([
+			AccountModel_N.remove(),
+			AccountFormulaModel_N.remove()
+		])
+	}
+
+	async Account(_limit, _skip, _maxSkip) {
 		try {
-			await AccountModel_N.remove()
-			let skip = 0
+			let limit = Number(_limit) || 100
+			let skip = Number(_skip) || 0
 			while (true) {
 				const data = await AccountModel.find()
-											.limit(100)
-											.skip(skip * 100)
-				if (!data.length) {
+											.limit(limit)
+											.skip(skip * limit)
+											.sort({createdAt: 1})
+				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Account Collection Done ================================")
 					break
 				}
@@ -56,15 +64,16 @@ class SyncAccount {
 		}
 	}
 
-	async AccountFormula() {
+	async AccountFormula(_limit, _skip, _maxSkip) {
 		try {
-			await AccountFormulaModel_N.remove()
-			let skip = 0
+			let limit = Number(_limit) || 100
+			let skip = Number(_skip) || 0
 			while (true) {
 				const data = await CongthuctinModel.find()
-											.limit(100)
-											.skip(skip * 100)
-				if (!data.length) {
+													.limit(limit)
+													.skip(skip * limit)
+													.sort({createdAt: 1})
+				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Account Formula Collection Done ================================")
 					break
 				}
@@ -92,8 +101,6 @@ class SyncAccount {
 	}
 }
 
-const sync = new SyncAccount()
-// sync.Account()
-sync.AccountFormula()
+export default new SyncAccount()
 
 
