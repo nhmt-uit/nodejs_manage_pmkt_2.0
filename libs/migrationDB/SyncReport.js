@@ -24,7 +24,9 @@ class SyncReport {
 			let limit = Number(_limit) || 100
 			let skip = Number(_skip) || 0
 			while (true) {
-				const data = await ReportCycleModel.find()
+				const data = await ReportCycleModel.find({
+														deleted: { $eq: 0 }
+													})
 													.limit(limit)
 													.skip(skip * limit)
 													.sort({ createdAt: 1 })
@@ -58,7 +60,9 @@ class SyncReport {
 			let limit = Number(_limit) || 100
 			let skip = Number(_skip) || 0
 			while (true) {
-				const data = await ReportHandleModel.find()
+				const data = await ReportHandleModel.find({
+														deleted: { $eq: 0 }
+													})
 													.limit(limit)
 													.skip(skip * limit)
 													.sort({ createdAt: 1 })
