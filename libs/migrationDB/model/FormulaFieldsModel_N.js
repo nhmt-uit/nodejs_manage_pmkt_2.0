@@ -1,5 +1,5 @@
 import mongoose from '../query/mongoose'
-import {BaseModel, BaseSchema } from "../cores/baseModel"
+import { BaseSchema } from "../cores/baseModel"
 
 // Define collection name
 const collectionName = "formula_fields";
@@ -12,4 +12,4 @@ const FormulaFieldsSchema = new mongoose.Schema({
 // Load BaseModel
 FormulaFieldsSchema.plugin(BaseSchema);
 
-export default mongoose.db.model(collectionName,FormulaFieldsSchema,collectionName)
+export default mongoose.db_N.model(collectionName,FormulaFieldsSchema,collectionName)

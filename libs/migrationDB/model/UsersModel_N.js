@@ -1,28 +1,31 @@
 
 import mongoose from "../query/mongoose"
 
-import {BaseModel_N, BaseSchema_N } from "../cores/baseModel_N"
+import { BaseSchema_N } from "../cores/baseModel_N"
 // Define collection name
-const collectionName_N = "userTest"
+const collectionName_N = "users"
 
 // Define collection schema
 const Users_NSchema = new mongoose.Schema({
-	username: { type: String, unique: true },
-	password: String
-
+	_id: mongoose.Types.ObjectId,
+	parent_id: mongoose.Types.ObjectId,
+    username: String,
+    password: String,
+    password2:String,
+    role: Number,
+    secure_code: Number,
+    login_failed: Number,
+    lang_code: String,
+    allow_export: Boolean,
+    allow_report_detail: Boolean,
+    enable_start: Date,
+    enable_end: Date,
+    old_password: String,
+    is_updated_password: Boolean,
+    old_pasword2: String,
+    is_updated_password2: Boolean,
 })
 // Load BaseModel
-Users_NSchema.loadClass(BaseModel_N)
 Users_NSchema.plugin(BaseSchema_N)
-
-
-Users_NSchema.statics.findAll = (username) => {
-	return this.default.find({
-	  	username: username,
-	})
-}
-
-// Export Model
-// export default mongoose.model(collectionName, UsersSchema, collectionName)
 
 export default mongoose.db_N.model(collectionName_N,Users_NSchema,collectionName_N)

@@ -31,41 +31,18 @@ const BaseSchema_N = schema => {
     // Create a pre-save hook
     schema.pre("save", function(next) {
         const now = Moment.format()
-        this.createdBy = mongoose.mongo.ObjectID() //Temp data
+        this.createdBy = mongoose.mongo.ObjectID("56850ba0097802b9f23929ea") //bedbug
         this.createdAt = now
         if (!this.created_at) {
-            this.updatedBy = mongoose.mongo.ObjectID() //Temp data
+            this.updatedBy = mongoose.mongo.ObjectID("56850ba0097802b9f23929ea") //bedbug
             this.updateddAt = now
         }
         next()
     })
 }
 
-// Based function
-class BaseModel_N {
-    // Update status => "delete"
-    static softDelete(id) {
-        return this.updateOne({_id: id}, {status: "delete"})
-    }
-
-    static findUserAndCount() {
-        return this.aggregate([
-            // {$match:{status : "active"}},
-            {$group: { _id: {status:"$status"} , total:{ $sum: 1}}},
-            //  {$match:{status : "active"}},
-            // , _id:{ createdBy: "$createdBy",createdAt:"$createdAt",updatedBy:"$updatedBy",updateddAt:"$updateddAt",username :"$username",password:"$password"}
-        ])
-    }
-
-    // Temp function
-    static findByFullName(username) {
-        return this.find({ username: username })
-    }
-}
-
 // export default BaseModel_N
 export {
-    BaseModel_N,
     BaseSchema_N,
     BaseFields
 }

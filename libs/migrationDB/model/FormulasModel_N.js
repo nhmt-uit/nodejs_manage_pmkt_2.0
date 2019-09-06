@@ -10,11 +10,12 @@ const FormulasSchema = new mongoose.Schema({
     banker_id: mongoose.Types.ObjectId,
     user_id: mongoose.Types.ObjectId,
     t_currency_id: mongoose.Types.ObjectId,
+    formula_format_id: mongoose.Types.ObjectId,
     name: String,
     fields: [
         {
-            id: mongoose.Types.ObjectId,
-            value: String
+            formula_field_id: mongoose.Types.ObjectId,
+            value: Number
         }
     ],
     rec_pay: Number
@@ -22,4 +23,4 @@ const FormulasSchema = new mongoose.Schema({
 // Load BaseModel
 FormulasSchema.plugin(BaseSchema);
 
-export default mongoose.db.model(collectionName,FormulasSchema,collectionName)
+export default mongoose.db_N.model(collectionName,FormulasSchema,collectionName)

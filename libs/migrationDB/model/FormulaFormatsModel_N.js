@@ -16,4 +16,4 @@ const FormulaFormatsSchema = new mongoose.Schema({
 // Load BaseModel
 FormulaFormatsSchema.plugin(BaseSchema);
 
-export default mongoose.db.model(collectionName,FormulaFormatsSchema,collectionName)
+export default mongoose.db_N.model(collectionName,FormulaFormatsSchema,collectionName)
