@@ -4,7 +4,6 @@ import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
 
 import _isEmpty from 'lodash/isEmpty';
-import _get from 'lodash/get'
 
 // Define collection name
 const collectionName = "accounts";
@@ -56,7 +55,7 @@ AccountsSchema.statics.checkExisted = async (options) => {
 
     const result = await this.default.find(options);
 
-    if (!result || !_get(result, 'data', []).length) return false;
+    if (!result || !result.length) return false;
 
     return true;
 };

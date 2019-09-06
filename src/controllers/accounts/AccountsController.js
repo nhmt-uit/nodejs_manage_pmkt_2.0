@@ -13,7 +13,7 @@ class AccountsController {
         }
     }
 
-    async get(req, res, next) {
+    async detail(req, res, next) {
         try {
             const query = { _id: req.params.id };
 
@@ -41,9 +41,11 @@ class AccountsController {
 
     async update(req, res, next) {
         try {
+            const result = await AccountsModel.updateDoc({ options: { _id: req.params.id }, formData: req.body })
+
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.ITEM_CREATE_SUCCESS,
-                data: await AccountsModel.updateDoc({ options: { _id: req.params.id }, formData: req.body })
+                data: result
             })
         } catch(err) {
             next(err);
@@ -51,7 +53,16 @@ class AccountsController {
     }
 
     async delete(req, res, next) {
+        try {
+            await AccountsModel.softDelete(req.params.id);
 
+            return res.jsonSuccess({
+                message: ExceptionConfig.COMMON.ITEM_DELETE_SUCCESS,
+                data: req.params.id
+            })
+        } catch (err) {
+            next(err)
+        }
     }
 }
 

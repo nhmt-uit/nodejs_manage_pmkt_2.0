@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/', AccountsController.index);
 router.post('/', ValidatorHandling(AccountsValidator.postCreateAccount), AccountsController.save);
-router.get('/:id', AccountsController.get);
+router.get('/:id', AccountsController.detail);
 router.put('/:id', AccountsController.update);
 router.delete('/:id', AccountsController.delete);
 
