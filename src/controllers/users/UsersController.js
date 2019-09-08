@@ -11,7 +11,7 @@ class UsersController {
             // const total = await users.count()
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
-                data: Exception.COMMON
+                data: Exception.getMessage(Exception.VALIDATION.IS_EXISTED, {field: "Email"})
             })
         } catch (err) {
             next(err)
