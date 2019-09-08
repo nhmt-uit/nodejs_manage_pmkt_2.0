@@ -26,54 +26,61 @@ BankersSchema.statics.findAll = () => {
     return this.default.find()
 }
 
-BankersSchema.statics.updateBanker = (item) => {
-    if (!item['id']) {
-        throw new Error('id is required');
-    }
-    if (!item['host_url']) {
-        throw new Error('host_url is required');
-    }
-
-    return BankersSchema.statics.checkBanker(item['id'])
-        .then(banker => {
-            if (!item['host_id']) {
-                return BankersSchema.statics.createHostBanker(item)
-            } else {
-                return BankersSchema.statics.updateHostBanker(item)
-            }
-        })
-
-}
-
-BankersSchema.statics.checkBanker = id => {
-    return this.default.findOne({_id: id})
-        .then(banker => {
-            if (!banker) {
-                throw new Error('Banker is not existed');
-            }
-            return banker;
-        })
-}
 
 BankersSchema.statics.updateHostBanker = item => {
     return this.default.findOneAndUpdate(
-        {_id: item['id'], "agent_host._id": item['host_id']},
+        {_id: item.banker_id, "agent_host._id": item.host_id},
         {
             '$set': {
-                'agent_host.$.url': item['host_url'],
+                'agent_host.$.url': item.host_url,
             }
         },
     )
 }
 
+
 BankersSchema.statics.createHostBanker = item => {
     let data = {
-        url: item['host_url'],
+        url: item.host_url,
     };
     return this.default.findOneAndUpdate(
-        {_id: item['id']},
+        {_id: item.banker_id},
         { $push: {"agent_host": data}},
     )
+}
+
+
+BankersSchema.statics.deleteHostBanker = item => {
+    return this.default.findOneAndUpdate(
+        {_id: item.banker_id},
+        { $pull: {"agent_host": {_id: item.host_id}}}
+    )
+}
+
+
+BankersSchema.statics.checkBanker = id => {
+    return this.default.findOne({_id: id})
+        .then((banker) => {
+            if (!banker) return false
+            return true
+        })
+}
+
+BankersSchema.statics.checkHostBanker = (banker_id, host_id) => {
+    return this.default.findOne({_id: banker_id})
+        .then((banker) => {
+            if (!banker) {
+                return false
+            } else {
+                let foundHostBanker = false
+
+                banker.agent_host.forEach( item => {
+                    if( (item._id).toString() === host_id) foundHostBanker = true
+                })
+                if (foundHostBanker === false) return false
+                return true
+            }
+        })
 }
 
 

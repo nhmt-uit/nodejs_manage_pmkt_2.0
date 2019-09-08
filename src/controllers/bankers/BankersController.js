@@ -15,13 +15,41 @@ class BankersController {
         }
     }
 
-    async updateBanker (req, res, next) {
-        let item = req.body
+    async createHostBanker (req, res, next) {
+        const item = req.body
         try {
-            await BankersModel.updateBanker(item)
+            await BankersModel.createHostBanker(item)
+            return res.jsonSuccess({
+                message: ExceptionConfig.COMMON.ITEM_CREATE_SUCCESS,
+                data: item,
+            })
+        } catch (err) {
+            next (err)
+        }
+    }
+
+    async updateHostBanker (req, res, next) {
+        const item = req.body
+        item.host_id = req.params.id
+        try {
+            await BankersModel.updateHostBanker(item)
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.ITEM_UPDATE_SUCCESS,
-                data: '',
+                data: item,
+            })
+        } catch (err) {
+            next (err)
+        }
+    }
+
+    async deleteHostBanker (req, res, next) {
+        const item = req.body
+        item.host_id = req.params.id
+        try {
+            await BankersModel.deleteHostBanker(item)
+            return res.jsonSuccess({
+                message: ExceptionConfig.COMMON.ITEM_DELETE_SUCCESS,
+                data: item,
             })
         } catch (err) {
             next (err)
