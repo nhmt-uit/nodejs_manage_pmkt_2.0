@@ -1,3 +1,6 @@
+import _isEmpty from 'lodash/isEmpty';
+import { param } from 'express-validator';
+
 exports.COMMON = {
     REQUEST_SUCCESS         : "The request has succeeded",
     ITEM_CREATE_SUCCESS     : "The item was created successfully",
@@ -11,7 +14,8 @@ exports.COMMON = {
 
 exports.VALIDATION = {
     REQUIRE_FIELD           : "This field is required",
-    INVALID_EMAIL           : "Please enter the valid email"
+    INVALID_EMAIL           : "Please enter the valid email",
+    IS_EXISTED              : "{{field}} is existed"
 }
 
 exports.AUTH = {
@@ -21,5 +25,11 @@ exports.AUTH = {
 }
 
 exports.getMessage = (message, params) => {
+    if (!_isEmpty(params)) {
+        Object.keys(params).forEach(key => {
+            message = message.replace(`{{${key}}}`, params[key]);
+        });
+    }
+
     return message
 }
