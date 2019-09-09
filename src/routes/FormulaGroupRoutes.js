@@ -13,15 +13,6 @@ router.get("/:id", FormulaGroupsController.dataById)
 router.post("/",  FormulaGroupsController.save)
 router.put("/:id",  FormulaGroupsController.update)
 router.delete("/:id",  FormulaGroupsController.delete)
-router.delete("/by-banker",  FormulaGroupsController.deleteByBanker)
-
-
-
-// router.put("/formula-groups", FormulaGroupController.listdata)
-// router.delete("/formula-groups", FormulaGroupController.listdata)
-
-// router.delete("/:id", FormulaGroupController.delete)
-// router.get("/:id", FormulaController.detail)
-
+// router.delete("/by-banker",  FormulaGroupsController.deleteByBanker)
 
 export default router

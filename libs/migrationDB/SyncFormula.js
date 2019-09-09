@@ -1,0 +1,192 @@
+import mongoose from './query/mongoose'
+mongoose.Promise = global.Promise
+
+
+import FormulaFieldModel from "./model/old/FormulaFieldModel"
+import FormulaFieldValueModel from "./model/old/FormulaFieldValueModel"
+import FormulaFormatModel from "./model/old/FormulaFormatModel"
+import FormulaGroupModel from "./model/old/FormulaGroupModel"
+import FormulaPatternModel from "./model/old/FormulaPatternModel"
+import AccountFormulaGroupModel from "./model/old/AccountFormulaGroupModel"
+
+import FormulaFieldsModel_N from './model/FormulaFieldsModel_N'
+import FormulasModel_N from './model/FormulasModel_N'
+import FormulaFormatsModel_N from './model/FormulaFormatsModel_N'
+import FormulaGroupsModel_N from './model/FormulaGroupsModel_N';
+
+class SyncFormula {
+	async FormulaField() {
+		try {
+			await FormulaFieldsModel_N.remove()
+			let skip = 0
+			while (true) {
+				const data = await FormulaFieldModel.find()
+											.limit(100)
+											.skip(skip * 100)
+				if (!data.length) {
+					console.log("===================== Migration Formula Fields Collection Done ================================")
+					break
+				}
+				skip++
+				await Promise.all(
+					data.map(async item => {
+						const _item = JSON.parse(JSON.stringify(item))
+
+						const query = new FormulaFieldsModel_N({
+							_id						: mongoose.Types.ObjectId(_item._id),
+							name					: _item.name ? String(_item.name.toLowerCase()) : "",
+						})
+						const result = await query.save()
+						console.log(result)
+					})
+				)
+			}
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
+	async FormulaFormat() {
+		try {
+			await FormulaFormatsModel_N.remove()
+			let skip = 0
+			while (true) {
+				const data = await FormulaFormatModel.find()
+											.limit(100)
+											.skip(skip * 100)
+				if (!data.length) {
+					console.log("===================== Migration Formula Format Collection Done ================================")
+					break
+				}
+				skip++
+				await Promise.all(
+					data.map(async item => {
+						const _item = JSON.parse(JSON.stringify(item))
+						const query = new FormulaFormatsModel_N({
+							_id						: mongoose.Types.ObjectId(_item._id),
+							banker_id				: mongoose.Types.ObjectId(_item.banker_id),
+							name					: _item.name ? String(_item.name) : "",
+							short					: _item.short ? String(_item.short) : "",
+							type					: _item.type ? Number(_item.type) : "",
+							data					: _item.data ? JSON.parse(_item.data) : "",
+							status					: Number(_item.deleted) !== 0 ? "delete" : "active"
+						})
+						const result = await query.save()
+						console.log(result)
+					})
+				)
+			}
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
+	async Formula() {
+		try {
+			await FormulasModel_N.remove()
+			let skip = 0
+			while (true) {
+				const data = await FormulaPatternModel.find()
+											.limit(100)
+											.skip(skip * 100)
+				if (!data.length) {
+					console.log("===================== Migration Formula Collection Done ================================")
+					break
+				}
+				skip++
+
+				await Promise.all(
+					data.map(async item => {
+						const _item = JSON.parse(JSON.stringify(item))
+						// Get Field Value
+						const formulaFieldValue = await FormulaFieldValueModel.find({
+																f_pattern_id: mongoose.Types.ObjectId(_item._id),
+																deleted: {$eq: 0}
+															})
+						const formulaFields = []
+						if (formulaFieldValue && formulaFieldValue.length) {
+							formulaFieldValue.forEach(el => {
+								const _el = JSON.parse(JSON.stringify(el))
+								formulaFields.push({
+									formula_field_id	: mongoose.Types.ObjectId(_el.f_field_id),
+									value				: Number(_el.value)
+								})
+							})
+						}
+
+						const query = new FormulasModel_N({
+							_id						: mongoose.Types.ObjectId(_item._id),
+							banker_id				: mongoose.Types.ObjectId(_item.banker_id),
+							user_id					: mongoose.Types.ObjectId(_item.uid),
+							t_currency_id			: mongoose.Types.ObjectId(_item.dv_tiente),
+							formula_format_id		: mongoose.Types.ObjectId(_item.f_format_id),
+							name					: _item.tenct ? String(_item.tenct) : "",
+							fields					: formulaFields,
+							rec_pay					: _item.giaonhan,
+							status					: Number(_item.deleted) !== 0 ? "delete" : "active"
+						})
+						const result = await query.save()
+						console.log(result)
+					})
+				)
+			}
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
+	async FormulaGroup() {
+		try {
+			await FormulaGroupsModel_N.remove()
+			let skip = 0
+			while (true) {
+				const data = await FormulaGroupModel.find()
+											.limit(100)
+											.skip(skip * 100)
+				if (!data.length) {
+					console.log("===================== Migration Formula Groups Collection Done ================================")
+					break
+				}
+				skip++
+
+				await Promise.all(
+					data.map(async item => {
+						const _item = JSON.parse(JSON.stringify(item))
+						// Get Field Value
+						const formulaGroupRelation = await AccountFormulaGroupModel.find({
+																formula_group_id: mongoose.Types.ObjectId(_item._id),
+																deleted: {$eq: 0}
+															})
+						const formulas = []
+						if (formulaGroupRelation && formulaGroupRelation.length) {
+							formulaGroupRelation.forEach(el => {
+								const _el = JSON.parse(JSON.stringify(el))
+								formulas.push(mongoose.Types.ObjectId(_el.f_pattern_id))
+							})
+						}
+
+						const query = new FormulaGroupsModel_N({
+							_id						: mongoose.Types.ObjectId(_item._id),
+							user_id					: mongoose.Types.ObjectId(_item.uid),
+							name					: _item.name ? String(_item.name) : "",
+							formulas				: formulas,
+							status					: Number(_item.deleted) !== 0 ? "delete" : "active"
+						})
+						const result = await query.save()
+						console.log(result)
+					})
+				)
+			}
+		} catch (error) {
+			console.error(error)
+		}
+	}
+}
+
+const sync = new SyncFormula()
+// sync.FormulaField()
+// sync.FormulaFormat()
+sync.Formula()
+// sync.FormulaGroup()
+
+

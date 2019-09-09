@@ -19,7 +19,6 @@ const BaseFields = {
 	updateddAt: { type: Date },
 }
 
-
 // BaseSchema process middleware
 const BaseSchema = schema => {
     // Add Exteneral fields
@@ -63,7 +62,7 @@ class BaseModel {
     }
 }
 
-// export default 
+// export default
 export {
     BaseModel,
     BaseSchema,

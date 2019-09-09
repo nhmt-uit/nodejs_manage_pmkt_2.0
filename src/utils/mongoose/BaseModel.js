@@ -14,7 +14,7 @@ const BaseFields = {
     createdBy: { type: mongoose.Schema.Types.ObjectId, default: null },
     createdAt: { type: Date, default: Moment.format() },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, default: null },
-	updateddAt: { type: Date, default: Moment.format() },
+	updatedAt: { type: Date, default: Moment.format() },
 }
 
 
@@ -33,7 +33,7 @@ const BaseSchema = schema => {
         this.createdAt = now
         if (!this.created_at) {
             this.updatedBy = mongoose.mongo.ObjectID() //Temp data
-            this.updateddAt = now
+            this.updatedAt = now
         }
         next()
     })
