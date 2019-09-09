@@ -42,7 +42,7 @@ const BankerValidator = {
                 const banker_id = req.body.banker_id;
                 let isUnique = await BankersSchema.checkHostBanker(banker_id, host_id)
                 if(!isUnique){
-                    return Promise.reject('Not found Host Banker by id: ' + value)
+                    return Promise.reject(`Not found Host Banker by id: {$value}`)
                 }
             })
     ]

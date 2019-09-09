@@ -23,7 +23,7 @@ BankersSchema.loadClass(BaseModel)
 BankersSchema.plugin(BaseSchema)
 
 BankersSchema.statics.findAll = () => {
-    return this.default.find()
+    return this.default.find({status: 'active'}).select("-status -createdBy -createdAt -updatedBy -updatedAt")
 }
 
 
