@@ -26,3 +26,6 @@ BankersSchema.plugin(BaseSchema)
 
 // Export Model
 export default mongoose.model(collectionName, BankersSchema, collectionName)
+export {
+    BankersSchema,
+}

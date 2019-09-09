@@ -1,13 +1,16 @@
 import mongoose from "mongoose"
-
+import {FormulaFormatsSchema} from "./FormulaFormatsModel"
 
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 
 import Session from "../utils/Session"
 import { type } from "os";
 
+
+// FormulaFormatsSchema = mongoose.model('formula_formats', FormulaFormatsSchema,'formula_formats')
 // Define collection name
 const collectionName = "formula_groups";
+
 
 // Define collection schema
 const FormulasSchema = new mongoose.Schema({
@@ -15,8 +18,14 @@ const FormulasSchema = new mongoose.Schema({
     user_id: mongoose.Types.ObjectId,
     name: String,
 	formulas: mongoose.Schema.Types.Mixed,
+	FormulaFormatsSchema: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref:'banker_id'
+	}
 	
 });
+
+
 
 // Load BaseModel
 FormulasSchema.loadClass(BaseModel)
@@ -24,8 +33,11 @@ FormulasSchema.plugin(BaseSchema);
 
 
 
-FormulasSchema.statics.findAll = () => {
-	return this.default.find()
+FormulasSchema.statics.findAll = async () => {
+	const A = await this.default
+	.findOne()
+    .select('name banker_id');
+    console.log('AAAAAAAAAAA',A)
 }
 
 
@@ -65,8 +77,14 @@ FormulasSchema.statics.delete = async (id) => {
 // }
 
 
+// async function listFormulaGroup() {
+// 	const FormulaGroups = await FormulasSchema
+// 	.find()
+// 	.select('name');
+// 	console.log(FormulaGroups)
+// }
 
-
+// listFormulaGroup();
 // Export Model
 export default mongoose.model(collectionName, FormulasSchema, collectionName) 
 
