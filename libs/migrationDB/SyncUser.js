@@ -3,6 +3,7 @@ mongoose.Promise = global.Promise
 
 
 import UsersModel from "./model/old/UsersModel"
+import BankerModel from "./model/old/BankerModel"
 
 import UsersModel_N from './model/UsersModel_N'
 import ExcludeBankersModel_N from "./model/ExcludeBankersModel_N"
@@ -66,18 +67,23 @@ class SyncUser {
 							banker_ids		: mixedExcludeBanker
 						})
 						await excludeBanker.save()
-
 					}
 
-					// const includeBanker = new IncludeBankersModel_N({
-					// 	user_id			: mongoose.Types.ObjectId(_item._id),
-					// 	banker_ids		: _item.exclude_banker,
-					// })
-					// await includeBanker.save()
-					
+					// Insert include_banker collection
+					if (_item.include_banker && _item.include_banker.length) {
+						const mixedExcludeBanker = await Promise.all(_item.include_banker.map( async item => {
+							const bankerInfo = await BankerModel.findOne({name: item})
+							return bankerInfo._id
+						}))
+						
 
+						const includeBanker = new IncludeBankersModel_N({
+							user_id			: mongoose.Types.ObjectId(_item._id),
+							banker_ids		: mixedExcludeBanker
+						})
+						await includeBanker.save()
+					}
 					console.log(result)
-
 				})
 			}
 		} catch (error) {

@@ -38,7 +38,7 @@ console.log("dd")
 
 Promise.all([
     // Sync users
-    // SyncUser.Users(_limit, _skip, _maxSkip),
+    SyncUser.Users(_limit, _skip, _maxSkip),
 
     // Sync currencies
     // SyncCurrency.MCurrency(_limit, _skip, _maxSkip),
@@ -59,8 +59,8 @@ Promise.all([
     // SyncFormula.FormulaGroup(_limit, _skip, _maxSkip),
 
     // // Sync Language
-    SyncLanguage.Language(_limit, _skip, _maxSkip),
-    SyncLanguage.Notice(_limit, _skip, _maxSkip),
+    // SyncLanguage.Language(_limit, _skip, _maxSkip),
+    // SyncLanguage.Notice(_limit, _skip, _maxSkip),
 ]).then(_ => {
     console.log("===================== Migration Data Done ================================")
 })

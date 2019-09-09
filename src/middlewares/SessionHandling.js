@@ -6,6 +6,9 @@ import Session from "../utils/Session"
 import SessionConfig from "../configs/SessionConfig"
 
 const MongoStore = connectMongo(session)
+const MongoOpts = MongoDb.getOptions()
+// Remove unnecessary value
+delete MongoOpts["useCreateIndex"]
 
 const SessionMiddleware = session({
     secret: SessionConfig.SESSION_SECRET_KEY,
@@ -13,7 +16,7 @@ const SessionMiddleware = session({
     resave: false, //don't save session if unmodified
     store: new MongoStore({
         url: MongoDb.getUri(),
-        mongoOptions: MongoDb.getOptions(),
+        mongoOptions: MongoOpts,
     }),
     cookie: { maxAge: SessionConfig.SESSION_MAX_AGE },
 })

@@ -8,7 +8,7 @@ const collectionName_N = "include_bankers"
 // Define collection schema
 const IncludeBankers_NSchema = new mongoose.Schema({
 	user_id: mongoose.Schema.Types.ObjectId,
-	banker_ids: mongoose.Schema.Types.Array,
+	banker_ids: [mongoose.Schema.Types.ObjectId],
 
 })
 // Load BaseModel
