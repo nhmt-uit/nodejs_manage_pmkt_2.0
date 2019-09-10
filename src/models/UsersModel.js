@@ -27,11 +27,9 @@ UsersSchema.statics.checkUniqueUsername = (username) => {
 	return this.default.find({
 		username: username,
 	})
-		.then(function (users) {
-			if(users.length !== 0){
-				if(users[0].status === 'active'){
-					return false
-				} else return true
+		.then( (users) => {
+			if (users.length !== 0 && users[0].status === 'active'){
+				return false
 			} else return true
 		})
 };

@@ -31,10 +31,10 @@ const BaseSchema_N = schema => {
     // Create a pre-save hook
     schema.pre("save", function(next) {
         const now = Moment.format()
-        this.createdBy = mongoose.mongo.ObjectID() //Temp data
+        this.createdBy = mongoose.mongo.ObjectID("56850ba0097802b9f23929ea") //bedbug
         this.createdAt = now
         if (!this.created_at) {
-            this.updatedBy = mongoose.mongo.ObjectID() //Temp data
+            this.updatedBy = mongoose.mongo.ObjectID("56850ba0097802b9f23929ea") //bedbug
             this.updateddAt = now
         }
         next()

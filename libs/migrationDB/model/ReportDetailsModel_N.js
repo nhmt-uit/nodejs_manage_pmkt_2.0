@@ -7,7 +7,6 @@ const collectionName_N = "report_details"
 
 // Define collection schema
 const ReportDetails_NSchema = new mongoose.Schema({
-	
         _id: mongoose.Types.ObjectId,
         report_id: mongoose.Types.ObjectId,
         user_id: mongoose.Types.ObjectId,
@@ -26,8 +25,6 @@ const ReportDetails_NSchema = new mongoose.Schema({
             }
         },
         amount: Number,
-        
-    
 })
 
 

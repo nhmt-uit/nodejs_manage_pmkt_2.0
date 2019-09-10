@@ -1,90 +1,100 @@
 import mongoose from "mongoose"
-import {FormulaFormatsSchema} from "./FormulaFormatsModel"
 
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 
-import Session from "../utils/Session"
-import { type } from "os";
+import FormulasModel from "./FormulasModel"
+import BankersModel from "./BankersModel"
 
 
-// FormulaFormatsSchema = mongoose.model('formula_formats', FormulaFormatsSchema,'formula_formats')
+
 // Define collection name
 const collectionName = "formula_groups";
 
-
 // Define collection schema
-const FormulasSchema = new mongoose.Schema({
-    
+const FormulaGroupSchema = new mongoose.Schema({
+    _id: mongoose.Types.ObjectId,
     user_id: mongoose.Types.ObjectId,
     name: String,
-	formulas: mongoose.Schema.Types.Mixed,
-	FormulaFormatsSchema: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref:'banker_id'
-	}
-	
+    formulas: mongoose.Schema.Types.Mixed
 });
 
+// const formulaGroups = mongoose.model('formula_groups', FormulaGroupSchema)
 
 
+// async function listFormulaGroup(){
+//     const formulaGroup = await formulaGroups
+//     .find()
+//     .populate({
+//         model: "formulas",
+//         path: "formulas",
+//         select: "_id name banker_id",
+//         populate: {
+//             model: "bankers",
+//             path: "banker_id",
+//         }
+//     })
+//     .select('formulas')
+//     .limit(10)
+//     .then((result) => {console.log(result)})
+
+//     }
+
+
+// listFormulaGroup()
 // Load BaseModel
-FormulasSchema.loadClass(BaseModel)
-FormulasSchema.plugin(BaseSchema);
+FormulaGroupSchema.loadClass(BaseModel)
+FormulaGroupSchema.plugin(BaseSchema);
 
 
 
-FormulasSchema.statics.findAll = async () => {
-	const A = await this.default
-	.findOne()
-    .select('name banker_id');
-    console.log('AAAAAAAAAAA',A)
+FormulaGroupSchema.statics.findAll = async () => {
+    return this.default.find()
 }
 
 
-FormulasSchema.statics.update = async (id, data) => {
-	
-	return this.default.findByIdAndUpdate(id,{name : data.name})
+FormulaGroupSchema.statics.update = async (id, data) => {
+    return this.default.findByIdAndUpdate(id, { name: data.name })
 }
 
-FormulasSchema.statics.delete = async (id) => {
-	
-	return this.default.findOneAndDelete({_id:id})
+FormulaGroupSchema.statics.delete = async (id) => {
 
-// 	this.default
-//   .findOne({ "name": "Test API - 7282211116" })
-//   .populate('bankers')
-//   .select('name')
-//   .exec(function (err, banker) {
-//     if (err) return handleError(err);
-//     console.log('The BANKERNAME is %s', banker.name);
-    
-//   });
-
-	
+    return this.default.findOneAndDelete({ _id: id })
 }
 
 
-// FormulasSchema.statics.deleteByBanker = async (id) => {
-	
-// 	this.default
-//   .findOne({ name: "Test API - 7282211116" })
-//   .populate('banker')
-//   .exec(function (err, story) {
-//     if (err) return handleError(err);
-//     console.log('The author is %s', this.default.name);
-    
-//   });
-// }
+FormulaGroupSchema.statics.deleteByBanker = async (formulaGroupId, formulaId) => {
+
+    const formulaGroup =this.default.findById(formulaGroupId)
+        .populate({
+            model: FormulasModel,
+            path: "formulas",
+            populate: {
+                model: BankersModel,
+                path: "banker_id",
+            }
+        })
+        .exec((err, res) => {
+            // for(let i = 0 ; res.formulas[i].banker_id.length <i; i++)
+            console.log(res.formulas[0])
+        })
+
+        
+        console.log(formulaGroup)
 
 
-// async function listFormulaGroup() {
-// 	const FormulaGroups = await FormulasSchema
-// 	.find()
-// 	.select('name');
-// 	console.log(FormulaGroups)
-// }
+        // return listBanker_id;
 
-// listFormulaGroup();
+
+        
+
+}
+
+
 // Export Model
-export default mongoose.model(collectionName, FormulasSchema, collectionName) 
+export default mongoose.model(collectionName, FormulaGroupSchema, collectionName)
+
+
+
+
+
 

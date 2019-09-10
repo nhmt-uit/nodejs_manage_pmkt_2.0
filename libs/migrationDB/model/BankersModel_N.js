@@ -21,6 +21,7 @@ const Bankers_NSchema = new mongoose.Schema({
 	url: String,
 
 })
+
 // Load BaseModel
 Bankers_NSchema.plugin(BaseSchema_N)
 

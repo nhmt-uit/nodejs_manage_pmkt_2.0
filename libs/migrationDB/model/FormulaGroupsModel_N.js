@@ -9,7 +9,7 @@ const FormulasSchema = new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
     user_id: mongoose.Types.ObjectId,
     name: String,
-    formulas: mongoose.Schema.Types.Mixed
+    formulas: [mongoose.Schema.Types.ObjectId]
 });
 // Load BaseModel
 FormulasSchema.plugin(BaseSchema);

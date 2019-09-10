@@ -9,7 +9,7 @@ const collectionName_N = "m_currencies"
 const MCurrenciesModel_NSchema = new mongoose.Schema({
 	_id: mongoose.Types.ObjectId,
     name: String,
-    round_type: String
+    round_type: Number
 })
 // Load BaseModel
 MCurrenciesModel_NSchema.plugin(BaseSchema_N)

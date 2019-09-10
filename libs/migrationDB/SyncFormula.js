@@ -15,15 +15,25 @@ import FormulaFormatsModel_N from './model/FormulaFormatsModel_N'
 import FormulaGroupsModel_N from './model/FormulaGroupsModel_N';
 
 class SyncFormula {
-	async FormulaField() {
+	async Truncate() {
+		return Promise.all([
+			FormulaFieldsModel_N.remove(),
+			FormulaFormatsModel_N.remove(),
+			FormulasModel_N.remove(),
+			FormulaGroupsModel_N.remove(),
+		])
+	}
+
+	async FormulaField(_limit, _skip, _maxSkip) {
 		try {
-			await FormulaFieldsModel_N.remove()
-			let skip = 0
+			let limit = Number(_limit) || 100
+			let skip = Number(_skip) || 0
 			while (true) {
 				const data = await FormulaFieldModel.find()
-											.limit(100)
-											.skip(skip * 100)
-				if (!data.length) {
+											.limit(limit)
+											.skip(skip * limit)
+											.sort({createdAt: 1})
+				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Formula Fields Collection Done ================================")
 					break
 				}
@@ -46,15 +56,16 @@ class SyncFormula {
 		}
 	}
 
-	async FormulaFormat() {
+	async FormulaFormat(_limit, _skip, _maxSkip) {
 		try {
-			await FormulaFormatsModel_N.remove()
-			let skip = 0
+			let limit = Number(_limit) || 100
+			let skip = Number(_skip) || 0
 			while (true) {
 				const data = await FormulaFormatModel.find()
-											.limit(100)
-											.skip(skip * 100)
-				if (!data.length) {
+											.limit(limit)
+											.skip(skip * limit)
+											.sort({createdAt: 1})
+				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Formula Format Collection Done ================================")
 					break
 				}
@@ -81,15 +92,16 @@ class SyncFormula {
 		}
 	}
 
-	async Formula() {
+	async Formula(_limit, _skip, _maxSkip) {
 		try {
-			await FormulasModel_N.remove()
-			let skip = 0
+			let limit = Number(_limit) || 100
+			let skip = Number(_skip) || 0
 			while (true) {
 				const data = await FormulaPatternModel.find()
-											.limit(100)
-											.skip(skip * 100)
-				if (!data.length) {
+											.limit(limit)
+											.skip(skip * limit)
+											.sort({createdAt: 1})
+				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Formula Collection Done ================================")
 					break
 				}
@@ -135,15 +147,16 @@ class SyncFormula {
 		}
 	}
 
-	async FormulaGroup() {
+	async FormulaGroup(_limit, _skip, _maxSkip) {
 		try {
-			await FormulaGroupsModel_N.remove()
-			let skip = 0
+			let limit = Number(_limit) || 100
+			let skip = Number(_skip) || 0
 			while (true) {
 				const data = await FormulaGroupModel.find()
-											.limit(100)
-											.skip(skip * 100)
-				if (!data.length) {
+											.limit(limit)
+											.skip(skip * limit)
+											.sort({createdAt: 1})
+				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Formula Groups Collection Done ================================")
 					break
 				}
@@ -183,10 +196,5 @@ class SyncFormula {
 	}
 }
 
-const sync = new SyncFormula()
-// sync.FormulaField()
-// sync.FormulaFormat()
-sync.Formula()
-// sync.FormulaGroup()
-
+export default new SyncFormula()
 

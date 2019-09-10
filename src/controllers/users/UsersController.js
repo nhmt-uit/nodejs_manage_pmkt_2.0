@@ -2,6 +2,7 @@ import UsersModel from "../../models/UsersModel"
 import ExceptionConfig from "../../configs/ExceptionConfig"
 import HashPassword from "../../utils/HashPassword"
 import Session from "../../utils/Session"
+import Exception from "../../utils/Exception"
 
 class UsersController {
     async index (req, res, next) {
@@ -10,7 +11,7 @@ class UsersController {
             // const total = await users.count()
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
-                data: Session.get()
+                data: Exception.getMessage(Exception.VALIDATION.IS_EXISTED, {field: "Email"})
             })
         } catch (err) {
             next(err)

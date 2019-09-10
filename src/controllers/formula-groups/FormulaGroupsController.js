@@ -38,8 +38,8 @@ class FormulaGroupsController {
     async save (req, res, next) {
         try {
             const formulaGroup = new FormulaGroupsModel({
-                name: "Test API - " + Math.round(Math.random()*10000000000)
-                // uid:,
+                name: "Test API - " + Math.round(Math.random()*10000000000),
+                
             })
             await formulaGroup.save()
             return res.jsonSuccess({
@@ -80,12 +80,14 @@ class FormulaGroupsController {
     }
 
     async deleteByBanker (req, res, next){
+        const data = req.body
         const id = req.params.id
+        
         try {
-            await UsersModel.deleteByBanker(id)
+            let result = await FormulaGroupsModel.deleteByBanker(id, data.formulaId)
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.ITEM_DELETE_SUCCESS,
-                data: id
+                data : result
             })
         } catch (err) {
             next(err)

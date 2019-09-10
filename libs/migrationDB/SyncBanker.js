@@ -122,15 +122,23 @@ const memberLinkConfig = {
 }
 
 class SyncBanker {
-	async Book() {
+	async Truncate() {
+		return Promise.all([
+			BooksModel_N.remove(),
+			BankersModel_N.remove()
+		])
+	}
+
+	async Book(_limit, _skip, _maxSkip) {
 		try {
-			await BooksModel_N.remove()
-			let skip = 0
+			let limit = Number(_limit) || 100
+			let skip = Number(_skip) || 0
 			while (true) {
 				const data = await BookModel.find()
-											.limit(100)
-											.skip(skip * 100)
-				if (!data.length) {
+											.limit(limit)
+											.skip(skip * limit)
+											.sort({createdAt: 1})
+				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Books Collection Done ================================")
 					break
 				}
@@ -152,16 +160,16 @@ class SyncBanker {
 		}
 	}
 
-	async Banker() {
+	async Banker(_limit, _skip, _maxSkip) {
 		try {
-			// await this.Book()
-			await BankersModel_N.remove()
-			let skip = 0
+			let limit = Number(_limit) || 100
+			let skip = Number(_skip) || 0
 			while (true) {
 				const data = await BankerModel.find()
-											.limit(100)
-											.skip(skip * 100)
-				if (!data.length) {
+												.limit(limit)
+												.skip(skip * limit)
+												.sort({createdAt: 1})
+				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Banker Collection Done ================================")
 					break
 				}
@@ -210,7 +218,6 @@ class SyncBanker {
 
 }
 
-const sync = new SyncBanker()
-sync.Banker()
+export default new SyncBanker()
 
 

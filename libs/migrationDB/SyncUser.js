@@ -3,6 +3,7 @@ mongoose.Promise = global.Promise
 
 
 import UsersModel from "./model/old/UsersModel"
+import BankerModel from "./model/old/BankerModel"
 
 import UsersModel_N from './model/UsersModel_N'
 import ExcludeBankersModel_N from "./model/ExcludeBankersModel_N"
@@ -10,17 +11,25 @@ import IncludeBankersModel_N from "./model/IncludeBankersModel_N"
 
 
 class SyncUser {
-	async Users() {
+	async Truncate() {
+		return Promise.all([
+			UsersModel_N.remove({}),
+			ExcludeBankersModel_N.remove({}),
+			IncludeBankersModel_N.remove({}),
+		])
+	}
+
+	async Users(_limit, _skip, _maxSkip) {
 		try {
-			await UsersModel_N.remove({})
-			await ExcludeBankersModel_N.remove({})
-			await IncludeBankersModel_N.remove({})
-			let skip = 0
+			let limit = Number(_limit) || 100
+			let skip = Number(_skip) || 0
+
 			while (true) {
 				const data = await UsersModel.find()
-											.limit(100)
-											.skip(skip * 100)
-				if (!data.length) {
+											.limit(limit)
+											.skip(skip * limit)
+											.sort({createdAt: 1})
+				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Users Collection Done ================================")
 					break
 				}
@@ -43,11 +52,12 @@ class SyncUser {
 						is_updated_password		: false,
 						old_pasword2			: _item.password2 ? String(_item.password2) : null,
 						is_updated_password2	: false,
+						status					: Number(_item.deleted) !== 0 ? "delete" : "active"
 					})
 					const result = await query.save()
 
 					// Insert exclude_banker collection
-					if(_item.exclude_banker && _item.exclude_banker.length) {
+					if (_item.exclude_banker && _item.exclude_banker.length) {
 						const mixedExcludeBanker = _item.exclude_banker.map(item => {
 							item = mongoose.Types.ObjectId(item)
 							return item
@@ -57,18 +67,23 @@ class SyncUser {
 							banker_ids		: mixedExcludeBanker
 						})
 						await excludeBanker.save()
-
 					}
 
-					// const includeBanker = new IncludeBankersModel_N({
-					// 	user_id			: mongoose.Types.ObjectId(_item._id),
-					// 	banker_ids		: _item.exclude_banker,
-					// })
-					// await includeBanker.save()
-					
+					// Insert include_banker collection
+					if (_item.include_banker && _item.include_banker.length) {
+						const mixedExcludeBanker = await Promise.all(_item.include_banker.map( async item => {
+							const bankerInfo = await BankerModel.findOne({name: item})
+							return bankerInfo._id
+						}))
+						
 
+						const includeBanker = new IncludeBankersModel_N({
+							user_id			: mongoose.Types.ObjectId(_item._id),
+							banker_ids		: mixedExcludeBanker
+						})
+						await includeBanker.save()
+					}
 					console.log(result)
-
 				})
 			}
 		} catch (error) {
@@ -78,7 +93,4 @@ class SyncUser {
 
 }
 
-const sync = new SyncUser()
-sync.Users()
-
-
+export default new SyncUser()
