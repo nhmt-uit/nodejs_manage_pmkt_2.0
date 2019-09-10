@@ -4,6 +4,7 @@ import SyncFormula from "./SyncFormula"
 import SyncUser from "./SyncUser"
 import SyncCurrency from "./SyncCurrency"
 import SyncLanguage from "./SyncLanguage"
+import SyncReport from "./SyncReport"
 
 <<<<<<< HEAD
 import FormulaGroupsModel_N from "./model/FormulaGroupsModel_N"
@@ -14,6 +15,7 @@ const _skip = process.argv[3] || 0
 const _maxSkip = process.argv[4]
 
 
+<<<<<<< HEAD
 import FormulaGroupsModel_N from "./model/FormulaGroupsModel_N"
 import FormulasModel_N from "./model/FormulasModel_N"
 
@@ -77,10 +79,12 @@ console.log("dd")
 /*
 
 
+=======
+>>>>>>> feb64a6ebb6b88f391d76818112e44bc6fd5fb95
 
 Promise.all([
     // Sync users
-    SyncUser.Users(_limit, _skip, _maxSkip),
+    // SyncUser.Users(_limit, _skip, _maxSkip),
 
     // Sync currencies
     // SyncCurrency.MCurrency(_limit, _skip, _maxSkip),
@@ -103,9 +107,18 @@ Promise.all([
     // // Sync Language
     // SyncLanguage.Language(_limit, _skip, _maxSkip),
     // SyncLanguage.Notice(_limit, _skip, _maxSkip),
+
+    // Sync Report
+    // SyncReport.ReportHandle(_limit, _skip, _maxSkip),
+    SyncReport.ReportHandleExchange()
+
 ]).then(_ => {
     console.log("===================== Migration Data Done ================================")
+<<<<<<< HEAD
 })
 
 */
 >>>>>>> 2e78bd2bd0bfe107095f0fb6212a14ddd187d104
+=======
+})
+>>>>>>> feb64a6ebb6b88f391d76818112e44bc6fd5fb95
