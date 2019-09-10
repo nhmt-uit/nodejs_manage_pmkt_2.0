@@ -78,3 +78,6 @@ BankersSchema.statics.checkHostBanker = async (banker_id, host_id) => {
 
 // Export Model
 export default mongoose.model(collectionName, BankersSchema, collectionName)
+export {
+    BankersSchema,
+}
