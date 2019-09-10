@@ -10,6 +10,32 @@ const _limit = process.argv[2] || 100
 const _skip = process.argv[3] || 0
 const _maxSkip = process.argv[4]
 
+
+import FormulaGroupsModel_N from "./model/FormulaGroupsModel_N"
+import FormulasModel_N from "./model/FormulasModel_N"
+
+
+FormulaGroupsModel_N
+.findOne({_id: "5cb14d67a8c0f04080780bcf"})
+.populate({
+    model: "formulas",
+    path: "formulas",
+    select: "_id name banker_id",
+    populate: {
+        model: "bankers",
+        path: "banker_id",
+    }
+})
+.exec((err, res) => {
+    console.log(res)
+})
+console.log("dd")
+
+
+/*
+
+
+
 Promise.all([
     // Sync users
     SyncUser.Users(_limit, _skip, _maxSkip),
@@ -38,3 +64,5 @@ Promise.all([
 ]).then(_ => {
     console.log("===================== Migration Data Done ================================")
 })
+
+*/
