@@ -20,10 +20,12 @@ class SyncAccount {
 			let limit = Number(_limit) || 100
 			let skip = Number(_skip) || 0
 			while (true) {
-				const data = await AccountModel.find()
+				const data = await AccountModel.find({
+												deleted: {$eq: 0}
+											})
 											.limit(limit)
 											.skip(skip * limit)
-											.sort({createdAt: 1})
+											.sort({created: 1})
 				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Account Collection Done ================================")
 					break
@@ -69,10 +71,12 @@ class SyncAccount {
 			let limit = Number(_limit) || 100
 			let skip = Number(_skip) || 0
 			while (true) {
-				const data = await CongthuctinModel.find()
+				const data = await CongthuctinModel.find({
+														deleted: {$eq: 0}
+													})
 													.limit(limit)
 													.skip(skip * limit)
-													.sort({createdAt: 1})
+													.sort({created: 1})
 				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Account Formula Collection Done ================================")
 					break

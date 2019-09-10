@@ -23,10 +23,12 @@ class SyncCurrency {
 			let skip = Number(_skip) || 0
 
 			while (true) {
-				const data = await CurrencyTypeModel.find()
+				const data = await CurrencyTypeModel.find({
+														deleted: {$eq: 0}
+													})
 													.limit(limit)
 													.skip(skip * limit)
-													.sort({createdAt: 1})
+													.sort({created: 1})
 				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration MCurrency Collection Done ================================")
 					break
@@ -56,10 +58,12 @@ class SyncCurrency {
 			let skip = Number(_skip) || 0
 
 			while (true) {
-				const data = await CurrencyModel.find()
+				const data = await CurrencyModel.find({
+													deleted: {$eq: 0}
+												})
 												.limit(limit)
 												.skip(skip * limit)
-												.sort({createdAt: 1})
+												.sort({created: 1})
 				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration TCurrency Collection Done ================================")
 					break

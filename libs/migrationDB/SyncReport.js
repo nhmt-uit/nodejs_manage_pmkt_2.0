@@ -109,10 +109,6 @@ class SyncReport {
 						},
 						{ $sort: { created: 1 }}
 					])
-					// sameData = data.filter(el => {
-					// 	const _el = JSON.parse(JSON.stringify(el))
-					// 	return _el.uid === _item.uid && _el.user_id === _item.user_id && _el.chukybaocaotuan_id === _item.chukybaocaotuan_id && _el.note === _item.note && _el.created === _item.created
-					// })
 					if (sameData && sameData.length === 2) {
 						let __ITEM = null
 						sameData.forEach(s_item => {
@@ -129,23 +125,34 @@ class SyncReport {
 							}
 						})
 
-						query = new ReportHandlesModel_N({
-							_id							: mongoose.Types.ObjectId(__ITEM._id),
-							report_id					: __ITEM.chukybaocaotuan_id ? mongoose.Types.ObjectId(__ITEM.chukybaocaotuan_id) : null,
-							user_id						: __ITEM.user_id ? mongoose.Types.ObjectId(__ITEM.user_id) : null,
-							member_id					: __ITEM.uid ? mongoose.Types.ObjectId(__ITEM.uid) : null,
+
+						// Find Duplicate
+						const exists = await ReportHandlesModel_N.find({
+							report_id					: mongoose.Types.ObjectId(__ITEM.chukybaocaotuan_id),
+							user_id						: mongoose.Types.ObjectId(__ITEM.user_id),
+							member_id					: mongoose.Types.ObjectId(__ITEM.uid),
 							origin_t_currentcy_id		: origin_t_currentcy_id,
 							t_currentcy_id				: t_currentcy_id,
-							ref_transaction_id			: __ITEM.ref_transaction_id ? mongoose.Types.ObjectId(__ITEM.ref_transaction_id) : null,
-							type						: type_report,
-							origin_amount				: origin_amount,
-							amount						: amount,
-							note						: __ITEM.note ? String(__ITEM.note).trim() : "",
-							status						: Number(__ITEM.deleted) !== 0 ? "delete" : "active"
-							
 						})
-						const result = await query.save()
-						console.log(result)
+						if (!exists || !exists.length) {
+							query = new ReportHandlesModel_N({
+								_id							: mongoose.Types.ObjectId(__ITEM._id),
+								report_id					: __ITEM.chukybaocaotuan_id ? mongoose.Types.ObjectId(__ITEM.chukybaocaotuan_id) : null,
+								user_id						: __ITEM.user_id ? mongoose.Types.ObjectId(__ITEM.user_id) : null,
+								member_id					: __ITEM.uid ? mongoose.Types.ObjectId(__ITEM.uid) : null,
+								origin_t_currentcy_id		: origin_t_currentcy_id,
+								t_currentcy_id				: t_currentcy_id,
+								ref_transaction_id			: __ITEM.ref_transaction_id ? mongoose.Types.ObjectId(__ITEM.ref_transaction_id) : null,
+								type						: type_report,
+								origin_amount				: origin_amount,
+								amount						: amount,
+								note						: __ITEM.note ? String(__ITEM.note).trim() : "",
+								status						: Number(__ITEM.deleted) !== 0 ? "delete" : "active"
+								
+							})
+							const result = await query.save()
+							console.log(result)
+						}
 					}
 				})
 			)
