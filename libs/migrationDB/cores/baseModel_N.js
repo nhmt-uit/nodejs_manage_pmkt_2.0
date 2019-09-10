@@ -16,7 +16,7 @@ const BaseFields = {
     createdBy: { type: mongoose.Schema.Types.ObjectId, default: null },
     createdAt: { type: Date },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, default: null },
-	updateddAt: { type: Date },
+	updatedAt: { type: Date },
 }
 
 
@@ -35,7 +35,7 @@ const BaseSchema_N = schema => {
         this.createdAt = now
         if (!this.created_at) {
             this.updatedBy = mongoose.mongo.ObjectID("56850ba0097802b9f23929ea") //bedbug
-            this.updateddAt = now
+            this.updatedAt = now
         }
         next()
     })
