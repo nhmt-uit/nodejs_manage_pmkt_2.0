@@ -58,29 +58,21 @@ BankersSchema.statics.deleteHostBanker = item => {
 }
 
 
-BankersSchema.statics.checkBanker = id => {
-    return this.default.findOne({_id: id})
-        .then((banker) => {
-            if (!banker) return false
-            return true
-        })
+BankersSchema.statics.checkBanker = async id => {
+    const result = await this.default.findOne({_id: id})
+
+    if (result) return true
+
+    return false
+
 }
 
-BankersSchema.statics.checkHostBanker = (banker_id, host_id) => {
-    return this.default.findOne({_id: banker_id})
-        .then((banker) => {
-            if (!banker) {
-                return false
-            } else {
-                let foundHostBanker = false
+BankersSchema.statics.checkHostBanker = async (banker_id, host_id) => {
+    const result = await this.default.findOne({_id: banker_id, "agent_host._id": host_id})
 
-                banker.agent_host.forEach( item => {
-                    if( (item._id).toString() === host_id) foundHostBanker = true
-                })
-                if (foundHostBanker === false) return false
-                return true
-            }
-        })
+    if (result) return true
+
+    return false
 }
 
 

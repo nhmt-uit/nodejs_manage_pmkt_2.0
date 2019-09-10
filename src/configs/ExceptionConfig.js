@@ -14,7 +14,7 @@ const ExceptionConfig = {
     VALIDATION: {
         REQUIRE_FIELD           : "This field is required",
         INVALID_EMAIL           : "Please enter the valid email",
-        INVALID_NUMBER          : "Please enter the number"
+        INVALID_NUMBER          : "Please enter the number",
     },
 
     AUTH: {

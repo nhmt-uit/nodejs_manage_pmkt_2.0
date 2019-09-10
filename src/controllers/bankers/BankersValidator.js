@@ -1,48 +1,48 @@
 import { check } from "express-validator"
-import ExceptionConfig from "../../configs/ExceptionConfig"
 
 import BankersSchema from "../../models/BankersModel"
+import Exception from "../../utils/Exception";
 
 const BankerValidator = {
 
     postCreateUpdateHostBanker: [
         check('banker_id')
-            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD)
-            .not().isEmpty().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD)
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
 
             .custom( async value => {
                 let isUnique = await BankersSchema.checkBanker(value);
                 if(!isUnique){
-                    return Promise.reject('Not found Banker by id: ' + value)
+                    return Promise.reject(Exception.getMessage(Exception.VALIDATION.NOT_FOUND_ERR, {field: value}))
                 }
             }),
 
         check('host_url')
-            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD)
-            .not().isEmpty().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD),
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD)),
     ],
 
     deleteHostBanker: [
         check('banker_id')
-            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD)
-            .not().isEmpty().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD)
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
 
             .custom( async (value) => {
                 let isUnique = await BankersSchema.checkBanker(value);
                 if(!isUnique){
-                    return Promise.reject('Not found Banker by id: ' + value)
+                    return Promise.reject(Exception.getMessage(Exception.VALIDATION.NOT_FOUND_ERR, {field: value}))
                 }
             }),
 
         check('id')
-            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD)
-            .not().isEmpty().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD)
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
 
             .custom( async (host_id, {req}) => {
                 const banker_id = req.body.banker_id;
                 let isUnique = await BankersSchema.checkHostBanker(banker_id, host_id)
                 if(!isUnique){
-                    return Promise.reject(`Not found Host Banker by id: {$value}`)
+                    return Promise.reject(Exception.getMessage(Exception.VALIDATION.NOT_FOUND_ERR, {field: host_id}))
                 }
             })
     ]

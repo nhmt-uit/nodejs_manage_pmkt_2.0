@@ -1,13 +1,12 @@
 import BankersModel from "../../models/BankersModel"
-import ExceptionConfig from "../../configs/ExceptionConfig"
-import Session from "../../utils/Session"
+import Exception from "../../utils/Exception";
 
 class BankersController {
     async listBankers (req, res, next) {
         try {
             const bankers = await BankersModel.findAll()
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: bankers,
             })
         } catch (err) {
@@ -20,7 +19,7 @@ class BankersController {
         try {
             await BankersModel.createHostBanker(item)
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.ITEM_CREATE_SUCCESS,
+                message: Exception.getMessage(Exception.COMMON.ITEM_CREATE_SUCCESS),
                 data: item,
             })
         } catch (err) {
@@ -34,7 +33,7 @@ class BankersController {
         try {
             await BankersModel.updateHostBanker(item)
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.ITEM_UPDATE_SUCCESS,
+                message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
                 data: item,
             })
         } catch (err) {
@@ -48,7 +47,7 @@ class BankersController {
         try {
             await BankersModel.deleteHostBanker(item)
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.ITEM_DELETE_SUCCESS,
+                message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
                 data: item,
             })
         } catch (err) {
