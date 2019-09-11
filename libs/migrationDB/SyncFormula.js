@@ -29,10 +29,12 @@ class SyncFormula {
 			let limit = Number(_limit) || 100
 			let skip = Number(_skip) || 0
 			while (true) {
-				const data = await FormulaFieldModel.find()
+				const data = await FormulaFieldModel.find({
+												deleted: {$eq: 0}
+											})
 											.limit(limit)
 											.skip(skip * limit)
-											.sort({createdAt: 1})
+											.sort({created: 1})
 				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Formula Fields Collection Done ================================")
 					break
@@ -61,10 +63,12 @@ class SyncFormula {
 			let limit = Number(_limit) || 100
 			let skip = Number(_skip) || 0
 			while (true) {
-				const data = await FormulaFormatModel.find()
+				const data = await FormulaFormatModel.find({
+												deleted: {$eq: 0}
+											})
 											.limit(limit)
 											.skip(skip * limit)
-											.sort({createdAt: 1})
+											.sort({created: 1})
 				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Formula Format Collection Done ================================")
 					break
@@ -97,7 +101,9 @@ class SyncFormula {
 			let limit = Number(_limit) || 100
 			let skip = Number(_skip) || 0
 			while (true) {
-				const data = await FormulaPatternModel.find()
+				const data = await FormulaPatternModel.find({
+												deleted: {$eq: 0}
+											})
 											.limit(limit)
 											.skip(skip * limit)
 											.sort({createdAt: 1})
@@ -152,7 +158,9 @@ class SyncFormula {
 			let limit = Number(_limit) || 100
 			let skip = Number(_skip) || 0
 			while (true) {
-				const data = await FormulaGroupModel.find()
+				const data = await FormulaGroupModel.find({
+												deleted: {$eq: 0}
+											})
 											.limit(limit)
 											.skip(skip * limit)
 											.sort({createdAt: 1})

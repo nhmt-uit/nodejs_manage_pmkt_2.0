@@ -22,10 +22,12 @@ class SyncLanguage {
 			let limit = Number(_limit) || 100
 			let skip = Number(_skip) || 0
 			while (true) {
-				const data = await LanguageModel.find()
+				const data = await LanguageModel.find({
+													deleted: {$eq: 0}
+												})
 												.limit(limit)
 												.skip(skip * limit)
-												.sort({ createdAt: 1 })
+												.sort({ created: 1 })
 				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Language Collection Done ================================")
 					break
@@ -57,10 +59,12 @@ class SyncLanguage {
 			let limit = Number(_limit) || 100
 			let skip = Number(_skip) || 0
 			while (true) {
-				const data = await NoticeKeyModel.find()
+				const data = await NoticeKeyModel.find({
+													deleted: {$eq: 0}
+												})
 												.limit(limit)
 												.skip(skip * limit)
-												.sort({ createdAt: 1 })
+												.sort({ created: 1 })
 				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Notice Collection Done ================================")
 					break

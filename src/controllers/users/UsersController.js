@@ -9,10 +9,12 @@ class UsersController {
         try {
             const users = await UsersModel.findAll(/test api - 3/i)
             // const total = await users.count()
-            return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
-                data: Exception.getMessage(Exception.VALIDATION.IS_EXISTED, {field: "Email"})
-            })
+            setTimeout(_ => {
+                res.jsonSuccess({
+                    message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
+                    data: Exception.getMessage(Exception.VALIDATION.IS_EXISTED, {field: "Email"})
+                })
+            }, 20000)
         } catch (err) {
             next(err)
         }

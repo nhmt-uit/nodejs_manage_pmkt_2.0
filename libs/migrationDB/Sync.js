@@ -6,12 +6,9 @@ import SyncCurrency from "./SyncCurrency"
 import SyncLanguage from "./SyncLanguage"
 import SyncReport from "./SyncReport"
 
-
 const _limit = process.argv[2] || 100
 const _skip = process.argv[3] || 0
 const _maxSkip = process.argv[4]
-
-
 
 Promise.all([
     // Sync users

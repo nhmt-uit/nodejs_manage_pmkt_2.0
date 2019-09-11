@@ -61,7 +61,7 @@ BankersSchema.statics.deleteHostBanker = item => {
 }
 
 
-BankersSchema.statics.checkBanker = async id => {
+BankersSchema.statics.checkBanker = async id => { 
     const result = await this.default.findOne({_id: id})
 
     return !!result

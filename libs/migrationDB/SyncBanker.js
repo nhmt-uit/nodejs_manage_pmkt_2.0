@@ -134,10 +134,12 @@ class SyncBanker {
 			let limit = Number(_limit) || 100
 			let skip = Number(_skip) || 0
 			while (true) {
-				const data = await BookModel.find()
+				const data = await BookModel.find({
+												deleted: {$eq: 0}
+											})
 											.limit(limit)
 											.skip(skip * limit)
-											.sort({createdAt: 1})
+											.sort({created: 1})
 				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Books Collection Done ================================")
 					break
@@ -165,10 +167,12 @@ class SyncBanker {
 			let limit = Number(_limit) || 100
 			let skip = Number(_skip) || 0
 			while (true) {
-				const data = await BankerModel.find()
+				const data = await BankerModel.find({
+													deleted: {$eq: 0}
+												})
 												.limit(limit)
 												.skip(skip * limit)
-												.sort({createdAt: 1})
+												.sort({created: 1})
 				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Banker Collection Done ================================")
 					break
@@ -184,7 +188,10 @@ class SyncBanker {
 						}
 
 						// Get Banker Host
-						const bankerHost = await BankerHostModel.find({banker_id: mongoose.Types.ObjectId(_item._id)})
+						const bankerHost = await BankerHostModel.find({
+																	banker_id: mongoose.Types.ObjectId(_item._id),
+																	deleted: {$eq: 0}
+																	})
 						let agentHost = []
 						if (bankerHost && bankerHost.length) {
 							bankerHost.forEach(el => {
