@@ -1,12 +1,16 @@
 import AccountsModel from '../../models/AccountsModel'
 import ExceptionConfig from '../../configs/ExceptionConfig'
+import Recursive from "../../utils/Recursive"
 
 class AccountsController {
     async index(req, res, next) {
         try {
+            const accountList = await AccountsModel.findDoc();
+            const result = Recursive.flatToTree(accountList);
+
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
-                data: await AccountsModel.findDoc()
+                data: result
             })
         } catch (err) {
             next(err)

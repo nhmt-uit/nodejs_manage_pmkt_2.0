@@ -29,27 +29,28 @@ const AccountsSchema = new mongoose.Schema({
     banker_locked: Boolean,
     banker_locked_reason: String
 });
+const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ];
 
 // Defined methods
-AccountsSchema.statics.findDoc = ({ options = {}, fields = null, pageTerms = {}} = {}) => {
+AccountsSchema.statics.findDoc = ({ options = {}, fields = null} = {}) => {
     const userInfo = Session.get('user');
-
-    const pagination = {};
 
     options.status = 'active';
     options.user_id = userInfo.id;
 
-    if (pageTerms.limit !== undefined) pagination.limit = pageTerms.limit;
-    if (pageTerms.skip !== undefined) pagination.skip = pageTerms.skip;
+    if (fields && Array.isArray(fields)) {
+        fields = fields.filter(item => !excludeFields.includes(`-${item}`))
+    } else {
+        fields = excludeFields;
+    }
 
-    return this.default.find(options, fields, pagination);
+    return this.default.find(options).select(fields.join(' ')).lean();
 };
 
 AccountsSchema.statics.checkExisted = async (options) => {
     if (!options || _isEmpty(options)) return false;
 
     const userInfo = Session.get('user');
-
     options.status = 'active';
     options.user_id = userInfo.id;
 
