@@ -2,8 +2,6 @@ import mongoose from "mongoose"
 
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 
-import FormulasModel, { formulasSchema } from "./FormulasModel"
-import BankersModel from "./BankersModel"
 import { create } from "domain";
 
 
@@ -54,11 +52,9 @@ FormulaGroupSchema.statics.createFormulaGroup = async (name) => {
 
 
 FormulaGroupSchema.statics.addByBanker = async (item) => {
-    console.log(item)
     return this.default.findOneAndUpdate(
         { _id: item.id },
         { $push: { "formulas":  [item.IdOfFormulas] } }
-
     )   
     .select("_id user_id name formulas")
 }
@@ -69,24 +65,20 @@ FormulaGroupSchema.statics.update = async (id, data) => {
 }
 
 FormulaGroupSchema.statics.delete = async (id) => {
-
     return this.default.findOneAndDelete({ _id: id })
     .select("_id user_id name formulas")
 }
 
 
 FormulaGroupSchema.statics.deleteByBanker = async (item) => {
-
     const FormulaGroup = await this.default.findById(item.id)
         .populate({
             model: FormulasModel,
             path: "formulas",
             select: "_id name banker_id"
         })
-        
         const formulas = FormulaGroup.formulas
         const Banker = formulas.find(formulas => formulas.banker_id == item.IdOfBanker)
-        console.log(Banker._id)
 
         return this.default.findByIdAndUpdate(
             {_id: item.id},
@@ -102,7 +94,11 @@ FormulaGroupSchema.statics.checkFormulas = async (id, value) => {
     if(result.formulas.indexOf(value) !== -1 ) return false 
     return true
 }
-
+FormulaGroupSchema.statics.checkName = async (value) => {
+    const result = await this.default.findOne({name:value}, {status : 'active'})
+    if (result) return false
+    return true
+}
 // Export Model
 export default mongoose.model(collectionName, FormulaGroupSchema, collectionName)
 

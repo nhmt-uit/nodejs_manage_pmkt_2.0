@@ -22,6 +22,17 @@ const FormulaGroupsValidator = {
                 if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
 
             }),
+    ],
+    postCreate: [
+        check('name')
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+
+            .custom(async (value) => {
+                let isUnique = await FormulaGroupSchema.checkName(value);
+                if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
+
+            }),
     ]
 }
 

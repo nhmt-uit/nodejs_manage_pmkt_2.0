@@ -10,7 +10,7 @@ const router = express.Router()
 
 router.get("/", FormulaGroupsController.listData)
 router.get("/:id", FormulaGroupsController.dataById)
-router.post("/",  FormulaGroupsController.create)
+router.post("/",ValidatorHandling(FormulaGroupsValidator.postCreate),FormulaGroupsController.create)
 router.post("/by-banker/:id",ValidatorHandling(FormulaGroupsValidator.postAddByBanker),FormulaGroupsController.addByBanker)
 router.put("/:id",  FormulaGroupsController.update)
 
