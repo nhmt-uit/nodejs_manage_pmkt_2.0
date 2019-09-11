@@ -1,6 +1,6 @@
 import { check } from "express-validator"
 
-import BankersSchema from "../../models/BankersModel"
+import BankersModel from "../../models/BankersModel"
 import Exception from "../../utils/Exception";
 
 const BankerValidator = {
@@ -11,7 +11,7 @@ const BankerValidator = {
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
 
             .custom( async value => {
-                let isUnique = await BankersSchema.checkBanker(value);
+                let isUnique = await BankersModel.checkBanker(value);
                 if(!isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.NOT_FOUND_ERR, {field: value}))
                 }
@@ -28,7 +28,8 @@ const BankerValidator = {
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
 
             .custom( async (value) => {
-                let isUnique = await BankersSchema.checkBanker(value);
+                let isUnique = await BankersModel.checkBanker(value);
+                console.log("isUnique", isUnique)
                 if(!isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.NOT_FOUND_ERR, {field: value}))
                 }
@@ -40,8 +41,8 @@ const BankerValidator = {
 
             .custom( async (host_id, {req}) => {
                 const banker_id = req.body.banker_id;
-                let isUnique = await BankersSchema.checkHostBanker(banker_id, host_id)
-                if(isUnique){
+                let isUnique = await BankersModel.checkHostBanker(banker_id, host_id)
+                if(!isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.NOT_FOUND_ERR, {field: host_id}))
                 }
             })

@@ -16,8 +16,9 @@ class MCurrenciesController {
     }
 
     async mCurrencyDetail (req, res, next) {
-        const currency_id = req.params.id
         try {
+            const currency_id = req.params.id
+
             const mcurrency_detail = await MCurrenciesModel.mCurrencyDetail(currency_id)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
@@ -29,12 +30,13 @@ class MCurrenciesController {
     }
 
     async createMCurrency (req, res, next) {
-        const item = req.body
         try {
-            await MCurrenciesModel.createMCurrency(item)
+            const item = req.body
+
+            const result = await MCurrenciesModel.createMCurrency(item)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_CREATE_SUCCESS),
-                data: item,
+                data: result,
             })
         } catch (err) {
             next (err)
@@ -42,13 +44,14 @@ class MCurrenciesController {
     }
 
     async updateMCurrency (req, res, next) {
-        const item = req.body
-        item.currency_id = req.params.id
         try {
-            await MCurrenciesModel.updateMCurrency(item)
+            const item = req.body
+            item.currency_id = req.params.id
+
+            const result = await MCurrenciesModel.updateMCurrency(item)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
-                data: "item",
+                data: result,
             })
         } catch (err) {
             next (err)
@@ -56,11 +59,12 @@ class MCurrenciesController {
     }
 
     async checkExists (req, res, next) {
-        const params = {
-            name: req.body.name,
-            type: 'name'
-        }
         try{
+            const params = {
+                name: req.body.name,
+                type: 'name'
+            }
+
             const result = await MCurrenciesModel.checkExists(params)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.VALIDATION_ERROR),
@@ -72,8 +76,9 @@ class MCurrenciesController {
     }
 
     async deleteMCurrency (req, res, next) {
-        const id = req.params.id
         try {
+            const id = req.params.id
+
             await MCurrenciesModel.deleteMCurrency(id)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
