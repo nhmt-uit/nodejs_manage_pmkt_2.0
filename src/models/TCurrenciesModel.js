@@ -28,5 +28,21 @@ TCurrenciesSchema.statics.findAll = () => {
 }
 
 
+TCurrenciesSchema.statics.saveConfig = data => {
+
+}
+
+
+TCurrenciesSchema.statics.updateTCurrencies = item => {
+    const data = { round_type: item.round_type}
+    return this.default.updateOne({_id: item.t_currency_id}, data)
+}
+
+
+TCurrenciesSchema.statics.checkId = id => {
+    const idTest = new mongoose.Types.ObjectId(id)
+    return idTest.toString() === id
+}
+
 
 export default mongoose.model(collectionName, TCurrenciesSchema, collectionName)

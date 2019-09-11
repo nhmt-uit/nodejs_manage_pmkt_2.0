@@ -35,7 +35,8 @@ BankersSchema.statics.updateHostBanker = item => {
                 'agent_host.$.url': item.host_url,
             }
         },
-    )
+        {new: true}
+    ).select("-status -createdBy -createdAt -updatedBy -updatedAt")
 }
 
 
@@ -46,33 +47,30 @@ BankersSchema.statics.createHostBanker = item => {
     return this.default.findOneAndUpdate(
         {_id: item.banker_id},
         { $push: {"agent_host": data}},
-    )
+        {new: true}
+    ).select("-status -createdBy -createdAt -updatedBy -updatedAt")
 }
 
 
 BankersSchema.statics.deleteHostBanker = item => {
     return this.default.findOneAndUpdate(
         {_id: item.banker_id},
-        { $pull: {"agent_host": {_id: item.host_id}}}
-    )
+        { $pull: {"agent_host": {_id: item.host_id}}},
+        {new: true}
+    ).select("-status -createdBy -createdAt -updatedBy -updatedAt")
 }
 
 
 BankersSchema.statics.checkBanker = async id => {
     const result = await this.default.findOne({_id: id})
 
-    if (result) return true
-
-    return false
-
+    return !!result
 }
 
 BankersSchema.statics.checkHostBanker = async (banker_id, host_id) => {
     const result = await this.default.findOne({_id: banker_id, "agent_host._id": host_id})
 
-    if (result) return true
-
-    return false
+    return !!result
 }
 
 

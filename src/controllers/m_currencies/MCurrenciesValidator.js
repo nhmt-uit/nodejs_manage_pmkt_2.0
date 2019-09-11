@@ -1,13 +1,13 @@
 import { check } from "express-validator"
 
-import MCurrenciesSchema from "../../models/MCurrenciesModel"
+import MCurrenciesModel from "../../models/MCurrenciesModel"
 import Exception from "../../utils/Exception";
 
 const MCurrenciesValidator = {
     getMCurrenciesDetail: [
         check('id')
             .custom( async value => {
-                let isUnique = await MCurrenciesSchema.checkId(value)
+                let isUnique = await MCurrenciesModel.checkId(value)
                 if(!isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.INCORRECT_TYPE))
                 }
@@ -17,7 +17,7 @@ const MCurrenciesValidator = {
                     id: value,
                     type: 'id'
                 }
-                let isUnique = await MCurrenciesSchema.checkExists(params)
+                let isUnique = await MCurrenciesModel.checkExists(params)
                 if(!isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.NOT_FOUND_ERR, {field: value}))
                 }
@@ -29,7 +29,7 @@ const MCurrenciesValidator = {
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .custom( async value => {
-               let isUnique = await MCurrenciesSchema.checkCurrency(value)
+               let isUnique = await MCurrenciesModel.checkCurrency(value)
                 if(isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, {field: value}))
                 }
@@ -43,7 +43,7 @@ const MCurrenciesValidator = {
     updateMCurrency: [
         check('id')
             .custom( async value => {
-                let isUnique = await MCurrenciesSchema.checkId(value)
+                let isUnique = await MCurrenciesModel.checkId(value)
                 if(!isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.INCORRECT_TYPE))
                 }
@@ -52,7 +52,7 @@ const MCurrenciesValidator = {
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .custom( async value => {
-                let isUnique = await MCurrenciesSchema.checkCurrency(value)
+                let isUnique = await MCurrenciesModel.checkCurrency(value)
                 if(isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, {field: value}))
                 }
@@ -66,7 +66,7 @@ const MCurrenciesValidator = {
     deleteMCurrency: [
         check('id')
             .custom( async value => {
-                let isUnique = await MCurrenciesSchema.checkId(value)
+                let isUnique = await MCurrenciesModel.checkId(value)
                 if(!isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.INCORRECT_TYPE))
                 }
@@ -76,7 +76,7 @@ const MCurrenciesValidator = {
                     id: value,
                     type: 'id'
                 }
-                let isUnique = await MCurrenciesSchema.checkExists(params)
+                let isUnique = await MCurrenciesModel.checkExists(params)
                 if(!isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.NOT_FOUND_ERR, {field: value}))
                 }
