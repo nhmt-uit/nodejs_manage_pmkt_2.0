@@ -1,50 +1,35 @@
+
 import mongoose from "mongoose"
 
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 
-import FormulasModel, { formulasSchema } from "./FormulasModel"
-import BankersModel from "./BankersModel"
-import { create } from "domain";
-
-
-
-// Define collection name
-const collectionName = "formula_groups";
+const collectionName = "languages"
 
 // Define collection schema
-const FormulaGroupSchema = new mongoose.Schema({
-    _id: mongoose.Types.ObjectId,
-    user_id: mongoose.Types.ObjectId,
+const LanguagesSchema = new mongoose.Schema({
+	_id: mongoose.Types.ObjectId,
     name: String,
-    formulas: [mongoose.Types.ObjectId]
-
-});
-
+    code: String,
+    order: Number
+})
 // Load BaseModel
-FormulaGroupSchema.loadClass(BaseModel)
-FormulaGroupSchema.plugin(BaseSchema);
+LanguagesSchema.plugin(BaseSchema)
+LanguagesSchema.plugin(BaseSchema);
 
-FormulaGroupSchema.statics.findAll = async () => {
+LanguagesSchema.statics.findAll = async () => {
 
-    const result = await this.default.find({ status: ' active' })
-        .populate({
-            model: FormulasModel,
-            path: "formulas",
-            select: "banker_id _id",
-            populate: {
-                model: "bankers",
-                path: "banker_id",
-                select: "_id name",
-            }
-        })
-        .select('name _id')
-        .limit(1)
-        
+    const result = await this.default.find({ status:' active' })
+    .select("_id name code order")
+    .limit(10)
     return result
 }
 
-// Export Model
-export default mongoose.model(collectionName, FormulaGroupSchema, collectionName)
+LanguagesSchema.statics.findByName = async (name) => {
+    console.log('AAAAA',name)
+    const result = await this.default.find({name: name},{ status:'active' })
+    .select("_id name code order")
+    
+    return result
+}
 
-
-
+export default mongoose.model(collectionName,LanguagesSchema,collectionName)

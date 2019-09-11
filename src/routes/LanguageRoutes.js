@@ -3,12 +3,13 @@ import express from "express"
 
 import ValidatorHandling from "../middlewares/ValidatorHandling"
 
-import LanguagesController from "../controllers/formula-groups/FormulaGroupsController"
+import LanguagesController from "../controllers/languages/LanguagesController"
 import LanguagesValidator from "../controllers/formula-groups/FormulaGroupsValidator"
 
 const router = express.Router()
 
 router.get("/", LanguagesController.listData)
+router.get("/name", LanguagesController.dataByName)
 
 
 // router.get("/:id", FormulaGroupsController.dataById)

@@ -27,15 +27,17 @@ BankersSchema.statics.findAll = () => {
 }
 
 
-BankersSchema.statics.updateHostBanker = item => {
-    return this.default.findOneAndUpdate(
+BankersSchema.statics.updateHostBanker = async item => {
+    const result = await this.default.findOneAndUpdate(
         {_id: item.banker_id, "agent_host._id": item.host_id},
         {
             '$set': {
                 'agent_host.$.url': item.host_url,
-            }
-        },
+            },
+            
+        },{new: true}
     )
+    return result
 }
 
 

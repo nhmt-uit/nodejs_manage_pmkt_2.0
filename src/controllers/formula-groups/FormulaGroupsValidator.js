@@ -12,7 +12,7 @@ const FormulaGroupsValidator = {
     |--------------------------------------------------------------------------
     */
     postAddByBanker: [
-        check('IdOfFormulas')
+        check('formula_id')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
 
@@ -30,6 +30,17 @@ const FormulaGroupsValidator = {
 
             .custom(async (value) => {
                 let isUnique = await FormulaGroupSchema.checkName(value);
+                if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
+
+            }),
+    ],
+    postDeleteByBanker: [
+        check('banker_id')
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+
+            .custom(async (value) => {
+                let isUnique = await FormulaGroupSchema.checkBanker_id(value);
                 if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
 
             }),

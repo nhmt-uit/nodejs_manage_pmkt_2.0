@@ -31,10 +31,10 @@ class BankersController {
         const item = req.body
         item.host_id = req.params.id
         try {
-            await BankersModel.updateHostBanker(item)
+            const result = await BankersModel.updateHostBanker(item)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
-                data: item,
+                data: result,
             })
         } catch (err) {
             next (err)

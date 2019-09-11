@@ -1,25 +1,18 @@
 
 import mongoose from "../query/mongoose"
 
-import { BaseSchema } from "../cores/baseModel_N"
+import { BaseSchema_N } from "../cores/baseModel_N"
 // Define collection name
-const collectionName = "languages"
+const collectionName_N = "languages"
 
 // Define collection schema
-const LanguagesSchema = new mongoose.Schema({
+const Languages_NSchema = new mongoose.Schema({
 	_id: mongoose.Types.ObjectId,
     name: String,
     code: String,
     order: Number
 })
 // Load BaseModel
-LanguagesSchema.plugin(BaseSchema)
-LanguagesSchema.plugin(BaseSchema);
+Languages_NSchema.plugin(BaseSchema_N)
 
-LanguagesSchema.statics.findAll = async () => {
-
-    const result = await this.default.find({ status: ' active' })
-    return result
-}
-
-export default mongoose.db.model(collectionName,LanguagesSchema,collectionName)
+export default mongoose.db_N.model(collectionName_N,Languages_NSchema,collectionName_N)

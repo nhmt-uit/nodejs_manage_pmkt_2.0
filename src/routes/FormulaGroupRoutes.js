@@ -15,6 +15,6 @@ router.post("/by-banker/:id",ValidatorHandling(FormulaGroupsValidator.postAddByB
 router.put("/:id",  FormulaGroupsController.update)
 
 router.delete("/:id",  FormulaGroupsController.delete)
-router.delete("/by-banker/:id",  FormulaGroupsController.deleteByBanker)
+router.delete("/by-banker/:id", ValidatorHandling(FormulaGroupsValidator.postDeleteByBanker) ,FormulaGroupsController.deleteByBanker)
 
 export default router
