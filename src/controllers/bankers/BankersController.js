@@ -19,7 +19,7 @@ class BankersController {
             const item = req.body
 
             const result = await BankersModel.createHostBanker(item)
-            return res.jsonSuccess({
+            return res.jsonSuccess({s
                 message: Exception.getMessage(Exception.COMMON.ITEM_CREATE_SUCCESS),
                 data: result,
             })
@@ -30,9 +30,6 @@ class BankersController {
 
     async updateHostBanker (req, res, next) {
         try {
-            const item = req.body
-            item.host_id = req.params.id
-
             const result = await BankersModel.updateHostBanker(item)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
