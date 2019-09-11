@@ -41,7 +41,4 @@ FormulaFormatsSchema.statics.findAll = async () => {
 
 // Export Model
 export default mongoose.model(collectionName, FormulaFormatsSchema, collectionName) 
-export {
-    FormulaFormatsSchema
-}
 
