@@ -1,3 +1,5 @@
+import uuidv4 from "uuid/v4"
+
 import AppConfig from "../configs/AppConfig"
 import Logger from "../utils/Logger"
 import Moment from "../utils/Moment"
@@ -18,6 +20,8 @@ export default (req, res, next) => {
 			level: "info",
 			label: "REQUEST_TRACKING",
 			message: {
+				type: "REQUEST",
+				uuid: uuidv4(),
 				time: Moment.format(),
 				path: req.url,
 				header: req.headers,
@@ -27,10 +31,10 @@ export default (req, res, next) => {
 				ip: req.ip
 			}
 		}
+		Logger.log(objLogger)
 
 		// Tracking response data
 		if (AppConfig.LOGGER_ENABLE_TRACKING_RESPONSE) {
-			console.log("fukk", AppConfig)
 			// Parse Response body
 			const { write, end } = res
 			const chunks = []
@@ -56,11 +60,16 @@ export default (req, res, next) => {
 				} catch {
 					objLogger.message.response.body = Buffer.concat(chunks).toString("utf8")
 				}
-				
+
+				objLogger.message.type = "RESPONSE"
 				Logger.log(objLogger)
 			})
 		} else {
-			Logger.log(objLogger)
+			// Write log when request finish
+			res.once("finish", () => {
+				objLogger.message.type = "RESPONSE"
+				Logger.log(objLogger)
+			})
 		}
 	}
 	next()

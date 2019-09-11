@@ -16,7 +16,7 @@ const FormulaGroupSchema = new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
     user_id: mongoose.Types.ObjectId,
     name: String,
-    formulas: [mongoose.Types.ObjectId]
+    formulas: [mongoose.Schema.Types.ObjectId]
 
 });
 
