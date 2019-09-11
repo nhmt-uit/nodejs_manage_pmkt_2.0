@@ -58,7 +58,7 @@ BankersSchema.statics.deleteHostBanker = item => {
 }
 
 
-BankersSchema.statics.checkBanker = async id => {
+BankersSchema.statics.checkBanker = async id => { 
     const result = await this.default.findOne({_id: id})
 
     if (result) return true
@@ -78,6 +78,3 @@ BankersSchema.statics.checkHostBanker = async (banker_id, host_id) => {
 
 // Export Model
 export default mongoose.model(collectionName, BankersSchema, collectionName)
-export {
-    BankersSchema,
-}

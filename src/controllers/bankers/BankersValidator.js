@@ -41,7 +41,7 @@ const BankerValidator = {
             .custom( async (host_id, {req}) => {
                 const banker_id = req.body.banker_id;
                 let isUnique = await BankersSchema.checkHostBanker(banker_id, host_id)
-                if(!isUnique){
+                if(isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.NOT_FOUND_ERR, {field: host_id}))
                 }
             })

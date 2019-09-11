@@ -1,6 +1,9 @@
 import { check } from "express-validator"
 
-const UserValidator = {
+import FormulaGroupSchema from "../../models/FormulaGroupsModel"
+import Exception from "../../utils/Exception";
+
+const FormulaGroupsValidator = {
 
     /*
     |--------------------------------------------------------------------------
@@ -8,14 +11,18 @@ const UserValidator = {
     | Method: POST
     |--------------------------------------------------------------------------
     */
-	postCreateUser: [
-        // check("email")
-        //     .isLength({ min: 5 }).withMessage("must be at least 5 chars long")
-        //     .isEmail().withMessage("have to email"),
-        // check("sub_email")
-        //     .isLength({ min: 5 }).withMessage("must be at least 5 chars long")
-        //     .isEmail().withMessage("have to email"),
+    postAddByBanker: [
+        check('IdOfFormulas')
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+
+            .custom(async (value, {req}) => {
+                const id = req.params.id
+                let isUnique = await FormulaGroupSchema.checkFormulas(id, value);
+                if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
+
+            }),
     ]
 }
 
-export default UserValidator
+export default FormulaGroupsValidator
