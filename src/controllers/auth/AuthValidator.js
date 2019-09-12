@@ -10,9 +10,8 @@ const AuthValidator = {
     |--------------------------------------------------------------------------
     */
 	postLogin: [
-        check("email")
-            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD)
-            .isEmail().withMessage(ExceptionConfig.VALIDATION.INVALID_EMAIL),
+        check("username")
+            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD),
         check("password")
             .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD)
     ],
@@ -35,7 +34,7 @@ const AuthValidator = {
     |--------------------------------------------------------------------------
     */
     postCheckSecureCode: [
-        check("secure_code")
+        check("secure_codes")
             .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD),
     ],
 }

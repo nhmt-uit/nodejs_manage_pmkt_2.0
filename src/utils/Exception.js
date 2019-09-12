@@ -22,9 +22,14 @@ Exception.VALIDATION = {
 }
 
 Exception.AUTH = {
+    LOGIN_SUCCESS           : "You are successfully logged in",
+    LOGIN_FAIL              : "You have entered an invalid username or password",
+    ACCOUNT_LOCK            : "Account has been locked. Please contact to support",
+    LOGOUT_SUCCESS          : "You have successfully logged out!",
     MISSING_TOKEN           : "No token provided.",
     MISSING_REFRESH_TOKEN   : "No refresh_token provided.",
     UNAUTHORIZED            : "Access denied due to missing subscription key. Make sure to include subscription key when making requests to this API.",
+    INVALID_SECURE_CODE     : "Wrong security code"
 }
 
 Exception.getMessage = (message, params) => {
