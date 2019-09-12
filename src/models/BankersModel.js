@@ -22,22 +22,26 @@ const BankersSchema = new mongoose.Schema({
 BankersSchema.loadClass(BaseModel)
 BankersSchema.plugin(BaseSchema)
 
-BankersSchema.statics.findAll = () => {
-    return this.default.find({status: 'active'}).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ];
+
+BankersSchema.statics.findAll = (query) => {
+    return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()
+        .sort(query.sort)
+        .limit(Number(query.limit))
+        .skip(Number(query.limit)*Number(query.page - 1))
 }
 
 
-BankersSchema.statics.updateHostBanker = async item => {
-    const result = await this.default.findOneAndUpdate(
+BankersSchema.statics.updateHostBanker = item => {
+    return this.default.findOneAndUpdate(
         {_id: item.banker_id, "agent_host._id": item.host_id},
         {
             '$set': {
                 'agent_host.$.url': item.host_url,
-            },
-            
-        },{new: true}
-    )
-    return result
+            }
+        },
+        {new: true}
+    ).select(excludeFields.join(' ')).lean()
 }
 
 
@@ -49,7 +53,7 @@ BankersSchema.statics.createHostBanker = item => {
         {_id: item.banker_id},
         { $push: {"agent_host": data}},
         {new: true}
-    ).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+    ).select(excludeFields.join(' ')).lean()
 }
 
 
@@ -58,7 +62,7 @@ BankersSchema.statics.deleteHostBanker = item => {
         {_id: item.banker_id},
         { $pull: {"agent_host": {_id: item.host_id}}},
         {new: true}
-    ).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+    ).select(excludeFields.join(' ')).lean()
 }
 
 
