@@ -33,18 +33,11 @@ BankersSchema.statics.updateHostBanker = async item => {
         {
             '$set': {
                 'agent_host.$.url': item.host_url,
-<<<<<<< HEAD
-            }
-        },
-        {new: true}
-    ).select("-status -createdBy -createdAt -updatedBy -updatedAt")
-=======
             },
             
         },{new: true}
     )
     return result
->>>>>>> 1338cb6c1bbe80c6c99c05746e4c4e6b7179bdb4
 }
 
 
@@ -69,7 +62,7 @@ BankersSchema.statics.deleteHostBanker = item => {
 }
 
 
-BankersSchema.statics.checkBanker = async id => { 
+BankersSchema.statics.checkBanker = async id => {
     const result = await this.default.findOne({_id: id})
 
     return !!result
