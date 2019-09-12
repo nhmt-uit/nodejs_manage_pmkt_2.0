@@ -24,8 +24,8 @@ const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-u
 
 TCurrenciesSchema.statics.findAll = (query) => {
     const option = {
-        status : 'active',
-        user_id: '56850ba0097802b9f2392a2b' //userInfo.id
+        // status : 'active',
+        // user_id: '56850ba0097802b9f2392a2b' //userInfo.id
     }
     return this.default.find(option).select(excludeFields.join(' ')).lean()
         .sort(query.sort)

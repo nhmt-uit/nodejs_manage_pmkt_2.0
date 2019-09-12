@@ -35,6 +35,7 @@ class SyncReport {
 				const data = await ReportCycleModel.find({
 														deleted: { $eq: 0 }
 													})
+													.lean()
 													.limit(limit)
 													.skip(skip * limit)
 													.sort({ created: 1 })
@@ -69,6 +70,7 @@ class SyncReport {
 													deleted: { $eq: 0 },
 													type_report: 4
 												})
+												.lean()
 												.sort({ created: 1 })
 			await Promise.all(
 				data.map(async item => {
@@ -109,6 +111,8 @@ class SyncReport {
 						},
 						{ $sort: { created: 1 }}
 					])
+					.lean()
+
 					if (sameData && sameData.length === 2) {
 						let __ITEM = null
 						sameData.forEach(s_item => {
@@ -128,12 +132,13 @@ class SyncReport {
 
 						// Find Duplicate
 						const exists = await ReportHandlesModel_N.find({
-							report_id					: mongoose.Types.ObjectId(__ITEM.chukybaocaotuan_id),
-							user_id						: mongoose.Types.ObjectId(__ITEM.user_id),
-							member_id					: mongoose.Types.ObjectId(__ITEM.uid),
-							origin_t_currentcy_id		: origin_t_currentcy_id,
-							t_currentcy_id				: t_currentcy_id,
-						})
+												report_id					: mongoose.Types.ObjectId(__ITEM.chukybaocaotuan_id),
+												user_id						: mongoose.Types.ObjectId(__ITEM.user_id),
+												member_id					: mongoose.Types.ObjectId(__ITEM.uid),
+												origin_t_currentcy_id		: origin_t_currentcy_id,
+												t_currentcy_id				: t_currentcy_id,
+											})
+											.lean()
 						if (!exists || !exists.length) {
 							query = new ReportHandlesModel_N({
 								_id							: mongoose.Types.ObjectId(__ITEM._id),
@@ -170,6 +175,7 @@ class SyncReport {
 													deleted: { $eq: 0 },
 													type_report: {$ne: 4}
 												})
+												.lean()
 												.sort({ created: 1 })
 			if (!data.length || (_maxSkip && skip > _maxSkip)) {
 				console.log("===================== Migration Reports Handle Other Collection Done ================================")

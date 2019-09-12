@@ -1,4 +1,4 @@
-import { uniqBy as _uniqBy } from "lodash"
+import _uniqBy from "lodash/uniqBy"
 import FormulaGroupsModel from "../../models/FormulaGroupsModel"
 
 import Session from "../../utils/Session"

@@ -16,6 +16,7 @@ const UsersSchema = new mongoose.Schema({
     role: Number,
     secure_code: Number,
     login_failed: Number,
+    login_ip: String,
     lang_code: String,
     allow_export: Boolean,
     allow_report_detail: Boolean,

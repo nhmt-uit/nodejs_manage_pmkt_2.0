@@ -1,5 +1,6 @@
 import { check } from "express-validator"
-import ExceptionConfig from "../../configs/ExceptionConfig"
+
+import Exception from "../../utils/Exception"
 
 const AuthValidator = {
 
@@ -11,9 +12,9 @@ const AuthValidator = {
     */
 	postLogin: [
         check("username")
-            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD),
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD)),
         check("password")
-            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD)
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
     ],
 
     /*
@@ -24,7 +25,7 @@ const AuthValidator = {
     */
     postRefreshToken: [
         check("refresh_token")
-            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD),
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD)),
     ],
 
     /*
@@ -35,7 +36,24 @@ const AuthValidator = {
     */
     postCheckSecureCode: [
         check("secure_codes")
-            .exists().withMessage(ExceptionConfig.VALIDATION.REQUIRE_FIELD),
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD)),
+    ],
+
+     /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/auth/change-secure-code
+    | Method: POST
+    |--------------------------------------------------------------------------
+    */
+    postChangeSecureCode: [
+        check("current_secure")
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD)),
+        check("new_secure")
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD)),
+        check("re_new_secure")
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .custom((value, { req }) => value === req.body.new_secure)
+                .withMessage(Exception.getMessage(Exception.VALIDATION.NOT_SeeeAME, {field: "new secure code"})),
     ],
 }
 
