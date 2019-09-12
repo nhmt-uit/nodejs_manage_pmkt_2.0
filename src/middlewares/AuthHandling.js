@@ -1,5 +1,5 @@
-import ExceptionConfig from "../configs/ExceptionConfig"
 import AuthConfig from "../configs/AuthConfig"
+import Exception from "../utils/Exception"
 import Authentication from "../utils/auth/Authentication"
 import Session from "../utils/Session"
 
@@ -14,6 +14,6 @@ export default (req, res, next) => {
     }
     res.jsonError({
         code: 401,
-        message: ExceptionConfig.AUTH.UNAUTHORIZED
+        message: Exception.getMessage(Exception.AUTH.UNAUTHORIZED)
     })
 }

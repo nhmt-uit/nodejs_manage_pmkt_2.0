@@ -84,7 +84,6 @@ class SyncLanguage {
 							noticeContent.forEach(el => {
 								const _el = JSON.parse(JSON.stringify(el))
 								contents.push({
-									_id				: mongoose.Types.ObjectId(_el._id),
 									language_id		: mongoose.Types.ObjectId(_el.language_id),
 									content			: String(_el.name).trim()
 								})

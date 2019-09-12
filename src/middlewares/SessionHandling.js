@@ -9,6 +9,7 @@ const MongoStore = connectMongo(session)
 const MongoOpts = MongoDb.getOptions()
 // Remove unnecessary value
 delete MongoOpts["useCreateIndex"]
+delete MongoOpts["useFindAndModify"]
 
 const SessionMiddleware = session({
     secret: SessionConfig.SESSION_SECRET_KEY,
@@ -22,7 +23,7 @@ const SessionMiddleware = session({
 })
 
 
-const SessionHandling =( req, res, next) => {
+const SessionHandling = ( req, res, next) => {
     Session.instance(req.session)
     next()
 }

@@ -40,6 +40,8 @@ class SyncUser {
 						_id						: mongoose.Types.ObjectId(_item._id),
 						parent_id				: mongoose.Types.ObjectId(_item.parent_id),
 						username				: String(_item.username),
+						password				: null,
+						password2				: null,
 						role					: _item.roles ? Number(_item.roles) : 0,
 						secure_code				: _item.us_secure_code ? Number(_item.us_secure_code) : null,
 						login_failed			: _item.us_login_failed ? Number(_item.us_login_failed) : 0,
@@ -50,8 +52,9 @@ class SyncUser {
 						enable_end				: _item.ep_end && _item.ep_end !== 1555200 ? new Date(Number(_item.ep_end) *1000) : null,
 						old_password			: String(_item.password) || null,
 						is_updated_password		: false,
-						old_pasword2			: _item.password2 ? String(_item.password2) : null,
+						old_password2			: _item.password2 ? String(_item.password2) : null,
 						is_updated_password2	: false,
+						is_lock					: Boolean(_item.status),
 						status					: Number(_item.deleted) !== 0 ? "delete" : "active"
 					})
 					const result = await query.save()

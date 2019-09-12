@@ -7,7 +7,6 @@ class Authentication {
     }
 
     getToken(payload) {
-        console.log(AuthConfig)
         const options = {
             expiresIn: AuthConfig.TOKEN_LIFE
         }
