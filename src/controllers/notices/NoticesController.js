@@ -3,9 +3,9 @@ import Exception from "../../utils/Exception";
 
 class NoticesController {
     async listData(req, res, next) {
-
+                const language_id = req.query.language_id
         try {
-            let result = await NoticesModel.findAll()
+            let result = await NoticesModel.findAll(language_id)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: result
@@ -30,8 +30,8 @@ class NoticesController {
         try {
             const data = {
                 name: req.body.name,
-                contents: req.body.content,
-                language_id: req.body.language_id,
+                type: req.body.type,
+                contents: req.body.contents,
             };
             const result = await NoticesModel.createNotices(data)
             return res.jsonSuccess({
@@ -44,12 +44,19 @@ class NoticesController {
     }
     async update(req, res, next) {
         try {
-            const item = req.body
-            item._id = req.params.id
-            let data = await NoticesModel.updateLanguage(item)
+            
+            const temp = JSON.parse(req.body.contents)
+            const data = {
+                id : req.params.id,
+                name: req.body.name,
+                type: req.body.type,
+                contents: temp,
+            }
+            console.log(data)
+            let result = await NoticesModel.updateNotice(data)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
-                data: data
+                data: result
 
             })
         } catch (err) {

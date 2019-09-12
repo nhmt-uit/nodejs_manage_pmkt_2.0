@@ -1,4 +1,5 @@
 import LanguagesModel from "../../models/LanguagesModel"
+
 import ExceptionConfig from "../../configs/ExceptionConfig"
 import HashPassword from "../../utils/HashPassword"
 import Session from "../../utils/Session"
@@ -9,7 +10,8 @@ import Exception from "../../utils/Exception";
 class LanguagesController {
     async listData(req, res, next) {
         try {
-            let result = await LanguagesModel.findAll()
+            const query = req.query
+            let result = await LanguagesModel.findAll(query)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: result
