@@ -1,5 +1,5 @@
 import TCurrenciesModel from "../../models/TCurrenciesModel"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 
 class TCurrenciesController {

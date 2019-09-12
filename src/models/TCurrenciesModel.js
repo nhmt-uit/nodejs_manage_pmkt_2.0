@@ -1,13 +1,13 @@
 import mongoose from "mongoose"
 
-import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel";
+import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
 
 // Define collection name
 const collectionName = "t_currencies"
 
 // Define collection schema
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 const TCurrenciesSchema = new mongoose.Schema({
     user_id: { type: Schema.Types.ObjectId, required: true, ref: 'Users' },
     m_currency_id: { type: Schema.Types.ObjectId, required: true, ref: 'MCurrency' },
@@ -19,7 +19,7 @@ TCurrenciesSchema.loadClass(BaseModel)
 TCurrenciesSchema.plugin(BaseSchema)
 
 TCurrenciesSchema.statics.findAll = () => {
-    const userInfo = Session.get('user');
+    const userInfo = Session.get('user')
     const option = {
         status : 'active',
         user_id: userInfo.id

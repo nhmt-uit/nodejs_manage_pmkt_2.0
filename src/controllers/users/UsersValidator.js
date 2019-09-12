@@ -12,7 +12,7 @@ const UserValidator = {
 	postCreateUser: [
         // check('username')
         //     .custom( async value => {
-        //         let isUnique = await UsersSchema.checkUniqueUsername(value);
+        //         let isUnique = await UsersSchema.checkUniqueUsername(value)
         //         if(!isUnique){
         //             return Promise.reject(value + ' is already in use')
         //         }

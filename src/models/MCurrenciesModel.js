@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel";
+import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
 
 // Define collection name
 const collectionName = "m_currencies"

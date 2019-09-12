@@ -32,7 +32,7 @@ UsersSchema.statics.checkUniqueUsername = (username) => {
 				return false
 			} else return true
 		})
-};
+}
 
 
 // Export Model

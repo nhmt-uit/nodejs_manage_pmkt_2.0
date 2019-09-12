@@ -1,7 +1,7 @@
 import { check } from "express-validator"
 
 import TCurrenciesModel from "../../models/MCurrenciesModel"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 const TCurrenciesValidator = {
     updateTCurrencies: [

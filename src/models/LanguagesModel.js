@@ -14,7 +14,7 @@ const LanguagesSchema = new mongoose.Schema({
 })
 // Load BaseModel
 LanguagesSchema.plugin(BaseSchema)
-LanguagesSchema.plugin(BaseSchema);
+LanguagesSchema.plugin(BaseSchema)
 
 LanguagesSchema.statics.findAll = async () => {
 

@@ -3,13 +3,13 @@ import mongoose from 'mongoose'
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
 
-import _isEmpty from 'lodash/isEmpty';
+import _isEmpty from 'lodash/isEmpty'
 
 // Define collection name
-const collectionName = "accounts";
+const collectionName = "accounts"
 
 // Define collection schema
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 const AccountsSchema = new mongoose.Schema({
     user_id: { type: Schema.Types.ObjectId, required: true, ref: 'Users' },
     banker_id: { type: Schema.Types.ObjectId, required: true, ref: 'Bankers' },
@@ -28,63 +28,63 @@ const AccountsSchema = new mongoose.Schema({
     data_center_sync: Boolean,
     banker_locked: Boolean,
     banker_locked_reason: String
-});
-const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ];
+})
+const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
 
 // Defined methods
 AccountsSchema.statics.findDoc = ({ options = {}, fields = null} = {}) => {
-    const userInfo = Session.get('user');
+    const userInfo = Session.get('user')
 
-    options.status = 'active';
-    options.user_id = userInfo.id;
+    options.status = 'active'
+    options.user_id = userInfo.id
 
     if (fields && Array.isArray(fields)) {
         fields = fields.filter(item => !excludeFields.includes(`-${item}`))
     } else {
-        fields = excludeFields;
+        fields = excludeFields
     }
 
-    return this.default.find(options).select(fields.join(' ')).lean();
-};
+    return this.default.find(options).select(fields.join(' ')).lean()
+}
 
 AccountsSchema.statics.checkExisted = async (options) => {
-    if (!options || _isEmpty(options)) return false;
+    if (!options || _isEmpty(options)) return false
 
-    const userInfo = Session.get('user');
-    options.status = 'active';
-    options.user_id = userInfo.id;
+    const userInfo = Session.get('user')
+    options.status = 'active'
+    options.user_id = userInfo.id
 
-    const result = await this.default.find(options);
+    const result = await this.default.find(options)
 
-    if (!result || !result.length) return false;
+    if (!result || !result.length) return false
 
-    return true;
-};
+    return true
+}
 
 AccountsSchema.statics.createDoc = formData => {
-    const userInfo = Session.get('user');
+    const userInfo = Session.get('user')
 
-    formData.status = 'active';
-    formData.user_id = userInfo.id;
+    formData.status = 'active'
+    formData.user_id = userInfo.id
 
-    return this.default.save(body);
-};
+    return this.default.save(body)
+}
 
 AccountsSchema.statics.updateDoc = ({ options, formData }) => {
-    const userInfo = Session.get('user');
+    const userInfo = Session.get('user')
 
-    options.status = 'active';
-    options.user_id = userInfo.id;
+    options.status = 'active'
+    options.user_id = userInfo.id
 
-    delete formData.status;
-    delete formData.name;
+    delete formData.status
+    delete formData.name
 
-    return this.default.findOneAndUpdate(options, formData, { new: true });
-};
+    return this.default.findOneAndUpdate(options, formData, { new: true })
+}
 
 // Load BaseModel
-AccountsSchema.loadClass(BaseModel);
-AccountsSchema.plugin(BaseSchema);
+AccountsSchema.loadClass(BaseModel)
+AccountsSchema.plugin(BaseSchema)
 
 // Export Model
 export default mongoose.model(collectionName, AccountsSchema, collectionName)

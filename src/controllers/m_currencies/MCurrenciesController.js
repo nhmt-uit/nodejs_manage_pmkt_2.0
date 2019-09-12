@@ -1,5 +1,5 @@
 import MCurrenciesModel from "../../models/MCurrenciesModel"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 
 class MCurrenciesController {

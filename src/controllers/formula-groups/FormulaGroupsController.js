@@ -2,7 +2,7 @@ import { uniqBy as _uniqBy } from "lodash"
 import FormulaGroupsModel from "../../models/FormulaGroupsModel"
 
 import Session from "../../utils/Session"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 
 class FormulaGroupsController {

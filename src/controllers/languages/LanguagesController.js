@@ -4,7 +4,7 @@ import ExceptionConfig from "../../configs/ExceptionConfig"
 import HashPassword from "../../utils/HashPassword"
 import Session from "../../utils/Session"
 import { Mongoose } from "mongoose"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 
 class LanguagesController {
