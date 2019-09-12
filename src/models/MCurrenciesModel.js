@@ -14,13 +14,18 @@ const MCurrenciesSchema = new mongoose.Schema({
 MCurrenciesSchema.loadClass(BaseModel)
 MCurrenciesSchema.plugin(BaseSchema)
 
-MCurrenciesSchema.statics.findAll = () => {
-    return this.default.find({status: 'active'}).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ];
+
+MCurrenciesSchema.statics.findAll = (query) => {
+    return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()
+        .sort(query.sort)
+        .limit(Number(query.limit))
+        .skip(Number(query.limit)*Number(query.page - 1))
 }
 
 
 MCurrenciesSchema.statics.mCurrencyDetail = id => {
-    return this.default.findOne({_id: id}).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+    return this.default.findOne({_id: id}).select(excludeFields.join(' ')).lean()
 }
 
 
@@ -65,8 +70,8 @@ MCurrenciesSchema.statics.checkExists = async params => {
 }
 
 
-MCurrenciesSchema.statics.checkCurrency = async name => {
-    const currency = await this.default.findOne({name: name})
+MCurrenciesSchema.statics.checkCurrency = async (name, m_currency_id) => {
+    const currency = await this.default.findOne({name: name, _id: { $nin: m_currency_id}})
 
     return !!currency
 }

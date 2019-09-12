@@ -4,7 +4,9 @@ import ExceptionConfig from "../../configs/ExceptionConfig"
 class BooksController {
     async listBooks (req, res, next) {
         try {
-            const books = await BooksModel.findAll()
+            const query = req.query
+
+            const books = await BooksModel.findAll(query)
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
                 data: books,
