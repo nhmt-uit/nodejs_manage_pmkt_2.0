@@ -1,30 +1,34 @@
-import UsersModel from "../../models/UsersModel"
-import ExceptionConfig from "../../configs/ExceptionConfig"
-import HashPassword from "../../utils/HashPassword"
+import AuthModel, { TYPE } from "../../models/AuthModel"
 import Authentication from "../../utils/auth/Authentication"
 import Session from "../../utils/Session"
+import Exception from "../../utils/Exception";
 
 class AuthController {
-    login (req, res, next) {
+    async login (req, res, next) {
         try {
-            const user = {
-                "email": req.body.email,
-                "password": req.body.password
-            }
-            // const myToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwicGFzc3dvcmQiOiIxMjM0NTYiLCJpYXQiOjE1NjcxNTQ4NTIsImV4cCI6MTU2NzE1NTc1Mn0.tESiC2D319_9CbuIDfBZpUIjdb7iNZBh35W0ZaoLBX8"
-            // const token = Authentication.verifyToken(myToken)
-            const token = Authentication.getToken(user)
-            const refresh_token = Authentication.getRefreshToken(user)
-            Session.set("token", token)
-            Session.set("refresh_token", refresh_token)
-            Session.set("user", { ...user, id: "56850ba0097802b9f23929eb" })
-            return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
-                data : {
+            const result = await AuthModel.login(req.body.username, req.body.password)
+
+            if (result.status) {
+                const userInfo = result.payload
+                const token = Authentication.getToken({_id: userInfo._id, username: userInfo.username})
+                const refresh_token = Authentication.getRefreshToken({_id: userInfo._id, username: userInfo.username})
+                Session.set("token", token)
+                Session.set("refresh_token", refresh_token)
+                Session.set("user", userInfo)
+                return res.jsonSuccess({
+                    message: Exception.getMessage(Exception.AUTH.LOGIN_SUCCESS),
+                    data: userInfo,
                     token: token,
                     refresh_token: refresh_token
-                }
-            })
+                })
+            } else {
+                let message = Exception.getMessage(Exception.AUTH.LOGIN_FAIL)
+                if (result.type === TYPE.ACCOUNT_LOCK) message = Exception.getMessage(Exception.AUTH.ACCOUNT_LOCK)
+                return res.jsonError({
+                    code: 400,
+                    message: message,
+                })
+            }
         } catch (err) {
             next(err)
         }
@@ -34,7 +38,7 @@ class AuthController {
         try {
             Session.destroy()
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.REQUEST_SUCCESS
+                message: Exception.getMessage(Exception.AUTH.LOGOUT_SUCCESS)
             })
         } catch (err) {
             next(err)
@@ -43,16 +47,24 @@ class AuthController {
     }
 
     refreshToken (req, res, next) {
-        const { refresh_token } = req.body
-
         try {
-            return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
-                data : {
-                    // token: token,
-                    refresh_token: refresh_token
-                }
-            })
+            const { refresh_token } = req.body
+            const current_refresh_token = Session.get("refresh_token")
+            const userInfo = Session.get("user")
+            if (userInfo && refresh_token === current_refresh_token && Authentication.verifyRefreshToken(refresh_token)) {
+                const token = Authentication.getToken({_id: userInfo._id, username: userInfo.username})
+                Session.set("token", token)
+
+                return res.jsonSuccess({
+                    message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                    token: token
+                })
+            } else {
+                res.jsonError({
+                    code: 401,
+                    message: Exception.getMessage(Exception.AUTH.UNAUTHORIZED)
+                })
+            }
         } catch (err) {
             next(err)
         }
@@ -60,9 +72,28 @@ class AuthController {
 
     checkSecureCode (req, res, next) {
         try {
-            return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.REQUEST_SUCCESS
-            })
+            const secure_codes = JSON.parse(req.body.secure_codes)
+            const userInfo = Session.get("user")
+            let isValid = false
+            if (secure_codes && secure_codes.length) {
+                const secure_code = String(userInfo.secure_code)
+                isValid = true
+                secure_codes.forEach(item => {
+                    const charAtPosition = secure_code.charAt(Number(item.position))
+                    if (charAtPosition === "" || charAtPosition !== String(item.value)) isValid = false
+                })
+            }
+            
+            if (isValid) {
+                return res.jsonSuccess({
+                    message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS)
+                })
+            } else {
+                res.jsonError({
+                    code: 400,
+                    message: Exception.getMessage(Exception.AUTH.INVALID_SECURE_CODE)
+                })
+            }
         } catch (err) {
             next(err)
         }
