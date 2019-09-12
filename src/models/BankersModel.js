@@ -22,7 +22,7 @@ const BankersSchema = new mongoose.Schema({
 BankersSchema.loadClass(BaseModel)
 BankersSchema.plugin(BaseSchema)
 
-const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ];
+const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
 
 BankersSchema.statics.findAll = (query) => {
     return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()

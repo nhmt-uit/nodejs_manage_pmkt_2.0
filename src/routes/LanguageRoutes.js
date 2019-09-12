@@ -1,25 +1,16 @@
 import express from "express"
 
-
 import ValidatorHandling from "../middlewares/ValidatorHandling"
-
 import LanguagesController from "../controllers/languages/LanguagesController"
-import LanguagesValidator from "../controllers/formula-groups/FormulaGroupsValidator"
+import LanguagesValidator from "../controllers/languages/LanguagesValidator"
 
 const router = express.Router()
 
 router.get("/", LanguagesController.listData)
-router.get("/name", LanguagesController.dataByName)
+router.get("/code", LanguagesController.dataByCode)
+router.post("/", LanguagesController.create)
+router.put("/:id", LanguagesController.update)
+router.delete("/:id",LanguagesController.delete)
 
-
-// router.get("/:id", FormulaGroupsController.dataById)
-
-
-// router.post("/",  FormulaGroupsController.create)
-// router.post("/by-banker/:id",ValidatorHandling(FormulaGroupsValidator.postAddByBanker),FormulaGroupsController.addByBanker)
-// router.put("/:id",  FormulaGroupsController.update)
-
-// router.delete("/:id",  FormulaGroupsController.delete)
-// router.delete("/by-banker/:id",  FormulaGroupsController.deleteByBanker)
 
 export default router

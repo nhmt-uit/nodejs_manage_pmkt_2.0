@@ -6,6 +6,7 @@ import UserRoutes from "./UserRoutes"
 import AuthRoutes from "./AuthRoutes"
 import FormulaGroupRoutes from "./FormulaGroupRoutes"
 import LanguageRoutes from "./LanguageRoutes"
+import NoticeRoutes from "./NoticeRoutes"
 import AccountRoutes from "./AccountRoutes"
 import BankersRoutes from "./BankersRoutes"
 import BooksRoutes from "./BooksRoutes"
@@ -22,6 +23,7 @@ router.use("/api/v1/mcurrencies", AuthHandling, MCurrenciesRoutes)
 router.use("/api/v1/tcurrencies", AuthHandling, TCurrenciesRoutes)
 router.use("/api/v1/formula-groups", AuthHandling, FormulaGroupRoutes)
 router.use("/api/v1/languages", AuthHandling, LanguageRoutes)
+router.use("/api/v1/notices", AuthHandling, NoticeRoutes)
 router.use("/api/v1/accounts", AuthHandling, AccountRoutes)
 
 export default router
