@@ -7,10 +7,9 @@ import TCurrenciesValidator from "../controllers/t_currencies/TCurrenciesValidat
 
 const router = express.Router()
 
-router.get("/", TCurrenciesController.listTCurrencies)
-// router.post("/")
+router.get("/", TCurrenciesController.list)
 router.post("/save-config", ValidatorHandling(TCurrenciesValidator.saveConfig), TCurrenciesController.saveConfig)
-router.put("/:id", ValidatorHandling(TCurrenciesValidator.updateTCurrencies), TCurrenciesController.updateTCurrencies)
+router.put("/:id", ValidatorHandling(TCurrenciesValidator.updateTCurrencies), TCurrenciesController.update)
 
 
 export default router

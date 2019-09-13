@@ -28,11 +28,11 @@ const BaseSchema = schema => {
 
     // Create a pre-save hook
     schema.pre("save", function(next) {
-        const userInfo = Session.get("user")
-        if (userInfo) {
-            this.updatedBy = userInfo._id ? userInfo._id : null
+        const userID = Session.get("user._id")
+        if (userID) {
+            this.updatedBy = userID
             if (!this.createdAt) {
-                this.createdBy = userInfo._id ? userInfo._id : null
+                this.createdBy = userID
             }
         }
         next()
@@ -40,9 +40,9 @@ const BaseSchema = schema => {
 
     // Create a pre-findOneAndUpdate hook
     schema.pre("findOneAndUpdate", function(next) {
-        const userInfo = Session.get("user")
-        if (userInfo) {
-            this._update.updatedBy = userInfo._id ? userInfo._id : null
+        const userID = Session.get("user._id")
+        if (userID) {
+            this._update.updatedBy = userID
         }
         next()
     })
@@ -53,11 +53,6 @@ class BaseModel {
     // Update status => "delete"
     static softDelete(id) {
         return this.updateOne({_id: id}, {status: "delete"})
-    }
-
-    // Temp function
-    static findByFullName(username) {
-        return this.find({ username: username })
     }
 }
 

@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose"
 
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
@@ -18,7 +19,7 @@ LanguagesSchema.plugin(BaseSchema)
 const excludeFields = ['-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy']
 
 LanguagesSchema.statics.findAll = async (query) => {
-        
+
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10)*limit - 1
     const result = await this.default.find({ status: ' active' })

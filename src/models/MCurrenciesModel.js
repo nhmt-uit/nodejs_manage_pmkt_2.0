@@ -44,7 +44,7 @@ MCurrenciesSchema.statics.updateMCurrency = item => {
         name: item.name,
         round_type: item.round_type,
     }
-    return this.default.findOneAndUpdate({_id: item.currency_id}, data, {new: true}).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+    return this.default.findOneAndUpdate({_id: item.currency_id}, data, {new: true}).select(excludeFields.join(' '))
 }
 
 
@@ -72,14 +72,9 @@ MCurrenciesSchema.statics.checkExists = async params => {
 
 
 MCurrenciesSchema.statics.checkCurrency = async (name, m_currency_id) => {
-    const currency = await this.default.findOne({name: name, _id: { $nin: m_currency_id}})
+    const currency = await this.default.findOne({name: name, _id: { $nin: m_currency_id}}).lean()
 
     return !!currency
 }
-
-MCurrenciesSchema.statics.deleteMCurrency = id => {
-    return this.default.deleteOne({_id: id})
-}
-
 
 export default mongoose.model(collectionName, MCurrenciesSchema, collectionName)

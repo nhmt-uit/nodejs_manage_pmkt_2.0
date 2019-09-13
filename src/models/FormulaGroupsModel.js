@@ -71,11 +71,11 @@ FormulaGroupSchema.statics.addByBanker = (item) => {
     if (!item.formula_id) {
         return false
     } else {
-    const result = this.default.findOneAndUpdate(
-                                { _id: item.id },
-                                { $push: { "formulas": [item.formula_id] } },
-                                { new: true }
-                            )
+        const result = this.default.findOneAndUpdate(
+                                    { _id: item.id },
+                                    { $push: { "formulas": [item.formula_id] } },
+                                    { new: true }
+                                )
                                 .select(excludeFields.join(' ')).lean()
 
         return result

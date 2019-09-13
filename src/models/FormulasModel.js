@@ -25,6 +25,3 @@ formulasSchema.loadClass(BaseModel)
 formulasSchema.plugin(BaseSchema)
 
 export default mongoose.model(collectionName, formulasSchema, collectionName)
-export{
-    formulasSchema
-}

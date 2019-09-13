@@ -34,6 +34,7 @@ const MCurrenciesValidator = {
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, {field: value}))
                 }
             }),
+
         check('round_type')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
@@ -48,6 +49,7 @@ const MCurrenciesValidator = {
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.INCORRECT_TYPE))
                 }
             }),
+
         check('name')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
@@ -58,6 +60,7 @@ const MCurrenciesValidator = {
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, {field: value}))
                 }
             }),
+
         check('round_type')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
