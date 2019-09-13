@@ -4,12 +4,12 @@ import mongoose from "mongoose"
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 
 import Session from "../utils/Session"
-import { type } from "os";
+import { type } from "os"
 
 
 
 // Define collection name
-const collectionName = "formula_formats";
+const collectionName = "formula_formats"
 
 
 // Define collection schema
@@ -20,11 +20,11 @@ const FormulaFormatsSchema = new mongoose.Schema({
     short: String,
     type: Number,
     data: mongoose.Schema.Types.Mixed
-});
+})
 
 // Load BaseModel
 FormulaFormatsSchema.loadClass(BaseModel)
-FormulaFormatsSchema.plugin(BaseSchema);
+FormulaFormatsSchema.plugin(BaseSchema)
 
 
 

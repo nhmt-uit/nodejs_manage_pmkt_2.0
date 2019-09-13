@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel";
+import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
 
 // Define collection name
 const collectionName = "bankers"
@@ -22,8 +22,13 @@ const BankersSchema = new mongoose.Schema({
 BankersSchema.loadClass(BaseModel)
 BankersSchema.plugin(BaseSchema)
 
-BankersSchema.statics.findAll = () => {
-    return this.default.find({status: 'active'}).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
+
+BankersSchema.statics.findAll = (query) => {
+    return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()
+        .sort(query.sort)
+        .limit(Number(query.limit))
+        .skip(Number(query.limit)*Number(query.page - 1))
 }
 
 
@@ -35,44 +40,42 @@ BankersSchema.statics.updateHostBanker = item => {
                 'agent_host.$.url': item.host_url,
             }
         },
-    )
+        {new: true}
+    ).select(excludeFields.join(' ')).lean()
 }
 
 
 BankersSchema.statics.createHostBanker = item => {
     let data = {
         url: item.host_url,
-    };
+    }
     return this.default.findOneAndUpdate(
         {_id: item.banker_id},
         { $push: {"agent_host": data}},
-    )
+        {new: true}
+    ).select(excludeFields.join(' ')).lean()
 }
 
 
 BankersSchema.statics.deleteHostBanker = item => {
     return this.default.findOneAndUpdate(
         {_id: item.banker_id},
-        { $pull: {"agent_host": {_id: item.host_id}}}
-    )
+        { $pull: {"agent_host": {_id: item.host_id}}},
+        {new: true}
+    ).select(excludeFields.join(' ')).lean()
 }
 
 
-BankersSchema.statics.checkBanker = async id => { 
+BankersSchema.statics.checkBanker = async id => {
     const result = await this.default.findOne({_id: id})
 
-    if (result) return true
-
-    return false
-
+    return !!result
 }
 
 BankersSchema.statics.checkHostBanker = async (banker_id, host_id) => {
     const result = await this.default.findOne({_id: banker_id, "agent_host._id": host_id})
 
-    if (result) return true
-
-    return false
+    return !!result
 }
 
 

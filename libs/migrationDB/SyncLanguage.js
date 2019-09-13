@@ -25,6 +25,7 @@ class SyncLanguage {
 				const data = await LanguageModel.find({
 													deleted: {$eq: 0}
 												})
+												.lean()
 												.limit(limit)
 												.skip(skip * limit)
 												.sort({ created: 1 })
@@ -62,6 +63,7 @@ class SyncLanguage {
 				const data = await NoticeKeyModel.find({
 													deleted: {$eq: 0}
 												})
+												.lean()
 												.limit(limit)
 												.skip(skip * limit)
 												.sort({ created: 1 })
@@ -79,12 +81,12 @@ class SyncLanguage {
 														notice_key_id: mongoose.Types.ObjectId(_item._id),
 														deleted: { $eq: 0 }
 													})
+													.lean()
 						const contents = []
 						if (noticeContent && noticeContent.length) {
 							noticeContent.forEach(el => {
 								const _el = JSON.parse(JSON.stringify(el))
 								contents.push({
-									_id				: mongoose.Types.ObjectId(_el._id),
 									language_id		: mongoose.Types.ObjectId(_el.language_id),
 									content			: String(_el.name).trim()
 								})

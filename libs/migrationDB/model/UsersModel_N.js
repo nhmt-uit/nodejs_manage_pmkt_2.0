@@ -15,6 +15,7 @@ const Users_NSchema = new mongoose.Schema({
     role: Number,
     secure_code: Number,
     login_failed: Number,
+    login_ip: String,
     lang_code: String,
     allow_export: Boolean,
     allow_report_detail: Boolean,
@@ -22,8 +23,9 @@ const Users_NSchema = new mongoose.Schema({
     enable_end: Date,
     old_password: String,
     is_updated_password: Boolean,
-    old_pasword2: String,
+    old_password2: String,
     is_updated_password2: Boolean,
+    is_lock: Boolean
 })
 // Load BaseModel
 Users_NSchema.plugin(BaseSchema_N)

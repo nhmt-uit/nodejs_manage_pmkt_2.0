@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel";
+import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
 
 // Define collection name
 const collectionName = "m_currencies"
@@ -14,13 +14,18 @@ const MCurrenciesSchema = new mongoose.Schema({
 MCurrenciesSchema.loadClass(BaseModel)
 MCurrenciesSchema.plugin(BaseSchema)
 
-MCurrenciesSchema.statics.findAll = () => {
-    return this.default.find({status: 'active'}).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ];
+
+MCurrenciesSchema.statics.findAll = (query) => {
+    return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()
+        .sort(query.sort)
+        .limit(Number(query.limit))
+        .skip(Number(query.limit)*Number(query.page - 1))
 }
 
 
 MCurrenciesSchema.statics.mCurrencyDetail = id => {
-    return this.default.findOne({_id: id}).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+    return this.default.findOne({_id: id}).select(excludeFields.join(' ')).lean()
 }
 
 
@@ -38,16 +43,13 @@ MCurrenciesSchema.statics.updateMCurrency = item => {
         name: item.name,
         round_type: item.round_type,
     }
-    return this.default.updateOne({_id: item.currency_id}, data)
+    return this.default.findOneAndUpdate({_id: item.currency_id}, data, {new: true}).select("-status -createdBy -createdAt -updatedBy -updatedAt")
 }
 
 
 MCurrenciesSchema.statics.checkId = (id) => {
     const idTest = new mongoose.Types.ObjectId(id)
-
-    if(idTest.toString() === id) return true
-
-    return false
+    return idTest.toString() === id
 }
 
 
@@ -64,18 +66,14 @@ MCurrenciesSchema.statics.checkExists = async params => {
             return
     }
 
-    if (result) return true
-
-    return false
+    return !!result
 }
 
 
-MCurrenciesSchema.statics.checkCurrency = async name => {
-     const currency = await this.default.findOne({name: name})
+MCurrenciesSchema.statics.checkCurrency = async (name, m_currency_id) => {
+    const currency = await this.default.findOne({name: name, _id: { $nin: m_currency_id}})
 
-        if(!currency ) return false
-
-        return true
+    return !!currency
 }
 
 MCurrenciesSchema.statics.deleteMCurrency = id => {

@@ -23,6 +23,7 @@ class SyncAccount {
 				const data = await AccountModel.find({
 												deleted: {$eq: 0}
 											})
+											.lean()
 											.limit(limit)
 											.skip(skip * limit)
 											.sort({created: 1})
@@ -74,6 +75,7 @@ class SyncAccount {
 				const data = await CongthuctinModel.find({
 														deleted: {$eq: 0}
 													})
+													.lean()
 													.limit(limit)
 													.skip(skip * limit)
 													.sort({created: 1})

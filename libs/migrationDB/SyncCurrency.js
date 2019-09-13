@@ -26,6 +26,7 @@ class SyncCurrency {
 				const data = await CurrencyTypeModel.find({
 														deleted: {$eq: 0}
 													})
+													.lean()
 													.limit(limit)
 													.skip(skip * limit)
 													.sort({created: 1})
@@ -61,6 +62,7 @@ class SyncCurrency {
 				const data = await CurrencyModel.find({
 													deleted: {$eq: 0}
 												})
+												.lean()
 												.limit(limit)
 												.skip(skip * limit)
 												.sort({created: 1})

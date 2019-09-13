@@ -1,10 +1,12 @@
 import BankersModel from "../../models/BankersModel"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 class BankersController {
     async listBankers (req, res, next) {
         try {
-            const bankers = await BankersModel.findAll()
+            const query = req.query
+
+            const bankers = await BankersModel.findAll(query)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: bankers,
@@ -15,12 +17,13 @@ class BankersController {
     }
 
     async createHostBanker (req, res, next) {
-        const item = req.body
         try {
-            await BankersModel.createHostBanker(item)
+            const item = req.body
+
+            const result = await BankersModel.createHostBanker(item)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_CREATE_SUCCESS),
-                data: item,
+                data: result,
             })
         } catch (err) {
             next (err)
@@ -28,13 +31,14 @@ class BankersController {
     }
 
     async updateHostBanker (req, res, next) {
-        const item = req.body
-        item.host_id = req.params.id
         try {
-            await BankersModel.updateHostBanker(item)
+            const item = req.body
+            item.host_id = req.params.id
+
+            const result = await BankersModel.updateHostBanker(item)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
-                data: item,
+                data: result,
             })
         } catch (err) {
             next (err)
@@ -42,13 +46,14 @@ class BankersController {
     }
 
     async deleteHostBanker (req, res, next) {
-        const item = req.body
-        item.host_id = req.params.id
         try {
-            await BankersModel.deleteHostBanker(item)
+            const item = req.body
+            item.host_id = req.params.id
+
+            const result = await BankersModel.deleteHostBanker(item)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
-                data: item,
+                data: result,
             })
         } catch (err) {
             next (err)

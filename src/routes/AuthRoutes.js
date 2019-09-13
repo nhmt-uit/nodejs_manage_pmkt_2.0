@@ -12,5 +12,6 @@ router.post("/login", ValidatorHandling(AuthValidator.postLogin), AuthController
 router.post("/logout", AuthController.logout)
 router.post("/refresh-token", ValidatorHandling(AuthValidator.postRefreshToken), AuthController.refreshToken)
 router.post("/check-secure-code", ValidatorHandling(AuthValidator.postCheckSecureCode), AuthController.checkSecureCode)
+router.post("/change-secure-code", ValidatorHandling(AuthValidator.postChangeSecureCode), AuthController.changeSecureCode)
 
 export default router

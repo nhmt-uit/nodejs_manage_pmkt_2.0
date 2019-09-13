@@ -137,6 +137,7 @@ class SyncBanker {
 				const data = await BookModel.find({
 												deleted: {$eq: 0}
 											})
+											.lean()
 											.limit(limit)
 											.skip(skip * limit)
 											.sort({created: 1})
@@ -170,6 +171,7 @@ class SyncBanker {
 				const data = await BankerModel.find({
 													deleted: {$eq: 0}
 												})
+												.lean()
 												.limit(limit)
 												.skip(skip * limit)
 												.sort({created: 1})
@@ -192,6 +194,7 @@ class SyncBanker {
 																	banker_id: mongoose.Types.ObjectId(_item._id),
 																	deleted: {$eq: 0}
 																	})
+																	.lean()
 						let agentHost = []
 						if (bankerHost && bankerHost.length) {
 							bankerHost.forEach(el => {

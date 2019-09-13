@@ -1,25 +1,23 @@
-import { uniqBy as _uniqBy } from "lodash"
+import _uniqBy from "lodash/uniqBy"
 import FormulaGroupsModel from "../../models/FormulaGroupsModel"
-import ExceptionConfig from "../../configs/ExceptionConfig"
-import HashPassword from "../../utils/HashPassword"
+
 import Session from "../../utils/Session"
-import { Mongoose } from "mongoose"
-import FormulasModel from "../../models/FormulasModel"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 
 class FormulaGroupsController {
     async listData(req, res, next) {
         try {
-            let formulaGroup = await FormulaGroupsModel.findAll()
+            
+            const  user_id = req.body.user_id
+            let formulaGroup = await FormulaGroupsModel.findAll(user_id)
             // Get Banker Info
             formulaGroup = formulaGroup.map(item => {
                 const _item = JSON.parse(JSON.stringify(item))
                 _item.bankers = _uniqBy(_item.formulas, "banker_id._id").map(elem => elem.banker_id)
                 return _item
             })
-            console.log(formulaGroup)
-
+           
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: formulaGroup
@@ -32,9 +30,8 @@ class FormulaGroupsController {
     async dataById(req, res, next) {
         try {
             const id = req.params.id
-            let formulaGroup = await FormulaGroupsModel.findOne({ _id: id })
-                .select("_id user_id name formulas")
-
+            let formulaGroup = await FormulaGroupsModel.findOne({ _id: id , status:'active' })
+                .select("_id user_id name formulas status")
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: formulaGroup
@@ -48,10 +45,6 @@ class FormulaGroupsController {
         try {
             const name = req.body.name
             const formulaGroup = await FormulaGroupsModel.createFormulaGroup(name)
-            // const formulaGroup = new FormulaGroupsModel({
-            //     name: "Test API - " + Math.round(Math.random()*10000000000)
-            // })
-            // await formulaGroup.save()
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_CREATE_SUCCESS),
                 data: formulaGroup
@@ -61,10 +54,10 @@ class FormulaGroupsController {
         }
     }
     async addByBanker(req, res, next) {
-        const item = req.body
-        item.id = req.params.id
         try {
-            let result = await FormulaGroupsModel.addByBanker(item)
+            const item = req.body
+            item.id = req.params.id
+            const result = await FormulaGroupsModel.addByBanker(item)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
                 data: result
@@ -75,8 +68,9 @@ class FormulaGroupsController {
     }
     async update(req, res, next) {
         try {
-            const id = req.params.id
-            let data = await FormulaGroupsModel.update(id, req.body)
+            const item = req.body
+            item._id = req.params.id
+            let data = await FormulaGroupsModel.updateFormulaGroup(item)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
                 data: data

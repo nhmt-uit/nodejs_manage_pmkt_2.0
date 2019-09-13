@@ -5,9 +5,8 @@ import Recursive from "../../utils/Recursive"
 class AccountsController {
     async index(req, res, next) {
         try {
-            const accountList = await AccountsModel.findDoc();
-            // const result = accountList;
-            const result = Recursive.flatToTree(accountList);
+            const accountList = await AccountsModel.findDoc()
+            const result = Recursive.flatToTree(accountList)
 
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
@@ -20,7 +19,7 @@ class AccountsController {
 
     async detail(req, res, next) {
         try {
-            const query = { _id: req.params.id };
+            const query = { _id: req.params.id }
 
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
@@ -33,7 +32,7 @@ class AccountsController {
 
     async save(req, res, next) {
         try {
-            await AccountsModel.createDoc(req.body);
+            await AccountsModel.createDoc(req.body)
 
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.ITEM_CREATE_SUCCESS,
@@ -53,13 +52,13 @@ class AccountsController {
                 data: result
             })
         } catch(err) {
-            next(err);
+            next(err)
         }
     }
 
     async delete(req, res, next) {
         try {
-            await AccountsModel.softDelete(req.params.id);
+            await AccountsModel.softDelete(req.params.id)
 
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.ITEM_DELETE_SUCCESS,

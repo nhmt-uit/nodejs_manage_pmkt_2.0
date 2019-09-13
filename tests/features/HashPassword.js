@@ -4,9 +4,9 @@ import chai from "chai"
 
 import HashPassword from "../../src/utils/HashPassword"
 
-const dummyPassword = "passpass"
+const dummyPassword = "qqqq6666@Q"
 const dummyWrongPassword = "wrong_password"
-const dummyHashedPassword = "$2b$10$LQAUzdhFCT7htrJ76HsOMOI2ywhWhSHIinE1RTcTFpSpV2vYMQtmK" //paspass
+const dummyHashedPassword = "$2b$09$H2WqtE1AT23D1h0g4xJOdeErpGi5ASITVc5YB58hMfedJTgvgFcgi" //qqqq6666
 let hashedPassword = ""
 /*
 |--------------------------------------------------------------------------

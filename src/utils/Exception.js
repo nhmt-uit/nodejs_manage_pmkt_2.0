@@ -19,22 +19,31 @@ Exception.VALIDATION = {
     IS_EXISTED              : "{{field}} is existed",
     INCORRECT_TYPE          : "Incorrect data type",
     NOT_FOUND_ERR           : "Not found item by {{field}}",
+    NOT_SAME                : "Please enter the same {{field}}"
 }
 
 Exception.AUTH = {
+    LOGIN_SUCCESS           : "You are successfully logged in",
+    LOGIN_FAIL              : "You have entered an invalid username or password",
+    ACCOUNT_LOCK            : "Account has been locked. Please contact to support",
+    LOGOUT_SUCCESS          : "You have successfully logged out!",
     MISSING_TOKEN           : "No token provided.",
     MISSING_REFRESH_TOKEN   : "No refresh_token provided.",
     UNAUTHORIZED            : "Access denied due to missing subscription key. Make sure to include subscription key when making requests to this API.",
+    INVALID_SECURE_CODE     : "Wrong security code"
 }
 
 Exception.getMessage = (message, params) => {
-    if (!_isEmpty(params)) {
-        Object.keys(params).forEach(key => {
-            message = message.replace(`{{${key}}}`, params[key])
-        })
+    try {
+        if (!_isEmpty(params)) {
+            Object.keys(params).forEach(key => {
+                message = message.replace(`{{${key}}}`, params[key])
+            })
+        }
+        return message
+    } catch {
+        return message
     }
-
-    return message
 }
 
 export default Exception

@@ -9,6 +9,7 @@ class MongoDb {
         const options = {
             connectTimeoutMS: 10000,
             useNewUrlParser: true,
+            useFindAndModify: false,
             useCreateIndex: true,
             autoReconnect: true,
             reconnectTries: Number.MAX_VALUE
