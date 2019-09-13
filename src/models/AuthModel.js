@@ -23,6 +23,7 @@ class AuthModel {
 												username: String(username),
 												status: "active"
 											})
+											.select("-status -createdBy -createdAt -updatedBy -updatedAt")
 											.lean()
 			if (userInfo) {
 				const passMD5 = HashPassword.md5(password)
@@ -75,6 +76,8 @@ class AuthModel {
 							login_ip: Helpers.getIPAddress()
 						}
 		const user = await UsersModel.findOneAndUpdate({ _id: userInfo._id}, formData)
+										.select("-status -createdBy -createdAt -updatedBy -updatedAt")
+										.lean()
 		return { status: true, type: TYPE.LOGIN_SUCCESS, payload: this.excludeFieldsUserInfo(user) }
 	}
 
@@ -109,7 +112,7 @@ class AuthModel {
 	|--------------------------------------------------------------------------
 	*/
 	excludeFieldsUserInfo(payload) {
-		const excludeFields = ["password", "password2", "old_password", "old_password2", "is_updated_password", "is_updated_password2", "status", "createdBy", "createdAt", "updatedBy", "updatedAt"]
+		const excludeFields = ["password", "password2", "old_password", "old_password2", "is_updated_password", "is_updated_password2"]
 		try {
 			payload = JSON.parse(JSON.stringify(payload))
 			excludeFields.forEach(item => {
