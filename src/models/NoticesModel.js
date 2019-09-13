@@ -25,9 +25,13 @@ NoticesSchema.plugin(BaseSchema)
 
 
 
-NoticesSchema.statics.findAll = async (language_id) => {
-    console.log('PPPPPPPPPPPPPPPPPP', language_id)
+NoticesSchema.statics.findAll = async (language_id, query) => {
+    const limit = parseInt(query.limit, 10)
+    const skip = parseInt(query.page, 10)*limit - 1
     const result = await this.default.find({"contents.language_id" : mongoose.Types.ObjectId(language_id)})
+                                     .sort(query.sort||'-order')
+                                     .limit(limit)
+                                     .skip(skip)
     return result
 }
 

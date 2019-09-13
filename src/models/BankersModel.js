@@ -33,21 +33,15 @@ BankersSchema.statics.updateHostBanker = item => {
         {
             '$set': {
                 'agent_host.$.url': item.host_url,
-<<<<<<< HEAD
+
             }
         },
         {new: true}
     ).select("-status -createdBy -createdAt -updatedBy -updatedAt")
-=======
-            },
-            
-        },{new: true}
-    )
-    return result
->>>>>>> 1c30b644ed46cc95a4da168c5b73a52dc38434d9
-}
 
+   
 
+    }
 BankersSchema.statics.createHostBanker = item => {
     let data = {
         url: item.host_url,

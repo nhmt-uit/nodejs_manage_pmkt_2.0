@@ -22,23 +22,26 @@ const FormulaGroupSchema = new mongoose.Schema({
 FormulaGroupSchema.loadClass(BaseModel)
 FormulaGroupSchema.plugin(BaseSchema);
 
-FormulaGroupSchema.statics.findAll = async (user_id) => {
+FormulaGroupSchema.statics.findAll = async (user_id, query) => {
     // const userInfo = Session.get('user').id;
-    
-
-    const result = await this.default.find({user_id: user_id, status: 'active'})
+    const limit = parseInt(query.limit, 10)
+    const skip = parseInt(query.page, 10) * limit - 1
+    const result = await this.default.find({ user_id : user_id, status: 'active' })
         .populate({
             model: formulasModel,
             path: "formulas",
             select: "banker_id _id",
             populate: {
-                model: 'bankers',
-                path: "banker_id",
-                select: "_id name",
+                model: bankersModel,
+                path: "banker_id  ",
+                select: "_id name ",
             }
         })
-        .select('name _id status')
-      
+        .select('name _id user_id status')
+        .sort(query.sort || '-order')
+        .limit(limit)
+        .skip(skip)
+
     return result
 }
 
@@ -52,30 +55,31 @@ FormulaGroupSchema.statics.createFormulaGroup = async (name) => {
         .select("_id user_id name formulas")
 }
 
-FormulaGroupSchema.statics.addByBanker =  (item) => {
-    
-    if(!item.formula_id){ return false
-    }else{
-    const result = this.default.findOneAndUpdate(
-        { _id: item.id },
-        { $push: { "formulas": [item.formula_id] } },
-        {new: true}
+FormulaGroupSchema.statics.addByBanker = (item) => {
+
+    if (!item.formula_id) {
+        return false
+    } else {
+        const result = this.default.findOneAndUpdate(
+            { _id: item.id },
+            { $push: { "formulas": [item.formula_id] } },
+            { new: true }
         )
-        .select("_id user_id name formulas")
-        
+            .select("_id user_id name formulas")
+
         return result
     }
-    
+
 }
 
 FormulaGroupSchema.statics.updateFormulaGroup = async (item) => {
-   
+
     return this.default.findOneAndUpdate(
-        {_id: item._id },
-        {'$set': {'name': item.name}},
-        {new: true},
+        { _id: item._id },
+        { '$set': { 'name': item.name } },
+        { new: true },
     )
-    .select("_id user_id name formulas")
+        .select("_id user_id name formulas")
 }
 
 FormulaGroupSchema.statics.delete = async (id) => {
@@ -99,8 +103,8 @@ FormulaGroupSchema.statics.deleteByBanker = async (item) => {
         const result = await this.default.findByIdAndUpdate(
             { _id: item.id },
             { $pull: { "formulas": { $in: [Banker._id] } } },
-            {new: true},
-           
+            { new: true },
+
         )
         return result
     }

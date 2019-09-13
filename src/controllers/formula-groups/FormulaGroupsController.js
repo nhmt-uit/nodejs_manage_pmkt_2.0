@@ -8,9 +8,9 @@ import Exception from "../../utils/Exception";
 class FormulaGroupsController {
     async listData(req, res, next) {
         try {
-            
+            const query = req.query
             const  user_id = req.body.user_id
-            let formulaGroup = await FormulaGroupsModel.findAll(user_id)
+            let formulaGroup = await FormulaGroupsModel.findAll(user_id, query)
             // Get Banker Info
             formulaGroup = formulaGroup.map(item => {
                 const _item = JSON.parse(JSON.stringify(item))

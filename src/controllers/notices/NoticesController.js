@@ -3,9 +3,11 @@ import Exception from "../../utils/Exception";
 
 class NoticesController {
     async listData(req, res, next) {
-                const language_id = req.query.language_id
+                
         try {
-            let result = await NoticesModel.findAll(language_id)
+            const query = req.query
+            const language_id = req.query.language_id
+            let result = await NoticesModel.findAll(language_id, query)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: result
@@ -15,8 +17,9 @@ class NoticesController {
         }
     }
     async dataById(req, res, next) {
-        const id = req.params.id
+        
         try {
+            const id = req.params.id
             let result = await NoticesModel.find_id(id)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
