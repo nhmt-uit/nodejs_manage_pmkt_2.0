@@ -15,7 +15,6 @@ const FormulaGroupSchema = new mongoose.Schema({
     user_id: mongoose.Types.ObjectId,
     name: String,
     formulas: [mongoose.Schema.Types.ObjectId]
-
 })
 
 // Load BaseModel

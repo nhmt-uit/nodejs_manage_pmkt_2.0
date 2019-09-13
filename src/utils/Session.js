@@ -1,3 +1,5 @@
+import _get from "lodash/get"
+
 class Session {
     constructor() {
     }
@@ -12,11 +14,7 @@ class Session {
         if (!key || key === "undefined") {
             return _session
         }
-        
-        if (!_session[key] || _session[key] === "undefined") {
-            return value || null
-        }
-        return _session[key]
+        return _get(_session, key, value || null)
     }
 
     set(key, value) {
