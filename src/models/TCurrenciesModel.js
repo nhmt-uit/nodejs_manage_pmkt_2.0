@@ -16,6 +16,13 @@ const TCurrenciesSchema = new mongoose.Schema({
     note: String,
 })
 
+TCurrenciesSchema.virtual('total_formulas', {
+    ref: 'formulas', // The model to use
+    localField: '_id', // Find people where `localField`
+    foreignField: 't_currency_id', // is equal to `foreignField`
+    count: true // And only get the number of docs
+})
+
 TCurrenciesSchema.loadClass(BaseModel)
 TCurrenciesSchema.plugin(BaseSchema)
 
@@ -28,31 +35,12 @@ TCurrenciesSchema.statics.findAll = (query) => {
         user_id: mongoose.Types.ObjectId(Session.get('user._id'))
     }
 
-    // return this.default.find(option).select(excludeFields.join(' ')).lean()
-    //     .sort(query.sort)
-    //     .limit(Number(query.limit))
-    //     .skip(Number(query.limit)*Number(query.page - 1))
-
-    return this.default.aggregate([
-        {$match: option},
-        {$lookup: {
-            from: "formulas",
-            localField: "_id",
-            foreignField: "t_currency_id",
-            as: "formulas"
-            }},
-        {$unwind: "$formulas"},
-        {$group:{
-            _id: "$formulas.t_currency_id",
-            total: {$sum: 1},
-            data: {$push:'$$ROOT'},
-            }},
-        {$project: {
-            total: "$total",
-            data: "$data",
-            }}
-        ])
-    // "user_id": 1, "m_currency_id": 1, "round_type": 1, "note": 1, "formulas.t_currency_id": 1,
+    return this.default.find(option).select(excludeFields.join(' '))
+        .populate("total_formulas")
+        .sort(query.sort)
+        .limit(Number(query.limit))
+        .skip(Number(query.limit)*Number(query.page - 1))
+        .lean()
 }
 
 
