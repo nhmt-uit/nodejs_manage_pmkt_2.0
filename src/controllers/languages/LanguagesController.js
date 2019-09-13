@@ -8,7 +8,7 @@ import Exception from "../../utils/Exception"
 
 
 class LanguagesController {
-    async listData(req, res, next) {
+    async list(req, res, next) {
         try {
             const query = req.query
             let result = await LanguagesModel.findAll(query)
@@ -20,9 +20,10 @@ class LanguagesController {
             next(err)
         }
     }
-    async dataByCode(req, res, next) {
-        const code = req.body.code
+    async detail(req, res, next) {
+        
         try {
+            const code = req.body.code
             let result = await LanguagesModel.findByCode(code)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
@@ -32,7 +33,7 @@ class LanguagesController {
             next(err)
         }
     }
-    async create(req, res, next) {
+    async save(req, res, next) {
         try {
             const name = req.body.name
             const code = req.body.code
@@ -51,6 +52,7 @@ class LanguagesController {
         try {
             const item = req.body
             item._id = req.params.id
+
             let data = await LanguagesModel.updateLanguage(item)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
@@ -65,6 +67,7 @@ class LanguagesController {
         try {
             const id = req.params.id
             let data = await LanguagesModel.delete(id)
+
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
                 data: data

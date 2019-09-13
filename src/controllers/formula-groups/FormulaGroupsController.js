@@ -6,7 +6,7 @@ import Exception from "../../utils/Exception"
 
 
 class FormulaGroupsController {
-    async listData(req, res, next) {
+    async list(req, res, next) {
         try {
             const query = req.query
             const  user_id = req.body.user_id
@@ -27,7 +27,7 @@ class FormulaGroupsController {
         }
     }
 
-    async dataById(req, res, next) {
+    async detail(req, res, next) {
         try {
             const id = req.params.id
             let formulaGroup = await FormulaGroupsModel.findOne({ _id: id , status:'active' })
@@ -41,7 +41,7 @@ class FormulaGroupsController {
         }
     }
 
-    async create(req, res, next) {
+    async save(req, res, next) {
         try {
             const name = req.body.name
             const formulaGroup = await FormulaGroupsModel.createFormulaGroup(name)
@@ -108,16 +108,6 @@ class FormulaGroupsController {
         }
     }
 
-    async detail(req, res, next) {
-        try {
-            return res.send({
-                message: "You requested detail formula controller",
-                errors: "You requested detail formula controller"
-            })
-        } catch (err) {
-            next(err)
-        }
-    }
 }
 
 export default new FormulaGroupsController()

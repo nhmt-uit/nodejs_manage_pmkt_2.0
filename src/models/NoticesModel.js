@@ -23,27 +23,26 @@ const NoticesSchema = new mongoose.Schema({
 NoticesSchema.loadClass(BaseModel);
 NoticesSchema.plugin(BaseSchema)
 
-
+const excludeFields = ['-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy']
 
 NoticesSchema.statics.findAll = async (language_id, query) => {
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10)*limit - 1
     const result = await this.default.find({"contents.language_id" : mongoose.Types.ObjectId(language_id)})
+                                     .select(excludeFields.join(' ')).lean()
                                      .sort(query.sort||'-order')
-                                     .limit(limit)
-                                     .skip(skip)
+                                     .limit(limit||10)
+                                     .skip(skip||0)
     return result
 }
 
 NoticesSchema.statics.find_id = async (id) => {
-    console.log(id)
     const result = await this.default.find({ _id: id, status: 'active' })
-        .select("_id name type contents status")
+                                     .select(excludeFields.join(' ')).lean()
 
     return result
 }
 NoticesSchema.statics.createNotices = async (data) => {
-
     const temp = JSON.parse(data.contents)
     let A = {
         _id: new mongoose.Types.ObjectId(),
@@ -57,28 +56,25 @@ NoticesSchema.statics.createNotices = async (data) => {
     }
     const Notice = await this.default.create(A)
     return this.default.findById(Notice._id)
-        .select("_id name type contents status")
+                       .select(excludeFields.join(' ')).lean()
 }
 NoticesSchema.statics.updateNotice = async (data) => {
-    // const A =JSON.stringify(data.contents)
-    const A = this.default.findOneAndUpdate(
-        { _id: data.id },
-        {
-            '$set': {
-                'name': data.name,
-                'type': data.type,
-                'contents': data.contents ,
-            }
-        },
-        { new: true },
-    ).select("-_id name type contents status")
-    
-    
-    return A
+    return this.default.findOneAndUpdate(
+                        { _id: data.id },
+                        {
+                            '$set': {
+                                'name': data.name,
+                                'type': data.type,
+                                'contents': data.contents ,
+                            }
+                        },
+                        { new: true },
+                    )
+                        .select(excludeFields.join(' ')).lean()
 }
 NoticesSchema.statics.delete = async (id) => {
     return this.default.findOneAndDelete({ _id: id })
-    .select("_id name type contents status")
+                       .select(excludeFields.join(' ')).lean()
 }
 
 export default mongoose.model(collectionName, NoticesSchema, collectionName)

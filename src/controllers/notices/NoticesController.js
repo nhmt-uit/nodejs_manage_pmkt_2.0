@@ -2,8 +2,7 @@ import NoticesModel from "../../models/NoticesModel"
 import Exception from "../../utils/Exception";
 
 class NoticesController {
-    async listData(req, res, next) {
-                
+    async list(req, res, next) {
         try {
             const query = req.query
             const language_id = req.query.language_id
@@ -16,8 +15,7 @@ class NoticesController {
             next(err)
         }
     }
-    async dataById(req, res, next) {
-        
+    async detail(req, res, next) {
         try {
             const id = req.params.id
             let result = await NoticesModel.find_id(id)
@@ -29,7 +27,7 @@ class NoticesController {
             next(err)
         }
     }
-    async create(req, res, next) {
+    async save(req, res, next) {
         try {
             const data = {
                 name: req.body.name,

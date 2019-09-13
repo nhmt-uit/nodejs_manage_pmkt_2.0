@@ -20,7 +20,6 @@ const FormulaGroupsValidator = {
                 const id = req.params.id
                 let isUnique = await FormulaGroupSchema.checkFormulas(id, value)
                 if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
-
             }),
     ],
     postCreate: [
@@ -31,7 +30,6 @@ const FormulaGroupsValidator = {
             .custom(async (value) => {
                 let isUnique = await FormulaGroupSchema.checkName(value)
                 if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
-
             }),
     ],
     postDeleteByBanker: [
@@ -42,7 +40,6 @@ const FormulaGroupsValidator = {
             .custom(async (value) => {
                 let isUnique = await FormulaGroupSchema.checkBanker_id(value)
                 if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
-
             }),
     ]
 }
