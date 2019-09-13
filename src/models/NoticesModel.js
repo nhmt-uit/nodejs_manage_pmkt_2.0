@@ -11,8 +11,7 @@ const NoticesSchema = new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
     name: String,
     type: String,
-    contents: [
-        {
+    contents: [{
             _id: mongoose.Types.ObjectId,
             language_id: mongoose.Types.ObjectId,
             content: String
@@ -36,12 +35,15 @@ NoticesSchema.statics.findAll = async (language_id, query) => {
     return result
 }
 
+
 NoticesSchema.statics.find_id = async (id) => {
     const result = await this.default.find({ _id: id, status: 'active' })
                                      .select(excludeFields.join(' ')).lean()
 
     return result
 }
+
+
 NoticesSchema.statics.createNotices = async (data) => {
     const temp = JSON.parse(data.contents)
     let A = {
@@ -58,6 +60,8 @@ NoticesSchema.statics.createNotices = async (data) => {
     return this.default.findById(Notice._id)
                        .select(excludeFields.join(' ')).lean()
 }
+
+
 NoticesSchema.statics.updateNotice = async (data) => {
     return this.default.findOneAndUpdate(
                         { _id: data.id },
