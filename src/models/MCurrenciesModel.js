@@ -17,6 +17,7 @@ MCurrenciesSchema.plugin(BaseSchema)
 const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ];
 
 MCurrenciesSchema.statics.findAll = (query) => {
+    console.log(query.sort)
     return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()
         .sort(query.sort)
         .limit(Number(query.limit))
