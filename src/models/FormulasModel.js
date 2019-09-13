@@ -86,3 +86,5 @@ FormulasSchema.statics.updateFormula = async (data) => {
 }
 
 export default mongoose.model(collectionName, FormulasSchema, collectionName)
+
+

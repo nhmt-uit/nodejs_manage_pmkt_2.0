@@ -7,11 +7,11 @@ import MCurrenciesValidator from "../controllers/m_currencies/MCurrenciesValidat
 
 const router = express.Router()
 
-router.get("/", MCurrenciesController.listMCurrencies)
-router.get("/:id", ValidatorHandling(MCurrenciesValidator.getMCurrenciesDetail), MCurrenciesController.mCurrencyDetail)
-router.post("/", ValidatorHandling(MCurrenciesValidator.createMCurrency), MCurrenciesController.createMCurrency)
-router.put("/:id", ValidatorHandling(MCurrenciesValidator.updateMCurrency), MCurrenciesController.updateMCurrency)
+router.get("/", MCurrenciesController.list)
+router.get("/:id", ValidatorHandling(MCurrenciesValidator.getMCurrenciesDetail), MCurrenciesController.detail)
+router.post("/", ValidatorHandling(MCurrenciesValidator.createMCurrency), MCurrenciesController.save)
+router.put("/:id", ValidatorHandling(MCurrenciesValidator.updateMCurrency), MCurrenciesController.update)
 router.post("/check-exists", MCurrenciesController.checkExists)
-router.delete("/:id", ValidatorHandling(MCurrenciesValidator.deleteMCurrency), MCurrenciesController.deleteMCurrency)
+router.delete("/:id", ValidatorHandling(MCurrenciesValidator.deleteMCurrency), MCurrenciesController.delete)
 
 export default router

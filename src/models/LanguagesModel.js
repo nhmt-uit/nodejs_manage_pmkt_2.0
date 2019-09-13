@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose"
 
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"

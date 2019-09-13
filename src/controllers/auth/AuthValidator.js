@@ -1,6 +1,7 @@
 import { check } from "express-validator"
 
 import Exception from "../../utils/Exception"
+import Session from "../../utils/Session"
 
 const AuthValidator = {
 
@@ -47,13 +48,17 @@ const AuthValidator = {
     */
     postChangeSecureCode: [
         check("current_secure")
-            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD)),
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .custom(value => {
+                console.log(Number(value), Number(Session.get("user.secure_code")))
+                    return Number(value) === Number(Session.get("user.secure_code"))
+                }).withMessage(Exception.getMessage(Exception.VALIDATION.INCORRECT_FIELD)),
         check("new_secure")
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD)),
         check("re_new_secure")
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .custom((value, { req }) => value === req.body.new_secure)
-                .withMessage(Exception.getMessage(Exception.VALIDATION.NOT_SeeeAME, {field: "new secure code"})),
+                .withMessage(Exception.getMessage(Exception.VALIDATION.NOT_SAME, {field: "secure code"})),
     ],
 }
 
