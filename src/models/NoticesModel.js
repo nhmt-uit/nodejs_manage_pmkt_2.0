@@ -11,14 +11,21 @@ const NoticesSchema = new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
     name: String,
     type: String,
-    contents: [
-        {
+    contents: [{
             _id: mongoose.Types.ObjectId,
             language_id: mongoose.Types.ObjectId,
             content: String
         }
     ],
 })
+
+NoticesSchema.virtual('total_language', {
+    ref: 'languages', // The model to use
+    localField: 'contents.language_id', // Find people where `localField`
+    foreignField: 'code', // is equal to `foreignField`
+    count: true // And only get the number of docs
+});
+
 // Load BaseModel
 NoticesSchema.loadClass(BaseModel);
 NoticesSchema.plugin(BaseSchema)
@@ -29,6 +36,7 @@ NoticesSchema.statics.findAll = async (language_id, query) => {
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10)*limit - 1
     const result = await this.default.find({"contents.language_id" : mongoose.Types.ObjectId(language_id)})
+                                     .populate('total_language')
                                      .select(excludeFields.join(' ')).lean()
                                      .sort(query.sort||'-order')
                                      .limit(limit||10)
@@ -36,15 +44,18 @@ NoticesSchema.statics.findAll = async (language_id, query) => {
     return result
 }
 
+
 NoticesSchema.statics.find_id = async (id) => {
     const result = await this.default.find({ _id: id, status: 'active' })
                                      .select(excludeFields.join(' ')).lean()
 
     return result
 }
+
+
 NoticesSchema.statics.createNotices = async (data) => {
     const temp = JSON.parse(data.contents)
-    let A = {
+    let newObject = {
         _id: new mongoose.Types.ObjectId(),
         name: data.name,
         type: data.type,
@@ -54,10 +65,12 @@ NoticesSchema.statics.createNotices = async (data) => {
             "content": temp.content
         }]
     }
-    const Notice = await this.default.create(A)
+    const Notice = await this.default.create(newObject)
     return this.default.findById(Notice._id)
                        .select(excludeFields.join(' ')).lean()
 }
+
+
 NoticesSchema.statics.updateNotice = async (data) => {
     return this.default.findOneAndUpdate(
                         { _id: data.id },

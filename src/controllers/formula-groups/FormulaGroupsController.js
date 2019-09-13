@@ -9,7 +9,6 @@ class FormulaGroupsController {
     async list(req, res, next) {
         try {
             const query = req.query
-           
             let formulaGroup = await FormulaGroupsModel.findAll(query)
             // Get Banker Info
             formulaGroup = formulaGroup.map(item => {

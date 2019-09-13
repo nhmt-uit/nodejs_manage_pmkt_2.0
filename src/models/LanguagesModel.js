@@ -19,7 +19,6 @@ LanguagesSchema.plugin(BaseSchema)
 const excludeFields = ['-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy']
 
 LanguagesSchema.statics.findAll = async (query) => {
-
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10)*limit - 1
     const result = await this.default.find({ status: ' active' })
@@ -30,12 +29,14 @@ LanguagesSchema.statics.findAll = async (query) => {
     return result
 }
 
+
 LanguagesSchema.statics.findByCode = async (code) => {
     const result = await this.default.find({ code: code, status: 'active' })
                                      .select(excludeFields.join(' ')).lean()
-
     return result
 }
+
+
 LanguagesSchema.statics.createLanguage = async (name, code, order) => {
     let data = {
         _id: new mongoose.Types.ObjectId(),
@@ -47,6 +48,8 @@ LanguagesSchema.statics.createLanguage = async (name, code, order) => {
     return this.default.findById(Language._id)
                        .select(excludeFields.join(' ')).lean()
 }
+
+
 LanguagesSchema.statics.updateLanguage = async (item) => {
 
     return this.default.findOneAndUpdate(

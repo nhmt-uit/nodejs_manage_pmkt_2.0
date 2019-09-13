@@ -45,7 +45,6 @@ class NoticesController {
     }
     async update(req, res, next) {
         try {
-            
             const temp = JSON.parse(req.body.contents)
             const data = {
                 id : req.params.id,
@@ -53,7 +52,6 @@ class NoticesController {
                 type: req.body.type,
                 contents: temp,
             }
-            console.log(data)
             let result = await NoticesModel.updateNotice(data)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
