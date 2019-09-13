@@ -6,6 +6,7 @@ import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 import formulasModel from "./FormulasModel"
 import bankersModel from "./BankersModel"
 import Session from '../utils/Session'
+import { get } from "http"
 // Define collection name
 const collectionName = "formula_groups"
 
@@ -21,28 +22,36 @@ const FormulaGroupSchema = new mongoose.Schema({
 FormulaGroupSchema.loadClass(BaseModel)
 FormulaGroupSchema.plugin(BaseSchema)
 
-const excludeFields = ['-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy']
+const excludeFields = ['-status -createdAt -updatedAt -createdBy -updatedBy -updateddAt']
 
-FormulaGroupSchema.statics.findAll = async (user_id, query) => {
-    // const userInfo = Session.get('user').id;
+FormulaGroupSchema.statics.findAll = async ( query) => {
+    const user_id = Session.get('user._id');
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10) * limit - 1
-    const result = await this.default.find({  status: 'active' })
+    const result = await this.default.find({ status: 'active', user_id: user_id })
                                      .populate({
                                         model: formulasModel,
                                         path: "formulas",
-                                        select: "banker_id _id formulas",
+                                        select: "banker_id _id user_id",
                                         populate: {
                                             model: bankersModel,
                                             path: "banker_id",
-                                            select: "_id name ",
+                                            select: "_id name user_id",
                                         }
                                     })
-                                      
+                                   
                                     .select(excludeFields.join(' ')).lean()
+                                    
                                     .sort(query.sort||'name')
                                     .limit(limit||10)
                                     .skip(skip||0)
+    //                                 console.log(result)
+    return result
+}
+
+FormulaGroupSchema.statics.find_id = async (id) => {
+    const result = await this.default.find({ _id: id, status: 'active' })
+                                     .select(excludeFields.join(' ')).lean()
 
     return result
 }

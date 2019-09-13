@@ -55,8 +55,5 @@ LanguagesSchema.statics.updateLanguage = async (item) => {
                     )
                     .select(excludeFields.join(' ')).lean()
 }
-LanguagesSchema.statics.delete = async (id) => {
-    return this.default.findOneAndDelete({ _id: id })
-                       .select(excludeFields.join(' ')).lean()
-}
+
 export default mongoose.model(collectionName, LanguagesSchema, collectionName)

@@ -72,9 +72,6 @@ NoticesSchema.statics.updateNotice = async (data) => {
                     )
                         .select(excludeFields.join(' ')).lean()
 }
-NoticesSchema.statics.delete = async (id) => {
-    return this.default.findOneAndDelete({ _id: id })
-                       .select(excludeFields.join(' ')).lean()
-}
+
 
 export default mongoose.model(collectionName, NoticesSchema, collectionName)

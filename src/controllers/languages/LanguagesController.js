@@ -65,12 +65,10 @@ class LanguagesController {
     }
     async delete(req, res, next) {
         try {
-            const id = req.params.id
-            let data = await LanguagesModel.delete(id)
-
+            await LanguagesModel.softDelete(req.params.id)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
-                data: data
+                data: req.params.id
             })
         } catch (err) {
             next(err)
