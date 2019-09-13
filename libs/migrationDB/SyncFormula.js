@@ -32,6 +32,7 @@ class SyncFormula {
 				const data = await FormulaFieldModel.find({
 												deleted: {$eq: 0}
 											})
+											.lean()
 											.limit(limit)
 											.skip(skip * limit)
 											.sort({created: 1})
@@ -66,6 +67,7 @@ class SyncFormula {
 				const data = await FormulaFormatModel.find({
 												deleted: {$eq: 0}
 											})
+											.lean()
 											.limit(limit)
 											.skip(skip * limit)
 											.sort({created: 1})
@@ -104,6 +106,7 @@ class SyncFormula {
 				const data = await FormulaPatternModel.find({
 												deleted: {$eq: 0}
 											})
+											.lean()
 											.limit(limit)
 											.skip(skip * limit)
 											.sort({createdAt: 1})
@@ -121,6 +124,7 @@ class SyncFormula {
 																f_pattern_id: mongoose.Types.ObjectId(_item._id),
 																deleted: {$eq: 0}
 															})
+															.lean()
 						const formulaFields = []
 						if (formulaFieldValue && formulaFieldValue.length) {
 							formulaFieldValue.forEach(el => {
@@ -161,6 +165,7 @@ class SyncFormula {
 				const data = await FormulaGroupModel.find({
 												deleted: {$eq: 0}
 											})
+											.lean()
 											.limit(limit)
 											.skip(skip * limit)
 											.sort({createdAt: 1})
@@ -178,6 +183,7 @@ class SyncFormula {
 																formula_group_id: mongoose.Types.ObjectId(_item._id),
 																deleted: {$eq: 0}
 															})
+															.lean()
 						const formulas = []
 						if (formulaGroupRelation && formulaGroupRelation.length) {
 							formulaGroupRelation.forEach(el => {

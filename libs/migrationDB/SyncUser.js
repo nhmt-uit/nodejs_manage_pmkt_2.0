@@ -26,6 +26,7 @@ class SyncUser {
 
 			while (true) {
 				const data = await UsersModel.find()
+											.lean()
 											.limit(limit)
 											.skip(skip * limit)
 											.sort({createdAt: 1})
@@ -45,6 +46,7 @@ class SyncUser {
 						role					: _item.roles ? Number(_item.roles) : 0,
 						secure_code				: _item.us_secure_code ? Number(_item.us_secure_code) : null,
 						login_failed			: _item.us_login_failed ? Number(_item.us_login_failed) : 0,
+						login_ip				: _item.us_ip_login ? String(_item.us_ip_login) : null,
 						lang_code				: _item.lang ? String(_item.lang) : "vi",
 						allow_export			: _item.special_feature ? Boolean(_item.special_feature) : false,
 						allow_report_detail		: _item.report_detail_feature ? Boolean(_item.report_detail_feature) : false,

@@ -7,7 +7,7 @@ import formulasModel from "./FormulasModel"
 import bankersModel from "./BankersModel"
 import Session from '../utils/Session'
 // Define collection name
-const collectionName = "formula_groups";
+const collectionName = "formula_groups"
 
 // Define collection schema
 const FormulaGroupSchema = new mongoose.Schema({
@@ -15,15 +15,14 @@ const FormulaGroupSchema = new mongoose.Schema({
     user_id: mongoose.Types.ObjectId,
     name: String,
     formulas: [mongoose.Schema.Types.ObjectId]
-
-});
+})
 
 // Load BaseModel
 FormulaGroupSchema.loadClass(BaseModel)
-FormulaGroupSchema.plugin(BaseSchema);
+FormulaGroupSchema.plugin(BaseSchema)
 
 FormulaGroupSchema.statics.findAll = async (user_id) => {
-    // const userInfo = Session.get('user').id;
+    // const userInfo = Session.get('user').id
     
 
     const result = await this.default.find({user_id: user_id, status: 'active'})

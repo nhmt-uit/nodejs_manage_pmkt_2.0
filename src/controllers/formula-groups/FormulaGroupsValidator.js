@@ -1,7 +1,7 @@
 import { check } from "express-validator"
 
 import FormulaGroupSchema from "../../models/FormulaGroupsModel"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 const FormulaGroupsValidator = {
 
@@ -18,7 +18,7 @@ const FormulaGroupsValidator = {
 
             .custom(async (value, {req}) => {
                 const id = req.params.id
-                let isUnique = await FormulaGroupSchema.checkFormulas(id, value);
+                let isUnique = await FormulaGroupSchema.checkFormulas(id, value)
                 if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
 
             }),
@@ -29,7 +29,7 @@ const FormulaGroupsValidator = {
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
 
             .custom(async (value) => {
-                let isUnique = await FormulaGroupSchema.checkName(value);
+                let isUnique = await FormulaGroupSchema.checkName(value)
                 if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
 
             }),
@@ -40,7 +40,7 @@ const FormulaGroupsValidator = {
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
 
             .custom(async (value) => {
-                let isUnique = await FormulaGroupSchema.checkBanker_id(value);
+                let isUnique = await FormulaGroupSchema.checkBanker_id(value)
                 if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
 
             }),

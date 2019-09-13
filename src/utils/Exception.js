@@ -19,6 +19,7 @@ Exception.VALIDATION = {
     IS_EXISTED              : "{{field}} is existed",
     INCORRECT_TYPE          : "Incorrect data type",
     NOT_FOUND_ERR           : "Not found item by {{field}}",
+    NOT_SAME                : "Please enter the same {{field}}"
 }
 
 Exception.AUTH = {
@@ -33,13 +34,16 @@ Exception.AUTH = {
 }
 
 Exception.getMessage = (message, params) => {
-    if (!_isEmpty(params)) {
-        Object.keys(params).forEach(key => {
-            message = message.replace(`{{${key}}}`, params[key])
-        })
+    try {
+        if (!_isEmpty(params)) {
+            Object.keys(params).forEach(key => {
+                message = message.replace(`{{${key}}}`, params[key])
+            })
+        }
+        return message
+    } catch {
+        return message
     }
-
-    return message
 }
 
 export default Exception

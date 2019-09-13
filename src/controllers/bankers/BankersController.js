@@ -1,5 +1,5 @@
 import BankersModel from "../../models/BankersModel"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 class BankersController {
     async list (req, res, next) {

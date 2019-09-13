@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel";
+import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
 
 // Define collection name
 const collectionName = "m_currencies"
@@ -17,6 +17,7 @@ MCurrenciesSchema.plugin(BaseSchema)
 const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ];
 
 MCurrenciesSchema.statics.findAll = (query) => {
+    console.log(query.sort)
     return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()
         .sort(query.sort)
         .limit(Number(query.limit))
@@ -75,10 +76,5 @@ MCurrenciesSchema.statics.checkCurrency = async (name, m_currency_id) => {
 
     return !!currency
 }
-
-MCurrenciesSchema.statics.deleteMCurrency = id => {
-    return this.default.deleteOne({_id: id})
-}
-
 
 export default mongoose.model(collectionName, MCurrenciesSchema, collectionName)

@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel";
+import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
 
 // Define collection name
 const collectionName = "bankers"
@@ -22,7 +22,7 @@ const BankersSchema = new mongoose.Schema({
 BankersSchema.loadClass(BaseModel)
 BankersSchema.plugin(BaseSchema)
 
-const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ];
+const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
 
 BankersSchema.statics.findAll = (query) => {
     return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()
@@ -48,7 +48,7 @@ BankersSchema.statics.updateHostBanker = item => {
 BankersSchema.statics.createHostBanker = item => {
     let data = {
         url: item.host_url,
-    };
+    }
     return this.default.findOneAndUpdate(
         {_id: item.banker_id},
         { $push: {"agent_host": data}},

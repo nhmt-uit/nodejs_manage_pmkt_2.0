@@ -1,5 +1,5 @@
 import MCurrenciesModel from "../../models/MCurrenciesModel"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 
 class MCurrenciesController {
@@ -81,7 +81,7 @@ class MCurrenciesController {
         try {
             const id = req.params.id
 
-            await MCurrenciesModel.deleteMCurrency(id)
+            await MCurrenciesModel.softDelete(id)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
                 data: id,
