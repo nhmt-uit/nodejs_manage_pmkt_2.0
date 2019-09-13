@@ -17,16 +17,6 @@ const BaseFields = {
 }
 
 
-// Get current userID
-let userId
-try {
-    
-} catch {
-    userId = null
-}
-
-
-
 // BaseSchema process middleware
 const BaseSchema = schema => {
     // Add Exteneral fields
@@ -39,10 +29,11 @@ const BaseSchema = schema => {
     // Create a pre-save hook
     schema.pre("save", function(next) {
         const userInfo = Session.get("user")
-        console.log(userInfo)
-        this.updatedBy = userInfo._id ? userInfo._id : null
-        if (!this.createdAt) {
-            this.createdBy = userInfo._id ? userInfo._id : null
+        if (userInfo) {
+            this.updatedBy = userInfo._id ? userInfo._id : null
+            if (!this.createdAt) {
+                this.createdBy = userInfo._id ? userInfo._id : null
+            }
         }
         next()
     })
@@ -50,7 +41,9 @@ const BaseSchema = schema => {
     // Create a pre-findOneAndUpdate hook
     schema.pre("findOneAndUpdate", function(next) {
         const userInfo = Session.get("user")
-        this._update.updatedBy = userInfo._id ? userInfo._id : null
+        if (userInfo) {
+            this._update.updatedBy = userInfo._id ? userInfo._id : null
+        }
         next()
     })
 }
