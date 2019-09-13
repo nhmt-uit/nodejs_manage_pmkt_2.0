@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel";
+import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
 
 // Define collection name
 const collectionName = "books"
@@ -13,8 +13,13 @@ const BooksSchema = new mongoose.Schema({
 BooksSchema.loadClass(BaseModel)
 BooksSchema.plugin(BaseSchema)
 
-BooksSchema.statics.findAll = () => {
-    return this.default.find({status: 'active'}).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ];
+
+BooksSchema.statics.findAll = (query) => {
+    return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()
+        .sort(query.sort)
+        .limit(Number(query.limit))
+        .skip(Number(query.limit)*Number(query.page - 1))
 }
 
 export default mongoose.model(collectionName, BooksSchema, collectionName)

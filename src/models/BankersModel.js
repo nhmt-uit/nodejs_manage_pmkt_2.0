@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel";
+import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
 
 // Define collection name
 const collectionName = "bankers"
@@ -22,8 +22,13 @@ const BankersSchema = new mongoose.Schema({
 BankersSchema.loadClass(BaseModel)
 BankersSchema.plugin(BaseSchema)
 
-BankersSchema.statics.findAll = () => {
-    return this.default.find({status: 'active'}).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
+
+BankersSchema.statics.findAll = (query) => {
+    return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()
+        .sort(query.sort)
+        .limit(Number(query.limit))
+        .skip(Number(query.limit)*Number(query.page - 1))
 }
 
 
@@ -33,11 +38,19 @@ BankersSchema.statics.updateHostBanker = item => {
         {
             '$set': {
                 'agent_host.$.url': item.host_url,
+<<<<<<< HEAD
 
             }
         },
         {new: true}
     ).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+=======
+            }
+        },
+        {new: true}
+    ).select(excludeFields.join(' ')).lean()
+}
+>>>>>>> 119a6e5ee3204718eeaa3e4bdcfb495c2f72d904
 
    
 
@@ -45,12 +58,12 @@ BankersSchema.statics.updateHostBanker = item => {
 BankersSchema.statics.createHostBanker = item => {
     let data = {
         url: item.host_url,
-    };
+    }
     return this.default.findOneAndUpdate(
         {_id: item.banker_id},
         { $push: {"agent_host": data}},
         {new: true}
-    ).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+    ).select(excludeFields.join(' ')).lean()
 }
 
 
@@ -59,7 +72,7 @@ BankersSchema.statics.deleteHostBanker = item => {
         {_id: item.banker_id},
         { $pull: {"agent_host": {_id: item.host_id}}},
         {new: true}
-    ).select("-status -createdBy -createdAt -updatedBy -updatedAt")
+    ).select(excludeFields.join(' ')).lean()
 }
 
 

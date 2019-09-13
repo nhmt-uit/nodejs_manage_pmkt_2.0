@@ -12,8 +12,8 @@ const LanguagesSchema = new mongoose.Schema({
     order: Number
 })
 // Load BaseModel
-LanguagesSchema.loadClass(BaseModel);
-LanguagesSchema.plugin(BaseSchema);
+LanguagesSchema.loadClass(BaseModel)
+LanguagesSchema.plugin(BaseSchema)
 
 LanguagesSchema.statics.findAll = async (query) => {
         

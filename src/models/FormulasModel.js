@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 
 // Define collection name
-const collectionName = "formulas";
+const collectionName = "formulas"
 
 // Define collection schema
 const formulasSchema = new mongoose.Schema({
@@ -19,10 +19,10 @@ const formulasSchema = new mongoose.Schema({
         }
     ],
     rec_pay: Number
-});
+})
 // Load BaseModel
 formulasSchema.loadClass(BaseModel)
-formulasSchema.plugin(BaseSchema);
+formulasSchema.plugin(BaseSchema)
 
 export default mongoose.model(collectionName, formulasSchema, collectionName)
 export{

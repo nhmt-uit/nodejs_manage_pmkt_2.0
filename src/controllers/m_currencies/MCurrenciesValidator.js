@@ -1,7 +1,7 @@
 import { check } from "express-validator"
 
 import MCurrenciesModel from "../../models/MCurrenciesModel"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 const MCurrenciesValidator = {
     getMCurrenciesDetail: [
@@ -51,8 +51,9 @@ const MCurrenciesValidator = {
         check('name')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
-            .custom( async value => {
-                let isUnique = await MCurrenciesModel.checkCurrency(value)
+            .custom( async (value, {req}) => {
+                const m_currency_id = req.params.id
+                let isUnique = await MCurrenciesModel.checkCurrency(value, m_currency_id)
                 if(isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, {field: value}))
                 }

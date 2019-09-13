@@ -1,10 +1,12 @@
 import BankersModel from "../../models/BankersModel"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 class BankersController {
     async listBankers (req, res, next) {
         try {
-            const bankers = await BankersModel.findAll()
+            const query = req.query
+
+            const bankers = await BankersModel.findAll(query)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: bankers,
@@ -30,6 +32,9 @@ class BankersController {
 
     async updateHostBanker (req, res, next) {
         try {
+            const item = req.body
+            item.host_id = req.params.id
+
             const result = await BankersModel.updateHostBanker(item)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),

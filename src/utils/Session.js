@@ -21,7 +21,7 @@ class Session {
 
     set(key, value) {
         this.session[key] = value
-        return this.session.save()
+        return this.session.save
     }
 
     remove(key) {

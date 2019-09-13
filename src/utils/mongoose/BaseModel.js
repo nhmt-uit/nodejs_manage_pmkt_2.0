@@ -6,16 +6,25 @@
 */
 import mongoose from "mongoose"
 
-import Moment from "../Moment"
+import Session from "../Session"
+
 
 // Exteneral fields
 const BaseFields = {
     status: { type: String, lowercase: true, trim: true, enum: ["active", "inactive", "delete"], default: "active" },
     createdBy: { type: mongoose.Schema.Types.ObjectId, default: null },
-    createdAt: { type: Date, default: Moment.format() },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, default: null },
-	updatedAt: { type: Date, default: Moment.format() },
 }
+
+
+// Get current userID
+let userId
+try {
+    
+} catch {
+    userId = null
+}
+
 
 
 // BaseSchema process middleware
@@ -25,16 +34,23 @@ const BaseSchema = schema => {
 
     // Disabled version key in collection
     schema.set("versionKey", false)
+    schema.set("timestamps", true)
 
     // Create a pre-save hook
     schema.pre("save", function(next) {
-        const now = Moment.format()
-        this.createdBy = mongoose.mongo.ObjectID() //Temp data
-        this.createdAt = now
-        if (!this.created_at) {
-            this.updatedBy = mongoose.mongo.ObjectID() //Temp data
-            this.updatedAt = now
+        const userInfo = Session.get("user")
+        console.log(userInfo)
+        this.updatedBy = userInfo._id ? userInfo._id : null
+        if (!this.createdAt) {
+            this.createdBy = userInfo._id ? userInfo._id : null
         }
+        next()
+    })
+
+    // Create a pre-findOneAndUpdate hook
+    schema.pre("findOneAndUpdate", function(next) {
+        const userInfo = Session.get("user")
+        this._update.updatedBy = userInfo._id ? userInfo._id : null
         next()
     })
 }

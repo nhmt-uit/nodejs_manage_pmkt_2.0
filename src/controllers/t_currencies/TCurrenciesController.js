@@ -1,11 +1,13 @@
 import TCurrenciesModel from "../../models/TCurrenciesModel"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 
 class TCurrenciesController {
     async listTCurrencies (req, res, next) {
         try {
-            const tcurrencies = await TCurrenciesModel.findAll()
+            const query = req.query
+
+            const tcurrencies = await TCurrenciesModel.findAll(query)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: tcurrencies,
@@ -17,9 +19,10 @@ class TCurrenciesController {
 
     async saveConfig (req, res, next) {
         try {
-            const data = req.body
+            const type = req.body.type
+            const data = JSON.parse(req.body.data)
 
-            await TCurrenciesModel.saveConfig(data)
+            await TCurrenciesModel.saveConfig(type, data)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
                 data: data,

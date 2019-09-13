@@ -1,11 +1,13 @@
 import MCurrenciesModel from "../../models/MCurrenciesModel"
-import Exception from "../../utils/Exception";
+import Exception from "../../utils/Exception"
 
 
 class MCurrenciesController {
     async listMCurrencies (req, res, next) {
         try {
-            const mcurrencies = await MCurrenciesModel.findAll()
+            const query = req.query
+
+            const mcurrencies = await MCurrenciesModel.findAll(query)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: mcurrencies,
