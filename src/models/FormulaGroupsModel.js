@@ -28,7 +28,7 @@ FormulaGroupSchema.statics.findAll = async ( query) => {
     const user_id = Session.get('user._id');
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10) * limit - 1
-    const result = await this.default.find({ status: 'active', user_id: user_id })
+    const result = await this.default.find({ status: 'active' })
                                      .populate({
                                         model: formulasModel,
                                         path: "formulas",
@@ -38,7 +38,7 @@ FormulaGroupSchema.statics.findAll = async ( query) => {
                                             path: "banker_id",
                                             select: "_id name user_id",
                                         }
-                                    })                                 
+                                    })                                                            
                                     .select(excludeFields.join(' ')).lean()                                   
                                     .sort(query.sort||'name')
                                     .limit(limit||10)

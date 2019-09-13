@@ -6,7 +6,7 @@ import Session from '../utils/Session'
 const collectionName = "formulas"
 
 // Define collection schema
-const formulasSchema = new mongoose.Schema({
+const FormulasSchema = new mongoose.Schema({
     banker_id: mongoose.Types.ObjectId,
     user_id: mongoose.Types.ObjectId,
     t_currency_id: mongoose.Types.ObjectId,
@@ -19,13 +19,14 @@ const formulasSchema = new mongoose.Schema({
     rec_pay: Number
 })
 // Load BaseModel
-formulasSchema.loadClass(BaseModel)
-formulasSchema.plugin(BaseSchema)
+FormulasSchema.loadClass(BaseModel)
+FormulasSchema.plugin(BaseSchema)
+
 
 const excludeFields = ['-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy']
-formulasSchema.statics.findAll = async (query) => {
-    const user_id = Session.get('user._id');
-    console.log(user_id)    
+
+FormulasSchema.statics.findAll = async (query) => {
+    const user_id = Session.get('user._id');  
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10)*limit - 1
     const result = await this.default.find({status:'active',user_id : user_id })
@@ -36,18 +37,17 @@ formulasSchema.statics.findAll = async (query) => {
     return result
 }
 
-formulasSchema.statics.find_id = async (id) => {
-    console.log(id)
+
+FormulasSchema.statics.find_id = async (id) => {
     const result = await this.default.find({_id:id})
                                      .select(excludeFields.join(' ')).lean()
-
     return result
 }
 
-formulasSchema.statics.createFormula = async (data) => {
-    const temp = JSON.parse(data.fields)
 
-    let A = {
+FormulasSchema.statics.createFormula = async (data) => {
+    const temp = JSON.parse(data.fields)
+    let newObject = {
         _id: new mongoose.Types.ObjectId(),
         banker_id: data.banker_id,
         t_currency_id: data.t_currency_id,
@@ -59,13 +59,14 @@ formulasSchema.statics.createFormula = async (data) => {
         }],
         rec_pay: data.rec_pay,
     }
-    const formula = await this.default.create(A)
+    const formula = await this.default.create(newObject)
 
     return this.default.findById(formula._id)
                        .select(excludeFields.join(' ')).lean()
 }
-formulasSchema.statics.updateFormula = async (data) => {
-    console.log(data.rec_pay)
+
+
+FormulasSchema.statics.updateFormula = async (data) => {
     return this.default.findByIdAndUpdate(
                         { _id: data.id },
                         {
@@ -83,4 +84,5 @@ formulasSchema.statics.updateFormula = async (data) => {
                     )
                         .select(excludeFields.join(' ')).lean()
 }
-export default mongoose.model(collectionName, formulasSchema, collectionName)
+
+export default mongoose.model(collectionName, FormulasSchema, collectionName)
