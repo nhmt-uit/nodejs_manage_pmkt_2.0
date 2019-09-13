@@ -2,7 +2,7 @@ import BankersModel from "../../models/BankersModel"
 import Exception from "../../utils/Exception";
 
 class BankersController {
-    async listBankers (req, res, next) {
+    async list (req, res, next) {
         try {
             const query = req.query
 
@@ -16,7 +16,7 @@ class BankersController {
         }
     }
 
-    async createHostBanker (req, res, next) {
+    async save (req, res, next) {
         try {
             const item = req.body
 
@@ -30,7 +30,7 @@ class BankersController {
         }
     }
 
-    async updateHostBanker (req, res, next) {
+    async update (req, res, next) {
         try {
             const item = req.body
             item.host_id = req.params.id
@@ -45,7 +45,7 @@ class BankersController {
         }
     }
 
-    async deleteHostBanker (req, res, next) {
+    async delete (req, res, next) {
         try {
             const item = req.body
             item.host_id = req.params.id

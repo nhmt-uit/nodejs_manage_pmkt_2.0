@@ -3,7 +3,7 @@ import Exception from "../../utils/Exception";
 
 
 class TCurrenciesController {
-    async listTCurrencies (req, res, next) {
+    async list (req, res, next) {
         try {
             const query = req.query
 
@@ -32,7 +32,7 @@ class TCurrenciesController {
         }
     }
 
-    async updateTCurrencies (req, res, next) {
+    async update (req, res, next) {
         try {
             const item = req.body
             item.t_currency_id = req.params.id

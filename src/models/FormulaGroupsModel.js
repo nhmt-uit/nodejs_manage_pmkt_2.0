@@ -54,14 +54,15 @@ FormulaGroupSchema.statics.createFormulaGroup = async (name) => {
 
 FormulaGroupSchema.statics.addByBanker =  (item) => {
     
-    if(!item.formula_id){ return false
+    if(!item.formula_id){
+        return false
     }else{
-    const result = this.default.findOneAndUpdate(
-        { _id: item.id },
-        { $push: { "formulas": [item.formula_id] } },
-        {new: true}
-        )
-        .select("_id user_id name formulas")
+        const result = this.default.findOneAndUpdate(
+                                        { _id: item.id },
+                                        { $push: { "formulas": [item.formula_id] } },
+                                        { new: true }
+                                    )
+                                    .select("_id user_id name formulas")
         
         return result
     }

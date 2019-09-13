@@ -3,7 +3,7 @@ import Exception from "../../utils/Exception";
 
 
 class MCurrenciesController {
-    async listMCurrencies (req, res, next) {
+    async list (req, res, next) {
         try {
             const query = req.query
 
@@ -17,7 +17,7 @@ class MCurrenciesController {
         }
     }
 
-    async mCurrencyDetail (req, res, next) {
+    async detail (req, res, next) {
         try {
             const currency_id = req.params.id
 
@@ -31,7 +31,7 @@ class MCurrenciesController {
         }
     }
 
-    async createMCurrency (req, res, next) {
+    async save (req, res, next) {
         try {
             const item = req.body
 
@@ -45,7 +45,7 @@ class MCurrenciesController {
         }
     }
 
-    async updateMCurrency (req, res, next) {
+    async update (req, res, next) {
         try {
             const item = req.body
             item.currency_id = req.params.id
@@ -77,7 +77,7 @@ class MCurrenciesController {
         }
     }
 
-    async deleteMCurrency (req, res, next) {
+    async delete (req, res, next) {
         try {
             const id = req.params.id
 

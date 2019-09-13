@@ -19,8 +19,8 @@ LanguagesSchema.plugin(BaseSchema);
 LanguagesSchema.statics.findAll = async () => {
 
     const result = await this.default.find({ status:' active' })
-    .select("_id name code order")
-    .limit(10)
+                                        .select("_id name code order")
+                                        .limit(10)
     return result
 }
 

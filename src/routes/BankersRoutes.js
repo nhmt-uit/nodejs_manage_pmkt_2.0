@@ -7,10 +7,10 @@ import BankersValidator from "../controllers/bankers/BankersValidator"
 
 const router = express.Router()
 
-router.get("/", BankersController.listBankers)
-router.post("/host", ValidatorHandling(BankersValidator.postCreateUpdateHostBanker), BankersController.createHostBanker)
-router.put("/host/:id", ValidatorHandling(BankersValidator.postCreateUpdateHostBanker),BankersController.updateHostBanker)
-router.delete("/host/:id", ValidatorHandling(BankersValidator.deleteHostBanker),BankersController.deleteHostBanker)
+router.get("/", BankersController.list)
+router.post("/host", ValidatorHandling(BankersValidator.postCreateUpdateHostBanker), BankersController.save)
+router.put("/host/:id", ValidatorHandling(BankersValidator.postCreateUpdateHostBanker),BankersController.update)
+router.delete("/host/:id", ValidatorHandling(BankersValidator.deleteHostBanker),BankersController.delete)
 
 
 export default router
