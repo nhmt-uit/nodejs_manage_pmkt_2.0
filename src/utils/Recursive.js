@@ -30,5 +30,4 @@ class Recursive {
     }
 }
 
-
 export default new Recursive();

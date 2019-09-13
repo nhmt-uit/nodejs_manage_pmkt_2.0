@@ -6,6 +6,7 @@ class AccountsController {
     async index(req, res, next) {
         try {
             const accountList = await AccountsModel.findDoc();
+            // const result = accountList;
             const result = Recursive.flatToTree(accountList);
 
             return res.jsonSuccess({
