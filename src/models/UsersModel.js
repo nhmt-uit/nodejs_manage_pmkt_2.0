@@ -33,10 +33,9 @@ UsersSchema.loadClass(BaseModel)
 UsersSchema.plugin(BaseSchema)
 
 
-UsersSchema.statics.findAll = (username) => {
-	// return this.default.find({
-	//   	username: username,
-	// })
+
+UsersSchema.statics.updateDoc = ({ options, formData }) => {
+    return this.default.findOneAndUpdate(options, formData, { new: true })
 }
 
 UsersSchema.statics.checkUniqueUsername = (username) => {
@@ -49,6 +48,8 @@ UsersSchema.statics.checkUniqueUsername = (username) => {
 			} else return true
 		})
 }
+
+
 
 
 // Export Model

@@ -52,7 +52,7 @@ class SyncReport {
 							user_id			: mongoose.Types.ObjectId(_item.uid),
 							name			: _item.chuky ? String(_item.chuky) : "",
 							is_exported		: _item.is_exported ? Boolean(_item.is_exported) : false,
-							status			: Number(_item.deleted) !== 0 ? "delete" : "active"
+							status			: Number(_item.deleted) !== 0 ? "deleted" : "active"
 						})
 						const result = await query.save()
 						console.log(result)
@@ -152,7 +152,7 @@ class SyncReport {
 								origin_amount				: origin_amount,
 								amount						: amount,
 								note						: __ITEM.note ? String(__ITEM.note).trim() : "",
-								status						: Number(__ITEM.deleted) !== 0 ? "delete" : "active"
+								status						: Number(__ITEM.deleted) !== 0 ? "deleted" : "active"
 								
 							})
 							const result = await query.save()
@@ -213,7 +213,7 @@ class SyncReport {
 						origin_amount				: origin_amount,
 						amount						: amount,
 						note						: _item.note ? String(_item.note).trim() : "",
-						status						: Number(_item.deleted) !== 0 ? "delete" : "active"
+						status						: Number(_item.deleted) !== 0 ? "deleted" : "active"
 					})
 					// const result = await query.save()
 					// console.log(result)

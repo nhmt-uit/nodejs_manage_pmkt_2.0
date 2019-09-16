@@ -1,4 +1,5 @@
 import AuthModel, { TYPE } from "../../models/AuthModel"
+import UserModel from "../../models/UsersModel"
 import Authentication from "../../utils/auth/Authentication"
 import Session from "../../utils/Session"
 import Exception from "../../utils/Exception"
@@ -14,10 +15,10 @@ class AuthController {
                 const refresh_token = Authentication.getRefreshToken({_id: userInfo._id, username: userInfo.username})
                 Session.set("token", token)
                 Session.set("refresh_token", refresh_token)
-                Session.set("user", userInfo)
+                Session.set("user", result.origin_payload)
                 return res.jsonSuccess({
                     message: Exception.getMessage(Exception.AUTH.LOGIN_SUCCESS),
-                    data: Session.get("user"),
+                    data: userInfo,
                     token: token,
                     refresh_token: refresh_token
                 })
@@ -105,34 +106,30 @@ class AuthController {
             return res.jsonSuccess({
 
             })
-            // let secure_codes = req.body.secure_codes
-            // const userInfo = Session.get("user")
-            // let isValid = false
-            // if (secure_codes && secure_codes.length && userInfo) {
-            //     secure_codes = JSON.parse(secure_codes)
-            //     const secure_code = String(userInfo.secure_code)
-            //     isValid = true
-            //     secure_codes.forEach(item => {
-            //         const charAtPosition = secure_code.charAt(Number(item.position))
-            //         if (charAtPosition === "" || charAtPosition !== String(item.value)) isValid = false
-            //     })
-            // }
-            
-            // if (isValid) {
-            //     return res.jsonSuccess({
-            //         message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS)
-            //     })
-            // } else {
-            //     res.jsonError({
-            //         code: 400,
-            //         message: Exception.getMessage(Exception.AUTH.INVALID_SECURE_CODE)
-            //     })
-            // }
         } catch (err) {
             next(err)
         }
     }
 
+    changePassword (req, res, next) {
+        try {
+            return res.jsonSuccess({
+
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    changePassword2 (req, res, next) {
+        try {
+            return res.jsonSuccess({
+
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
 
     
 }

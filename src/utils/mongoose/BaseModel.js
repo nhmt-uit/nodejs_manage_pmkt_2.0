@@ -11,7 +11,7 @@ import Session from "../Session"
 
 // Exteneral fields
 const BaseFields = {
-    status: { type: String, lowercase: true, trim: true, enum: ["active", "inactive", "delete"], default: "active" },
+    status: { type: String, lowercase: true, trim: true, enum: ["active", "inactive", "deleted"], default: "active" },
     createdBy: { type: mongoose.Schema.Types.ObjectId, default: null },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, default: null },
 }
