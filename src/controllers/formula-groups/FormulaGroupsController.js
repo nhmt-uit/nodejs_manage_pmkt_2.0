@@ -6,18 +6,17 @@ import Exception from "../../utils/Exception"
 
 
 class FormulaGroupsController {
-    async listData(req, res, next) {
+    async list(req, res, next) {
         try {
-            
-            const  user_id = req.body.user_id
-            let formulaGroup = await FormulaGroupsModel.findAll(user_id)
+            const query = req.query
+            let formulaGroup = await FormulaGroupsModel.findAll(query)
             // Get Banker Info
             formulaGroup = formulaGroup.map(item => {
                 const _item = JSON.parse(JSON.stringify(item))
                 _item.bankers = _uniqBy(_item.formulas, "banker_id._id").map(elem => elem.banker_id)
+                console.log (_item)
                 return _item
             })
-           
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: formulaGroup
@@ -27,11 +26,10 @@ class FormulaGroupsController {
         }
     }
 
-    async dataById(req, res, next) {
+    async detail(req, res, next) {
         try {
             const id = req.params.id
-            let formulaGroup = await FormulaGroupsModel.findOne({ _id: id , status:'active' })
-                .select("_id user_id name formulas status")
+            let formulaGroup = await FormulaGroupsModel.find_id(id)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: formulaGroup
@@ -41,7 +39,7 @@ class FormulaGroupsController {
         }
     }
 
-    async create(req, res, next) {
+    async save(req, res, next) {
         try {
             const name = req.body.name
             const formulaGroup = await FormulaGroupsModel.createFormulaGroup(name)
@@ -83,11 +81,10 @@ class FormulaGroupsController {
 
     async delete(req, res, next) {
         try {
-            const id = req.params.id
-            let data = await FormulaGroupsModel.delete(id)
+            await FormulaGroupsModel.softDelete(req.params.id)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
-                data: data
+                data: req.params.id
             })
         } catch (err) {
             next(err)
@@ -108,16 +105,6 @@ class FormulaGroupsController {
         }
     }
 
-    async detail(req, res, next) {
-        try {
-            return res.send({
-                message: "You requested detail formula controller",
-                errors: "You requested detail formula controller"
-            })
-        } catch (err) {
-            next(err)
-        }
-    }
 }
 
 export default new FormulaGroupsController()

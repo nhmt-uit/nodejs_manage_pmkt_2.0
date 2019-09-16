@@ -2,7 +2,7 @@ import BooksModel from "../../models/BooksModel"
 import ExceptionConfig from "../../configs/ExceptionConfig"
 
 class BooksController {
-    async listBooks (req, res, next) {
+    async list (req, res, next) {
         try {
             const query = req.query
 

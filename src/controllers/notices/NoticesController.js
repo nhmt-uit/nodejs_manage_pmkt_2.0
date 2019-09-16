@@ -2,10 +2,11 @@ import NoticesModel from "../../models/NoticesModel"
 import Exception from "../../utils/Exception";
 
 class NoticesController {
-    async listData(req, res, next) {
-                const language_id = req.query.language_id
+    async list(req, res, next) {
         try {
-            let result = await NoticesModel.findAll(language_id)
+            const query = req.query
+            const language_id = req.query.language_id
+            let result = await NoticesModel.findAll(language_id, query)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: result
@@ -14,9 +15,9 @@ class NoticesController {
             next(err)
         }
     }
-    async dataById(req, res, next) {
-        const id = req.params.id
+    async detail(req, res, next) {
         try {
+            const id = req.params.id
             let result = await NoticesModel.find_id(id)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
@@ -26,7 +27,7 @@ class NoticesController {
             next(err)
         }
     }
-    async create(req, res, next) {
+    async save(req, res, next) {
         try {
             const data = {
                 name: req.body.name,
@@ -44,7 +45,6 @@ class NoticesController {
     }
     async update(req, res, next) {
         try {
-            
             const temp = JSON.parse(req.body.contents)
             const data = {
                 id : req.params.id,
@@ -52,7 +52,6 @@ class NoticesController {
                 type: req.body.type,
                 contents: temp,
             }
-            console.log(data)
             let result = await NoticesModel.updateNotice(data)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
@@ -65,11 +64,10 @@ class NoticesController {
     }
     async delete(req, res, next) {
         try {
-            const id = req.params.id
-            let data = await NoticesModel.delete(id)
+            await NoticesModel.softDelete(req.params.id)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
-                data: data
+                data: req.params.id
             })
         } catch (err) {
             next(err)

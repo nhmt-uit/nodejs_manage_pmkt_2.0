@@ -6,9 +6,9 @@ import NoticesValidator from "../controllers/notices/NoticesValidator"
 
 const router = express.Router()
 
-router.get("/", NoticesController.listData)
-router.get("/:id", NoticesController.dataById)
-router.post("/", NoticesController.create)
+router.get("/", NoticesController.list)
+router.get("/:id", NoticesController.detail)
+router.post("/", NoticesController.save)
 router.put("/:id", NoticesController.update)
 router.delete("/:id",NoticesController.delete)
 

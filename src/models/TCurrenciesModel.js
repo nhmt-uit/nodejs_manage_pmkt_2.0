@@ -2,6 +2,7 @@ import mongoose from "mongoose"
 
 import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
+import formulasModel from "./FormulasModel";
 
 // Define collection name
 const collectionName = "t_currencies"
@@ -15,30 +16,38 @@ const TCurrenciesSchema = new mongoose.Schema({
     note: String,
 })
 
+TCurrenciesSchema.virtual('total_formulas', {
+    ref: 'formulas', // The model to use
+    localField: '_id', // Find people where `localField`
+    foreignField: 't_currency_id', // is equal to `foreignField`
+    count: true // And only get the number of docs
+})
+
 TCurrenciesSchema.loadClass(BaseModel)
 TCurrenciesSchema.plugin(BaseSchema)
 
-const userInfo = Session.get('user');
 const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
 
 
 TCurrenciesSchema.statics.findAll = (query) => {
     const option = {
-        // status : 'active',
-        // user_id: '56850ba0097802b9f2392a2b' //userInfo.id
+        status : 'active',
+        user_id: mongoose.Types.ObjectId(Session.get('user._id'))
     }
-    return this.default.find(option).select(excludeFields.join(' ')).lean()
+
+    return this.default.find(option).select(excludeFields.join(' '))
+        .populate("total_formulas")
         .sort(query.sort)
         .limit(Number(query.limit))
         .skip(Number(query.limit)*Number(query.page - 1))
+        .lean()
 }
 
 
 TCurrenciesSchema.statics.saveConfig = async (type, data) => {
-    const userInfo_id = '56850ba0097802b9f2392a2b'
 
     if(data.length === 0){
-        return this.default.updateMany({user_id: userInfo_id}, {$set:{status: "delete"}})
+        return this.default.updateMany({user_id: Session.get('user._id')}, {$set:{status: "delete"}})
     } else {
         switch (type) {
             case "all":
@@ -68,8 +77,7 @@ TCurrenciesSchema.statics.saveConfig = async (type, data) => {
 
 
 TCurrenciesSchema.statics.checkExists = async item => {
-    const userInfo_id = '56850ba0097802b9f2392a2b' //userInfo.id
-    const result = await this.default.findOne({m_currency_id: item.m_currency_id, user_id: userInfo_id})
+    const result = await this.default.findOne({m_currency_id: item.m_currency_id, user_id: Session.get('user._id')})
 
     return !!result
 }
@@ -77,7 +85,7 @@ TCurrenciesSchema.statics.checkExists = async item => {
 
 TCurrenciesSchema.statics.createTCurrencies = item => {
     const data = {
-        user_id: '56850ba0097802b9f2392a2b', //userInfo.id
+        user_id: Session.get('user._id'),
         m_currency_id: item.m_currency_id,
         round_type: item.round_type,
         note: ''
@@ -96,9 +104,8 @@ TCurrenciesSchema.statics.updateTCurrencies = item => {
 
 
 TCurrenciesSchema.statics.updateStatus = (ids) => {
-    const userInfo_id = '56850ba0097802b9f2392a2b' //userInfo.id
 
-    return this.default.updateMany({user_id: userInfo_id, m_currency_id: { $nin: ids}}, {status: "delete"}, {new: true})
+    return this.default.updateMany({user_id: Session.get('user._id'), m_currency_id: { $nin: ids}}, {status: "delete"}, {new: true})
 }
 
 

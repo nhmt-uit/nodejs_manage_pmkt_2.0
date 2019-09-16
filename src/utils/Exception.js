@@ -19,7 +19,8 @@ Exception.VALIDATION = {
     IS_EXISTED              : "{{field}} is existed",
     INCORRECT_TYPE          : "Incorrect data type",
     NOT_FOUND_ERR           : "Not found item by {{field}}",
-    NOT_SAME                : "Please enter the same {{field}}"
+    NOT_SAME                : "Please enter the same {{field}}",
+    INCORRECT_FIELD         : "This field is incorrect"
 }
 
 Exception.AUTH = {

@@ -6,9 +6,9 @@ import LanguagesValidator from "../controllers/languages/LanguagesValidator"
 
 const router = express.Router()
 
-router.get("/", LanguagesController.listData)
-router.get("/code", LanguagesController.dataByCode)
-router.post("/", LanguagesController.create)
+router.get("/", LanguagesController.list)
+router.get("/code", LanguagesController.detail)
+router.post("/", LanguagesController.save)
 router.put("/:id", LanguagesController.update)
 router.delete("/:id",LanguagesController.delete)
 
