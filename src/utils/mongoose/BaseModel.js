@@ -41,7 +41,7 @@ const BaseSchema = schema => {
     // Create a pre-findOneAndUpdate hook
     schema.pre("findOneAndUpdate", function(next) {
         const userID = Session.get("user._id")
-        if (userID) {
+        if (userID && this._update) {
             this._update.updatedBy = userID
         }
         next()

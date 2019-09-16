@@ -78,7 +78,9 @@ const AuthValidator = {
         check("new_password")
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%])[0-9A-Za-z!@#$%]{8,}$/)
-                .withMessage(Exception.getMessage(Exception.VALIDATION.PASSWORD_FORMAT, {field: "Password"})),
+                .withMessage(Exception.getMessage(Exception.VALIDATION.PASSWORD_FORMAT, {field: "Password"}))
+            .custom((value, { req }) => value !== req.body.current_password)
+                .withMessage(Exception.getMessage(Exception.VALIDATION.MUST_NOT_EQUAL, {first_field: "New Password", second_field: "Password"})),
         check("re_new_password")
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%])[0-9A-Za-z!@#$%]{8,}$/)
@@ -103,8 +105,10 @@ const AuthValidator = {
                 }).withMessage(Exception.getMessage(Exception.VALIDATION.INCORRECT_FIELD)),
         check("new_password2")
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
-                .matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%])[0-9A-Za-z!@#$%]{8,}$/)
-                .withMessage(Exception.getMessage(Exception.VALIDATION.PASSWORD_FORMAT, {field: "Password2"})),
+            .matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%])[0-9A-Za-z!@#$%]{8,}$/)
+                .withMessage(Exception.getMessage(Exception.VALIDATION.PASSWORD_FORMAT, {field: "Password2"}))
+            .custom((value, { req }) => value !== req.body.current_password2)
+                .withMessage(Exception.getMessage(Exception.VALIDATION.MUST_NOT_EQUAL, {first_field: "New Password2", second_field: "Password2"})),
         check("re_new_password2")
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%])[0-9A-Za-z!@#$%]{8,}$/)

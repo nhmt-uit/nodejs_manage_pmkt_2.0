@@ -21,7 +21,8 @@ Exception.VALIDATION = {
     NOT_FOUND_ERR           : "Not found item by {{field}}",
     NOT_SAME                : "Please enter the same {{field}}",
     INCORRECT_FIELD         : "This field is incorrect",
-    PASSWORD_FORMAT         : "{{field}} had at least 8 char & contain 1 uppercase letter, 1 lowercase letter, 1 number, 1 special letter"
+    PASSWORD_FORMAT         : "{{field}} had at least 8 char & contain 1 uppercase letter, 1 lowercase letter, 1 number, 1 special letter",
+    MUST_NOT_EQUAL          : "{{first_field}} must not equal {{second_field}}"
 }
 
 Exception.AUTH = {
