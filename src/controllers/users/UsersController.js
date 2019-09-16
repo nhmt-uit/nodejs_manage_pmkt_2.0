@@ -5,16 +5,15 @@ import Session from "../../utils/Session"
 import Exception from "../../utils/Exception"
 
 class UsersController {
-    async index (req, res, next) {
+    async list(req, res, next) {
         try {
-            const users = await UsersModel.findAll(/test api - 3/i)
-            // const total = await users.count()
-            setTimeout(_ => {
-                res.jsonSuccess({
-                    message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
-                    data: Exception.getMessage(Exception.VALIDATION.IS_EXISTED, {field: "Email"})
-                })
-            }, 20000)
+            const query = req.query
+            const language_id = req.query.language_id
+            let result = await NoticesModel.findAll(language_id, query)
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: result
+            })
         } catch (err) {
             next(err)
         }

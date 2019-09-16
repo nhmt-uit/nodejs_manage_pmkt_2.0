@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 
 
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
-import formulasModel from "./FormulasModel"
+import FormulasModel from "./FormulasModel"
 import bankersModel from "./BankersModel"
 import Session from '../utils/Session'
 import { get } from "http"
@@ -30,7 +30,7 @@ FormulaGroupSchema.statics.findAll = async ( query) => {
     const skip = parseInt(query.page, 10) * limit - 1
     const result = await this.default.find({ status: 'active', user_id : user_id })
                                      .populate({
-                                        model: formulasModel,
+                                        model: FormulasModel,
                                         path: "formulas",
                                         select: "banker_id _id status",
                                         populate: {
@@ -101,7 +101,7 @@ FormulaGroupSchema.statics.delete = async (id) => {
 FormulaGroupSchema.statics.deleteByBanker = async (item) => {
     const FormulaGroup = await this.default.findById(item.id,{ status: 'active' })
                                             .populate({
-                                                model: formulasModel,
+                                                model: FormulasModel,
                                                 path: "formulas",
                                                 select: "_id name banker_id"
                                             })
@@ -136,6 +136,7 @@ FormulaGroupSchema.statics.checkName = async (value) => {
     if (result) return false
     return true
 }
+
 
 FormulaGroupSchema.statics.checkExistName = async name => {
     let result

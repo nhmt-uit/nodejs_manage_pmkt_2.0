@@ -8,7 +8,7 @@ import UserValidator from "../controllers/users/UsersValidator"
 
 const router = express.Router()
 
-router.get("/", ValidatorHandling(UserValidator.postCreateUser), UsersController.index)
+router.get("/", ValidatorHandling(UserValidator.postCreateUser), UsersController.list)
 router.post("/", ValidatorHandling(UserValidator.postCreateUser), UsersController.save)
 router.delete("/:id", UsersController.delete)
 router.get("/:id", UsersController.detail)

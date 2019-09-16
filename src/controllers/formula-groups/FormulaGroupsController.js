@@ -39,9 +39,22 @@ class FormulaGroupsController {
         }
     }
 
+    async checkExistName(req, res, next) {
+        try {
+            const name = req.query.name
+            const result = await FormulaGroupsModel.checkExistName(name)
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: result,
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
     async save(req, res, next) {
         try {
-            const name = req.body.name
+            const name = req.body.name.toUpperCase()
             const formulaGroup = await FormulaGroupsModel.createFormulaGroup(name)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_CREATE_SUCCESS),
@@ -52,18 +65,7 @@ class FormulaGroupsController {
         }
     }
 
-    async checkExistName(req, res, next) {
-        try {
-            const name = req.body.name.toUpperCase()
-            const result = await FormulaGroupsModel.checkExistName(name)
-            return res.jsonSuccess({
-                message: Exception.getMessage(Exception.COMMON.VALIDATION_ERROR),
-                data: result,
-            })
-        } catch (err) {
-            next(err)
-        }
-    }
+   
 
     async addByBanker(req, res, next) {
         try {
