@@ -14,7 +14,7 @@ class FormulaGroupsController {
             formulaGroup = formulaGroup.map(item => {
                 const _item = JSON.parse(JSON.stringify(item))
                 _item.bankers = _uniqBy(_item.formulas, "banker_id._id").map(elem => elem.banker_id)
-                console.log (_item)
+
                 return _item
             })
             return res.jsonSuccess({
@@ -51,6 +51,20 @@ class FormulaGroupsController {
             next(err)
         }
     }
+
+    async checkExistName(req, res, next) {
+        try {
+            const name = req.body.name.toUpperCase()
+            const result = await FormulaGroupsModel.checkExistName(name)
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.VALIDATION_ERROR),
+                data: result,
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
     async addByBanker(req, res, next) {
         try {
             const item = req.body

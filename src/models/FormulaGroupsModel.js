@@ -14,7 +14,7 @@ const collectionName = "formula_groups"
 const FormulaGroupSchema = new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
     user_id: mongoose.Types.ObjectId,
-    name: String,
+    name: {type :String, uppercase : true },
     formulas: [mongoose.Schema.Types.ObjectId]
 })
 
@@ -32,14 +32,14 @@ FormulaGroupSchema.statics.findAll = async ( query) => {
                                      .populate({
                                         model: formulasModel,
                                         path: "formulas",
-                                        select: "banker_id _id user_id",
+                                        select: "banker_id _id status",
                                         populate: {
                                             model: bankersModel,
                                             path: "banker_id",
-                                            select: "_id name user_id",
+                                            select: "_id name status",
                                         }
                                     })                                                            
-                                    .select(excludeFields.join(' '))                                  
+                                    .select('status user_id name')                                  
                                     .sort(query.sort)
                                     .limit(limit)
                                     .skip(skip)
@@ -61,8 +61,8 @@ FormulaGroupSchema.statics.createFormulaGroup = async (name) => {
     }
     const FormulaGroup = await this.default.create(data)
     return this.default.findById(FormulaGroup._id)
-        .select(excludeFields.join(' '))
-        .lean()
+                       .select(excludeFields.join(' '))
+                       .lean()
 }
 
 
@@ -75,8 +75,8 @@ FormulaGroupSchema.statics.addByBanker = (item) => {
                                     { $push: { "formulas": [item.formula_id] } },
                                     { new: true }
                                 )
-                                .select(excludeFields.join(' '))
-                                .lean()
+                                    .select(excludeFields.join(' '))
+                                    .lean()
         return result
     }
 }
@@ -135,6 +135,14 @@ FormulaGroupSchema.statics.checkName = async (value) => {
     const result = await this.default.findOne({ name: value }, { status: 'active' })
     if (result) return false
     return true
+}
+
+FormulaGroupSchema.statics.checkExistName = async name => {
+    let result
+        if(name){
+            result = await this.default.findOne({name: name})
+            return !!result
+        }
 }
 
 
