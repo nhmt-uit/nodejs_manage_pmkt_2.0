@@ -8,8 +8,8 @@ class UsersController {
     async list(req, res, next) {
         try {
             const query = req.query
-            const language_id = req.query.language_id
-            let result = await NoticesModel.findAll(language_id, query)
+            console.log(query)
+            let result = await UsersModel.findAll(query)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: result
@@ -19,10 +19,57 @@ class UsersController {
         }
     }
 
-    async save (req, res, next) {
+
+    async detailUsers(req, res, next) {
+        try {
+            const query = req.query
+            let result = await UsersModel.detailUser(query)
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: result
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    async detailSubUsers(req, res, next) {
+        try {
+            const query = req.query
+            let result = await UsersModel.detailSubUser(query)
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: result
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+
+    async checkExist(req, res, next) {
+        try {
+            const options = {
+                value: req.query.value,
+                type: req.query.type,
+                password2: req.query.password2,
+                password2: req.query.password2,
+            }
+            const result = await UsersModel.checkExist(options)
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: result,
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+
+    async save(req, res, next) {
         try {
             const user = new UsersModel({
-                username: "Test API - " + Math.round(Math.random()*10000000000),
+                username: "Test API - " + Math.round(Math.random() * 10000000000),
                 password: HashPassword.hash("passpass"),
             })
             await user.save()
@@ -35,24 +82,13 @@ class UsersController {
         }
     }
 
-    async delete (req, res, next){
+    async delete(req, res, next) {
         const id = req.params.id
         try {
             await UsersModel.softDelete(id)
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.ITEM_DELETE_SUCCESS,
                 data: id
-            })
-        } catch (err) {
-            next(err)
-        }
-    }
-
-    async detail (req, res, next) {
-        try {
-            return res.jsonSuccess({
-                message: "You requested detail users controller",
-                errors: "You requested detail users controller"
             })
         } catch (err) {
             next(err)

@@ -41,7 +41,7 @@ class FormulaGroupsController {
 
     async checkExistName(req, res, next) {
         try {
-            const name = req.query.name
+            const name = req.query.name.toUpperCase()
             const result = await FormulaGroupsModel.checkExistName(name)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),

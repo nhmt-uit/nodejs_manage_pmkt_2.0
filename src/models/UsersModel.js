@@ -33,11 +33,53 @@ UsersSchema.loadClass(BaseModel)
 UsersSchema.plugin(BaseSchema)
 
 
-UsersSchema.statics.findAll = (username) => {
-	// return this.default.find({
-	//   	username: username,
-	// })
+const excludeFields = ['-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy']
+
+UsersSchema.statics.findAll = async ( query) => {
+    const bedbug_id = '56850ba0097802b9f23929ea'
+    const limit = parseInt(query.limit, 10)
+    const skip = parseInt(query.page, 10)*limit - 1
+    const result = await this.default.find({status: 'active', parent_id : bedbug_id , role: 10})
+                                     .select(excludeFields.join(' ')).lean()
+                                     .sort(query.sort)
+                                     .limit(limit)
+                                     .skip(skip)
+    return result
 }
+
+
+UsersSchema.statics.detailUser = async (query) => {
+    const user_id = Session.get('user._id');
+    const limit = parseInt(query.limit, 10)
+    const skip = parseInt(query.page, 10)*limit - 1
+    const result = await this.default.find({status: 'active' ,_id : user_id , role: 11})
+                                     .select(excludeFields.join(' ')).lean()
+                                     .sort(query.sort)
+                                     .limit(limit)
+                                     .skip(skip)
+    return result
+}
+
+
+UsersSchema.statics.detailSubUser = async (query) => {
+    const user_id = Session.get('user._id');
+    const limit = parseInt(query.limit, 10)
+    const skip = parseInt(query.page, 10)*limit - 1
+    const result = await this.default.find({status: 'active' , _id : user_id , role: 12})
+                                     .select(excludeFields.join(' ')).lean()
+                                     .sort(query.sort)
+                                     .limit(limit)
+                                     .skip(skip)
+    return result
+}
+
+
+UsersSchema.statics.checkExist = async (options) => {
+    let result
+
+    return !!result
+}
+
 
 UsersSchema.statics.checkUniqueUsername = (username) => {
 	return this.default.find({
