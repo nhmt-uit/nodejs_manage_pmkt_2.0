@@ -8,8 +8,8 @@ const collectionName = "bankers"
 // Define collection schema
 const BankersSchema = new mongoose.Schema({
     book_id: mongoose.Schema.Types.ObjectId,
-    name: String,
-    short_name: String,
+    name: {type: String, require: true},
+    short_name: {type: String, require: true},
     need_security: Boolean,
     agent_host: [
         {
@@ -25,10 +25,11 @@ BankersSchema.plugin(BaseSchema)
 const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
 
 BankersSchema.statics.findAll = (query) => {
-    return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()
+    return this.default.find({status: 'active'}).select(excludeFields.join(' '))
         .sort(query.sort)
         .limit(Number(query.limit))
         .skip(Number(query.limit)*Number(query.page - 1))
+        .lean()
 }
 
 

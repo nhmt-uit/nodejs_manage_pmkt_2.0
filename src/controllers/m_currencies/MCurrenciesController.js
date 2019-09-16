@@ -63,14 +63,14 @@ class MCurrenciesController {
     async checkExists (req, res, next) {
         try{
             const params = {
-                name: req.body.name,
+                name: req.query.name,
                 type: 'name'
             }
 
             const result = await MCurrenciesModel.checkExists(params)
             return res.jsonSuccess({
-                message: Exception.getMessage(Exception.COMMON.VALIDATION_ERROR),
-                data:  result,
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: result,
             })
         } catch (err) {
             next (err)

@@ -7,8 +7,8 @@ const collectionName = "m_currencies"
 
 // Define collection schema
 const MCurrenciesSchema = new mongoose.Schema({
-    name: String,
-    round_type: Number,
+    name: {type: String, required: true, unique: true},
+    round_type: {type: Number, required: true},
 })
 
 MCurrenciesSchema.loadClass(BaseModel)
@@ -17,11 +17,11 @@ MCurrenciesSchema.plugin(BaseSchema)
 const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ];
 
 MCurrenciesSchema.statics.findAll = (query) => {
-    console.log(query.sort)
-    return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()
+    return this.default.find({status: 'active'}).select(excludeFields.join(' '))
         .sort(query.sort)
         .limit(Number(query.limit))
         .skip(Number(query.limit)*Number(query.page - 1))
+        .lean()
 }
 
 
@@ -55,6 +55,7 @@ MCurrenciesSchema.statics.checkId = (id) => {
 
 
 MCurrenciesSchema.statics.checkExists = async params => {
+
     let result
     switch (params.type) {
         case 'name':

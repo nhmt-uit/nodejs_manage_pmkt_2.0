@@ -2,7 +2,6 @@ import mongoose from "mongoose"
 
 import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
-import formulasModel from "./FormulasModel";
 
 // Define collection name
 const collectionName = "t_currencies"
@@ -12,7 +11,7 @@ const Schema = mongoose.Schema
 const TCurrenciesSchema = new mongoose.Schema({
     user_id: { type: Schema.Types.ObjectId, required: true, ref: 'Users' },
     m_currency_id: { type: Schema.Types.ObjectId, required: true, ref: 'MCurrency' },
-    round_type: Number,
+    round_type: {type: Number, required: true},
     note: String,
 })
 

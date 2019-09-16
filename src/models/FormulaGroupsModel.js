@@ -4,8 +4,6 @@ import mongoose from "mongoose"
 
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 import formulasModel from "./FormulasModel"
-import bankersModel from "./BankersModel"
-import Session from '../utils/Session'
 // Define collection name
 const collectionName = "formula_groups"
 

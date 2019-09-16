@@ -26,13 +26,11 @@ NoticesSchema.plugin(BaseSchema)
 
 
 NoticesSchema.statics.findAll = async (language_id) => {
-    console.log('PPPPPPPPPPPPPPPPPP', language_id)
     const result = await this.default.find({"contents.language_id" : mongoose.Types.ObjectId(language_id)})
     return result
 }
 
 NoticesSchema.statics.find_id = async (id) => {
-    console.log(id)
     const result = await this.default.find({ _id: id, status: 'active' })
         .select("_id name type contents status")
 
