@@ -30,17 +30,19 @@ FormulasSchema.statics.findAll = async (query) => {
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10)*limit - 1
     const result = await this.default.find({status:'active',user_id : user_id })
-                                     .select(excludeFields.join(' ')).lean()
+                                     .select(excludeFields.join(' '))
                                       .sort(query.sort)
-                                     .limit(limit||10)
-                                     .skip(skip||0)
+                                     .limit(limit)
+                                     .skip(skip)
+                                     .lean()
     return result
 }
 
 
 FormulasSchema.statics.find_id = async (id) => {
     const result = await this.default.find({_id:id})
-                                     .select(excludeFields.join(' ')).lean()
+                                     .select(excludeFields.join(' '))
+                                     .lean()
     return result
 }
 
@@ -62,7 +64,8 @@ FormulasSchema.statics.createFormula = async (data) => {
     const formula = await this.default.create(newObject)
 
     return this.default.findById(formula._id)
-                       .select(excludeFields.join(' ')).lean()
+                       .select(excludeFields.join(' '))
+                       .lean()
 }
 
 
@@ -82,7 +85,8 @@ FormulasSchema.statics.updateFormula = async (data) => {
                         },
                         { new: true },
                     )
-                        .select(excludeFields.join(' ')).lean()
+                        .select(excludeFields.join(' '))
+                        .lean()
 }
 
 export default mongoose.model(collectionName, FormulasSchema, collectionName)

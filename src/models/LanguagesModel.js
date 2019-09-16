@@ -22,17 +22,19 @@ LanguagesSchema.statics.findAll = async (query) => {
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10)*limit - 1
     const result = await this.default.find({ status: ' active' })
-                                     .select(excludeFields.join(' ')).lean()
+                                     .select(excludeFields.join(' '))
                                      .sort(query.sort||'-order')
-                                     .limit(limit||10)
-                                     .skip(skip||1)
+                                     .limit(limit)
+                                     .skip(skip)
+                                     .lean()
     return result
 }
 
 
 LanguagesSchema.statics.findByCode = async (code) => {
     const result = await this.default.find({ code: code, status: 'active' })
-                                     .select(excludeFields.join(' ')).lean()
+                                     .select(excludeFields.join(' '))
+                                     .lean()
     return result
 }
 
@@ -46,7 +48,8 @@ LanguagesSchema.statics.createLanguage = async (name, code, order) => {
     }
     const Language = await this.default.create(data)
     return this.default.findById(Language._id)
-                       .select(excludeFields.join(' ')).lean()
+                       .select(excludeFields.join(' '))
+                       .lean()
 }
 
 
@@ -57,7 +60,8 @@ LanguagesSchema.statics.updateLanguage = async (item) => {
                         { '$set': { 'name': item.name } },
                         { new: true },
                     )
-                    .select(excludeFields.join(' ')).lean()
+                        .select(excludeFields.join(' '))
+                        .lean()
 }
 
 export default mongoose.model(collectionName, LanguagesSchema, collectionName)

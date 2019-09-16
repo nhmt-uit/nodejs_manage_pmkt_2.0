@@ -28,7 +28,7 @@ FormulaGroupSchema.statics.findAll = async ( query) => {
     const user_id = Session.get('user._id');
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10) * limit - 1
-    const result = await this.default.find({ status: 'active' })
+    const result = await this.default.find({ status: 'active', user_id : user_id })
                                      .populate({
                                         model: formulasModel,
                                         path: "formulas",
@@ -39,16 +39,18 @@ FormulaGroupSchema.statics.findAll = async ( query) => {
                                             select: "_id name user_id",
                                         }
                                     })                                                            
-                                    .select(excludeFields.join(' ')).lean()                                   
-                                    .sort(query.sort||'name')
-                                    .limit(limit||10)
-                                    .skip(skip||0)
+                                    .select(excludeFields.join(' '))                                  
+                                    .sort(query.sort)
+                                    .limit(limit)
+                                    .skip(skip)
+                                    .lean() 
     return result
 }
 
 FormulaGroupSchema.statics.find_id = async (id) => {
     const result = await this.default.find({ _id: id, status: 'active' })
-                                     .select(excludeFields.join(' ')).lean()
+                                     .select(excludeFields.join(' '))
+                                     .lean()
     return result
 }
 
@@ -59,7 +61,8 @@ FormulaGroupSchema.statics.createFormulaGroup = async (name) => {
     }
     const FormulaGroup = await this.default.create(data)
     return this.default.findById(FormulaGroup._id)
-        .select(excludeFields.join(' ')).lean()
+        .select(excludeFields.join(' '))
+        .lean()
 }
 
 
@@ -72,7 +75,8 @@ FormulaGroupSchema.statics.addByBanker = (item) => {
                                     { $push: { "formulas": [item.formula_id] } },
                                     { new: true }
                                 )
-                                .select(excludeFields.join(' ')).lean()
+                                .select(excludeFields.join(' '))
+                                .lean()
         return result
     }
 }
@@ -83,12 +87,14 @@ FormulaGroupSchema.statics.updateFormulaGroup = async (item) => {
                         { '$set': { 'name': item.name } },
                         { new: true },
                     )
-                        .select(excludeFields.join(' ')).lean()
+                        .select(excludeFields.join(' '))
+                        .lean()
 }
 
 FormulaGroupSchema.statics.delete = async (id) => {
     return this.default.findOneAndDelete({ _id: id },{ status: 'active' })
-                       .select(excludeFields.join(' ')).lean()
+                       .select(excludeFields.join(' '))
+                       .lean()
 }
 
 
@@ -109,7 +115,8 @@ FormulaGroupSchema.statics.deleteByBanker = async (item) => {
                                         { $pull: { "formulas": { $in: [Banker._id] } } },
                                         { new: true },
                                     )
-                                        .select(excludeFields.join(' ')).lean()
+                                        .select(excludeFields.join(' '))
+                                        .lean()
         return result
     }
 }
