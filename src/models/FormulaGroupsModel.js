@@ -1,7 +1,5 @@
 import mongoose from "mongoose"
 
-
-
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 import FormulasModel from "./FormulasModel"
 import bankersModel from "./BankersModel"

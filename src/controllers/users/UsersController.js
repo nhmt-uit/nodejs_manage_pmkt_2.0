@@ -1,3 +1,5 @@
+import _uniqBy from "lodash/uniqBy"
+
 import UsersModel from "../../models/UsersModel"
 import ExceptionConfig from "../../configs/ExceptionConfig"
 import HashPassword from "../../utils/HashPassword"
@@ -46,6 +48,27 @@ class UsersController {
         }
     }
 
+    async detailGenerate(req, res, next) {
+        try {
+            const query = req.query
+            let result = await UsersModel.detailGenerate(query)
+            // console.log(result)
+            // result.username = result.map(item => {
+            //     const _item = JSON.parse(JSON.stringify(item))
+            //     console.log(_item)
+                //_item.username = _uniqBy(_item.username, "username").map(elem => elem.username)
+
+                // return result
+            // })
+
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: result
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
 
     async checkExist(req, res, next) {
         try {
@@ -68,14 +91,15 @@ class UsersController {
 
     async save(req, res, next) {
         try {
-            const user = new UsersModel({
-                username: "Test API - " + Math.round(Math.random() * 10000000000),
-                password: HashPassword.hash("passpass"),
-            })
-            await user.save()
+            const data = {
+                name: req.body.name,
+                type: req.body.type,
+                contents: req.body.contents,
+            };
+            const result = await UsersModel.createNotices(data)
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.ITEM_CREATE_SUCCESS,
-                data: user
+                message: Exception.getMessage(Exception.COMMON.ITEM_CREATE_SUCCESS),
+                data: result
             })
         } catch (err) {
             next(err)

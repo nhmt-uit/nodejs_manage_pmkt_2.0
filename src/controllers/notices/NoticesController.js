@@ -15,6 +15,7 @@ class NoticesController {
             next(err)
         }
     }
+
     async detail(req, res, next) {
         try {
             const id = req.params.id
@@ -27,6 +28,7 @@ class NoticesController {
             next(err)
         }
     }
+
     async save(req, res, next) {
         try {
             const data = {
@@ -43,6 +45,7 @@ class NoticesController {
             next(err)
         }
     }
+
     async update(req, res, next) {
         try {
             const temp = JSON.parse(req.body.contents)
@@ -62,6 +65,7 @@ class NoticesController {
             next(err)
         }
     }
+    
     async delete(req, res, next) {
         try {
             await NoticesModel.softDelete(req.params.id)

@@ -10,11 +10,11 @@ const router = express.Router()
 
 router.get("/check-exists/", UsersController.checkExist)
 
-router.get("/", ValidatorHandling(UserValidator.postCreateUser), UsersController.list)
-router.get("/members", ValidatorHandling(UserValidator.postCreateUser), UsersController.detailUsers)
-router.get("/sub-users/", ValidatorHandling(UserValidator.postCreateUser), UsersController.detailSubUsers)
-
-router.post("/", ValidatorHandling(UserValidator.postCreateUser), UsersController.save)
+router.get("/", UsersController.list)
+router.get("/members", UsersController.detailUsers)
+router.get("/sub-users/", UsersController.detailSubUsers)
+router.get("/generate-username",UsersController.detailGenerate)
+router.post("/", UsersController.save)
 router.delete("/:id", UsersController.delete)
 // router.get("/:id", UsersController.detail)
 
