@@ -52,7 +52,7 @@ class UsersController {
             const options = {
                 value: req.query.value,
                 type: req.query.type,
-                password2: req.query.password2,
+                password: req.query.password,
                 password2: req.query.password2,
             }
             const result = await UsersModel.checkExist(options)

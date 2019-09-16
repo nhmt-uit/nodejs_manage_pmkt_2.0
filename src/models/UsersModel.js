@@ -76,7 +76,8 @@ UsersSchema.statics.detailSubUser = async (query) => {
 
 UsersSchema.statics.checkExist = async (options) => {
     let result
-
+    console.log(options)
+    if(options.value )
     return !!result
 }
 
