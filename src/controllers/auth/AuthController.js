@@ -1,7 +1,9 @@
 import AuthModel, { TYPE } from "../../models/AuthModel"
+import UserModel from "../../models/UsersModel"
 import Authentication from "../../utils/auth/Authentication"
 import Session from "../../utils/Session"
 import Exception from "../../utils/Exception"
+import HashPassword from "../../utils/HashPassword"
 
 class AuthController {
     async login (req, res, next) {
@@ -14,10 +16,10 @@ class AuthController {
                 const refresh_token = Authentication.getRefreshToken({_id: userInfo._id, username: userInfo.username})
                 Session.set("token", token)
                 Session.set("refresh_token", refresh_token)
-                Session.set("user", userInfo)
+                Session.set("user", result.origin_payload)
                 return res.jsonSuccess({
                     message: Exception.getMessage(Exception.AUTH.LOGIN_SUCCESS),
-                    data: Session.get("user"),
+                    data: userInfo,
                     token: token,
                     refresh_token: refresh_token
                 })
@@ -100,39 +102,64 @@ class AuthController {
         }
     }
 
-    changeSecureCode (req, res, next) {
+    async changeSecureCode (req, res, next) {
         try {
-            return res.jsonSuccess({
+            const { new_secure } = req.body
+            const userInfo = Session.get("user")
+            await UserModel.updateDoc({ options: { _id: userInfo._id }, formData: { secure_code: new_secure } })
 
+            // Update session user
+            const newUserInfo = {...userInfo, secure_code: new_secure}
+            Session.set("user", newUserInfo)
+
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: AuthModel.excludeFieldsUserInfo(newUserInfo)
             })
-            // let secure_codes = req.body.secure_codes
-            // const userInfo = Session.get("user")
-            // let isValid = false
-            // if (secure_codes && secure_codes.length && userInfo) {
-            //     secure_codes = JSON.parse(secure_codes)
-            //     const secure_code = String(userInfo.secure_code)
-            //     isValid = true
-            //     secure_codes.forEach(item => {
-            //         const charAtPosition = secure_code.charAt(Number(item.position))
-            //         if (charAtPosition === "" || charAtPosition !== String(item.value)) isValid = false
-            //     })
-            // }
-            
-            // if (isValid) {
-            //     return res.jsonSuccess({
-            //         message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS)
-            //     })
-            // } else {
-            //     res.jsonError({
-            //         code: 400,
-            //         message: Exception.getMessage(Exception.AUTH.INVALID_SECURE_CODE)
-            //     })
-            // }
         } catch (err) {
             next(err)
         }
     }
 
+    async changePassword (req, res, next) {
+        try {
+            const { new_password } = req.body
+            const newPasswordHased = HashPassword.hash(new_password)
+            const userInfo = Session.get("user")
+            await UserModel.updateDoc({ options: { _id: userInfo._id }, formData: { password: newPasswordHased } })
+
+            // Update session user
+            const newUserInfo = {...userInfo, password: newPasswordHased}
+            Session.set("user", newUserInfo)
+
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: AuthModel.excludeFieldsUserInfo(newUserInfo)
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    async changePassword2 (req, res, next) {
+        try {
+            const { new_password2 } = req.body
+            const newPasswordHased = HashPassword.hash(new_password2)
+            const userInfo = Session.get("user")
+            await UserModel.updateDoc({ options: { _id: userInfo._id }, formData: { password2: newPasswordHased } })
+
+            // Update session user
+            const newUserInfo = {...userInfo, password2: newPasswordHased}
+            Session.set("user", newUserInfo)
+
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: AuthModel.excludeFieldsUserInfo(newUserInfo)
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
 
     
 }

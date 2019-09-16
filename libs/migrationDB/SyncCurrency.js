@@ -41,7 +41,7 @@ class SyncCurrency {
 						_id						: mongoose.Types.ObjectId(_item._id),
 						name					: _item.name ? String(_item.name) : "",
 						round_type				: _item.filter ? Number(_item.filter) : 0,
-						status					: Number(_item.deleted) !== 0 ? "delete" : "active"
+						status					: Number(_item.deleted) !== 0 ? "deleted" : "active"
 					})
 					const result = await query.save()
 					console.log(result)
@@ -80,7 +80,7 @@ class SyncCurrency {
 						m_currency_id			: mongoose.Types.ObjectId(_item._id),
 						round_type				: _item.filter ? Number(_item.filter) : 0,
 						note					: _item.note ? String(_item.note) : "",
-						status					: Number(_item.deleted) !== 0 ? "delete" : "active"
+						status					: Number(_item.deleted) !== 0 ? "deleted" : "active"
 					})
 					const result = await query.save()
 					console.log(result)

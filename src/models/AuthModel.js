@@ -1,5 +1,6 @@
-import HashPassword from "../utils/HashPassword"
 import UsersModel from "./UsersModel"
+import HashPassword from "../utils/HashPassword"
+import Helpers from "../utils/Helpers"
 
 const TYPE = {
 	LOGIN_SUCCESS	: "LOGIN_SUCCESS",
@@ -22,6 +23,8 @@ class AuthModel {
 												username: String(username),
 												status: "active"
 											})
+											.select("-status -createdBy -createdAt -updatedBy -updatedAt")
+											.lean()
 			if (userInfo) {
 				const passMD5 = HashPassword.md5(password)
 				// Login By password2
@@ -29,21 +32,14 @@ class AuthModel {
 					if (passMD5 === userInfo.old_password2) {
 						// Check User Lock
 						if (this.checkUserLock(userInfo)) return { status: false, type: TYPE.ACCOUNT_LOCK }
-						
 						// Update new is_updated_password2
-						userInfo.is_updated_password2 = true
-						userInfo.password2 = HashPassword.hash(password)
-						userInfo.is_lock = true
-						await userInfo.save()
-						return { status: true, type: TYPE.LOGIN_SUCCESS, payload: this.excludeFieldsUserInfo(userInfo) }
+						return this.afterLoginSuccess(userInfo, { is_updated_password2: true, password2: HashPassword.hash(password), is_lock: true })
 					}
 				} else {
 					if (HashPassword.compareHash(password, userInfo.password2)) {
 						// Check User Lock
 						if (this.checkUserLock(userInfo)) return { status: false, type: TYPE.ACCOUNT_LOCK }
-						userInfo.is_lock = true
-						await userInfo.save()
-						return { status: true, type: TYPE.LOGIN_SUCCESS, payload: this.excludeFieldsUserInfo(userInfo) }
+						return this.afterLoginSuccess(userInfo, { is_lock: true })
 					}
 				}
 
@@ -52,27 +48,49 @@ class AuthModel {
 					if (passMD5 === userInfo.old_password) {
 						// Check User Lock
 						if (this.checkUserLock(userInfo)) return { status: false, type: TYPE.ACCOUNT_LOCK }
-						// Update new password
-						userInfo.is_updated_password = true
-						userInfo.password = HashPassword.hash(password)
-						await userInfo.save()
-						return { status: true, type: TYPE.LOGIN_SUCCESS, payload: this.excludeFieldsUserInfo(userInfo) }
+						return this.afterLoginSuccess(userInfo, { is_updated_password: true, password: HashPassword.hash(password) })
 					}
 				} else {
 					if (HashPassword.compareHash(password, userInfo.password)) {
 						// Check User Lock
 						if (this.checkUserLock(userInfo)) return { status: false, type: TYPE.ACCOUNT_LOCK }
-						return { status: true, type: TYPE.LOGIN_SUCCESS, payload: this.excludeFieldsUserInfo(userInfo) }
+						return this.afterLoginSuccess(userInfo)
 					}
 				}
 
-				
 				// Update when user login fail
-				userInfo.login_failed = Number(userInfo.login_failed) + 1
-				await userInfo.save()
+				this.afterLoginFailed(userInfo)
 			}
 		}
 		return { status: false, type: TYPE.LOGIN_FAILED }
+	}
+
+	/*
+	|--------------------------------------------------------------------------
+	| Process after login success / post-
+	|--------------------------------------------------------------------------
+	*/
+	async afterLoginSuccess(userInfo, data = {}) {
+		const formData = { ...data,
+							login_failed: 0,
+							login_ip: Helpers.getIPAddress()
+						}
+		const user = await UsersModel.findOneAndUpdate({ _id: userInfo._id}, formData, { new: true})
+										.select("-status -createdBy -createdAt -updatedBy -updatedAt")
+										.lean()
+		return { status: true, type: TYPE.LOGIN_SUCCESS, payload: this.excludeFieldsUserInfo(user), origin_payload: user }
+	}
+
+	/*
+	|--------------------------------------------------------------------------
+	| Process after login success
+	|--------------------------------------------------------------------------
+	*/
+	async afterLoginFailed(userInfo, data = {}) {
+		const formData = { ...data,
+							login_failed: Number(userInfo.login_failed) + 1
+						}
+		await UsersModel.findOneAndUpdate({_id: userInfo._id}, formData, { new: true})
 	}
 	
 	/*
@@ -94,7 +112,7 @@ class AuthModel {
 	|--------------------------------------------------------------------------
 	*/
 	excludeFieldsUserInfo(payload) {
-		const excludeFields = ["password", "password2", "old_password", "old_password2", "is_updated_password", "is_updated_password2", "status", "createdBy", "createdAt", "updatedBy", "updatedAt"]
+		const excludeFields = ["password", "password2", "old_password", "old_password2", "is_updated_password", "is_updated_password2"]
 		try {
 			payload = JSON.parse(JSON.stringify(payload))
 			excludeFields.forEach(item => {
