@@ -78,7 +78,7 @@ class AuthModel {
 		const user = await UsersModel.findOneAndUpdate({ _id: userInfo._id}, formData)
 										.select("-status -createdBy -createdAt -updatedBy -updatedAt")
 										.lean()
-		return { status: true, type: TYPE.LOGIN_SUCCESS, payload: this.excludeFieldsUserInfo(user) }
+		return { status: true, type: TYPE.LOGIN_SUCCESS, payload: this.excludeFieldsUserInfo(user), origin_payload: user }
 	}
 
 	/*

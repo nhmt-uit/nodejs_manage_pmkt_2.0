@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
+import _isEmpty from 'lodash/isEmpty'
 
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
 
-import _isEmpty from 'lodash/isEmpty'
 
 // Define collection name
 const collectionName = "accounts"
@@ -32,49 +32,47 @@ const AccountsSchema = new mongoose.Schema({
 const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
 
 // Defined methods
-AccountsSchema.statics.findDoc = ({ options = {}, fields = null} = {}) => {
-    const userInfo = Session.get('user')
-
+AccountsSchema.statics.findDoc = ({ options = {}, fields = null, terms = {}} = {}) => {
     options.status = 'active'
-    options.user_id = userInfo.id
+    options.user_id = Session.get('user._id')
 
-    if (fields && Array.isArray(fields)) {
-        fields = fields.filter(item => !excludeFields.includes(`-${item}`))
-    } else {
-        fields = excludeFields
+    fields = fields && Array.isArray(fields) 
+        ? fields.filter(item => !excludeFields.includes(`-${item}`)) 
+        : fields = excludeFields
+    
+    const query = this.default.find(options)
+        .select(fields.join(' '))
+        .sort(terms.sort)
+        .lean()
+    
+    if (terms.typeFormat && terms.typeFormat === 'flat') {
+        query.limit(Number(terms.limit)).skip(Number(terms.skip))
     }
 
-    return this.default.find(options).select(fields.join(' ')).lean()
+    return query
 }
 
 AccountsSchema.statics.checkExisted = async (options) => {
     if (!options || _isEmpty(options)) return false
 
-    const userInfo = Session.get('user')
     options.status = 'active'
-    options.user_id = userInfo.id
+    options.user_id = Session.get('user._id')
 
     const result = await this.default.find(options)
 
-    if (!result || !result.length) return false
-
-    return true
+    return !!(!result || !result.length)
 }
 
 AccountsSchema.statics.createDoc = formData => {
-    const userInfo = Session.get('user')
-
     formData.status = 'active'
-    formData.user_id = userInfo.id
+    formData.user_id = Session.get('user._id')
 
     return this.default.save(body)
 }
 
 AccountsSchema.statics.updateDoc = ({ options, formData }) => {
-    const userInfo = Session.get('user')
-
     options.status = 'active'
-    options.user_id = userInfo.id
+    options.user_id = Session.get('user._id')
 
     delete formData.status
     delete formData.name

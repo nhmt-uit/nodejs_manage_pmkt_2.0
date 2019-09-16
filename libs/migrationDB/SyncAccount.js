@@ -55,7 +55,7 @@ class SyncAccount {
 							data_center_sync		: _item.data_center_sync ? Boolean(_item.data_center_sync) : null,
 							banker_locked			: _item.banker_locked ? Boolean(_item.banker_locked) : false,
 							banker_locked_reason	: _item.banker_locked_reason ? String(_item.banker_locked_reason) : "",
-							status					: Number(_item.deleted) !== 0 ? "delete" : "active"
+							status					: Number(_item.deleted) !== 0 ? "deleted" : "active"
 						})
 						const result = await query.save()
 						console.log(result)
@@ -94,7 +94,7 @@ class SyncAccount {
 							user_id					: _item.user_id ? mongoose.Types.ObjectId(_item.user_id) : null,
 							formula_id				: _item.congthucmau_id ? mongoose.Types.ObjectId(_item.congthucmau_id) : null,
 							formula_group_id		: _item.formula_group_id ? mongoose.Types.ObjectId(_item.formula_group_id) : null,
-							status					: Number(_item.deleted) !== 0 ? "delete" : "active"
+							status					: Number(_item.deleted) !== 0 ? "deleted" : "active"
 						})
 						const result = await query.save()
 						console.log(result)

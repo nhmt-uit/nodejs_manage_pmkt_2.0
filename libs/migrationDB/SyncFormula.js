@@ -86,7 +86,7 @@ class SyncFormula {
 							short					: _item.short ? String(_item.short) : "",
 							type					: _item.type ? Number(_item.type) : "",
 							data					: _item.data ? JSON.parse(_item.data) : "",
-							status					: Number(_item.deleted) !== 0 ? "delete" : "active"
+							status					: Number(_item.deleted) !== 0 ? "deleted" : "active"
 						})
 						const result = await query.save()
 						console.log(result)
@@ -145,7 +145,7 @@ class SyncFormula {
 							name					: _item.tenct ? String(_item.tenct) : "",
 							fields					: formulaFields,
 							rec_pay					: _item.giaonhan,
-							status					: Number(_item.deleted) !== 0 ? "delete" : "active"
+							status					: Number(_item.deleted) !== 0 ? "deleted" : "active"
 						})
 						const result = await query.save()
 						console.log(result)
@@ -197,7 +197,7 @@ class SyncFormula {
 							user_id					: mongoose.Types.ObjectId(_item.uid),
 							name					: _item.name ? String(_item.name) : "",
 							formulas				: formulas,
-							status					: Number(_item.deleted) !== 0 ? "delete" : "active"
+							status					: Number(_item.deleted) !== 0 ? "deleted" : "active"
 						})
 						const result = await query.save()
 						console.log(result)

@@ -57,7 +57,7 @@ class SyncUser {
 						old_password2			: _item.password2 ? String(_item.password2) : null,
 						is_updated_password2	: false,
 						is_lock					: Boolean(_item.status),
-						status					: Number(_item.deleted) !== 0 ? "delete" : "active"
+						status					: Number(_item.deleted) !== 0 ? "deleted" : "active"
 					})
 					const result = await query.save()
 

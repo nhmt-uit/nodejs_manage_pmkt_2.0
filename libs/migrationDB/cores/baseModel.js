@@ -12,7 +12,7 @@ import Moment from"../utils/Moment"
 // const Moment = require("../utils/Moment")
 // Exteneral fields
 const BaseFields = {
-    status: { type: String, lowercase: true, trim: true, enum: ["active", "inactive", "delete"], default: "active" },
+    status: { type: String, lowercase: true, trim: true, enum: ["active", "inactive", "deleted"], default: "active" },
     createdBy: { type: mongoose.Schema.Types.ObjectId, default: null },
     createdAt: { type: Date},
     updatedBy: { type: mongoose.Schema.Types.ObjectId, default: null },
@@ -44,7 +44,7 @@ const BaseSchema = schema => {
 class BaseModel {
     // Update status => "delete"
     static softDelete(id) {
-        return this.updateOne({_id: id}, {status: "delete"})
+        return this.updateOne({_id: id}, {status: "deleted"})
     }
 
     static findUserAndCount() {

@@ -43,7 +43,7 @@ class SyncLanguage {
 							name			: _item.name ? String(_item.name) : "",
 							code			: _item.code ? String(_item.code) : "",
 							order			: _item.sort_order ? Number(_item.sort_order) : 9999,
-							status			: Number(_item.deleted) !== 0 ? "delete" : "active"
+							status			: Number(_item.deleted) !== 0 ? "deleted" : "active"
 						})
 						const result = await query.save()
 						console.log(result)
@@ -97,7 +97,7 @@ class SyncLanguage {
 							_id				: mongoose.Types.ObjectId(_item._id),
 							name			: _item.name ? String(_item.name).trim() : "",
 							contents		: contents,
-							status			: Number(_item.deleted) !== 0 ? "delete" : "active"
+							status			: Number(_item.deleted) !== 0 ? "deleted" : "active"
 						})
 						const result = await query.save()
 						console.log(result)

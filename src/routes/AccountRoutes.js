@@ -7,7 +7,7 @@ import AccountsValidator from '../controllers/accounts/AccountsValidator'
 
 const router = express.Router()
 
-router.get('/', AccountsController.index)
+router.get('/', AccountsController.list)
 router.post('/', ValidatorHandling(AccountsValidator.postCreateAccount), AccountsController.save)
 router.get('/:id', AccountsController.detail)
 router.put('/:id', AccountsController.update)

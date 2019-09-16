@@ -93,5 +93,7 @@ UsersSchema.statics.checkUniqueUsername = (username) => {
 }
 
 
+
+
 // Export Model
 export default mongoose.model(collectionName, UsersSchema, collectionName)

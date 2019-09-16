@@ -3,14 +3,28 @@ import ExceptionConfig from '../../configs/ExceptionConfig'
 import Recursive from "../../utils/Recursive"
 
 class AccountsController {
-    async index(req, res, next) {
+    async list(req, res, next) {
         try {
-            const accountList = await AccountsModel.findDoc()
-            const result = Recursive.flatToTree(accountList)
+            const { query } = req;
+
+            let accountList = await AccountsModel.findDoc({ 
+                terms: { 
+                    ...query,
+                    typeFormat: query.typeFormat ? query.typeFormat : 'flat'
+                } 
+            })
+
+            if (query.typeFormat && query.typeFormat === 'tree') {
+                accountList = Recursive.flatToTree(accountList)
+
+                if (query.page && query.limit) {
+                    accountList = accountList.splice((query.page - 1)*query.limit, query.limit);
+                }
+            }
 
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
-                data: result
+                data: accountList
             })
         } catch (err) {
             next(err)
@@ -20,10 +34,11 @@ class AccountsController {
     async detail(req, res, next) {
         try {
             const query = { _id: req.params.id }
+            const result = await AccountsModel.findDoc({ options: query})
 
             return res.jsonSuccess({
                 message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
-                data: await AccountsModel.findDoc({ options: query})
+                data: result
             })
         } catch (err) {
             next(err)
