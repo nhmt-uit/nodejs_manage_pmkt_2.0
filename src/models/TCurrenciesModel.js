@@ -2,6 +2,7 @@ import mongoose from "mongoose"
 
 import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
+import MCurrenciesModel from "./MCurrenciesModel";
 
 // Define collection name
 const collectionName = "t_currencies"
@@ -33,9 +34,11 @@ TCurrenciesSchema.statics.findAll = (query) => {
         status : 'active',
         user_id: mongoose.Types.ObjectId(Session.get('user._id'))
     }
-
     return this.default.find(option).select(excludeFields.join(' '))
         .populate("total_formulas")
+        .populate({ model: MCurrenciesModel,
+                    path: "m_currency_id",
+                    select: "name",})
         .sort(query.sort)
         .limit(Number(query.limit))
         .skip(Number(query.limit)*Number(query.page - 1))
