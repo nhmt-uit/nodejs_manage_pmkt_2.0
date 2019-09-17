@@ -81,10 +81,10 @@ FormulaGroupSchema.statics.addByBanker = (item) => {
 
 FormulaGroupSchema.statics.updateFormulaGroup = async (item) => {
     return this.default.findOneAndUpdate(
-                        { _id: item._id },
-                        { '$set': { 'name': item.name } },
-                        { new: true },
-                    )
+                            { _id: item._id },
+                            { '$set': { 'name': item.name } },
+                            { new: true },
+                        )
                         .select(excludeFields.join(' '))
                         .lean()
 }
