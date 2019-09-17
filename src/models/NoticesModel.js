@@ -38,9 +38,9 @@ NoticesSchema.statics.findAll = async (language_id, query) => {
     const result = await this.default.find({"contents.language_id" : mongoose.Types.ObjectId(language_id)})
                                      .populate('total_language')
                                      .select(excludeFields.join(' ')).lean()
-                                     .sort(query.sort||'-order')
-                                     .limit(limit||10)
-                                     .skip(skip||0)
+                                     .sort(query.sort)
+                                     .limit(limit)
+                                     .skip(skip)
     return result
 }
 

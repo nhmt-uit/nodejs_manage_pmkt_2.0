@@ -41,15 +41,14 @@ class FormulasController {
     }
     async update(req, res, next) {
         try {
-            const temp =JSON.parse(req.body.fields)
-            console.log(temp)
+            const fields =JSON.parse(req.body.fields)
             const data = {
                 id : req.params.id,
                 banker_id: req.body.banker_id,
                 t_currency_id: req.body.t_currency_id,
                 formula_format_id: req.body.formula_format_id,
                 name: req.body.name,
-                fields: temp,
+                fields: fields,
                 rec_pay: req.body.rec_pay,
             }
             let result = await FormulasModel.updateFormula(data)
