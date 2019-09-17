@@ -61,16 +61,25 @@ class MCurrenciesController {
     }
 
     async checkExists (req, res, next) {
-        try{
+        try {
+            const response = {}
             const params = {
                 name: req.query.name,
                 type: 'name'
             }
 
             const result = await MCurrenciesModel.checkExists(params)
+            if(result){
+                response.message = Exception.COMMON.VALUE_EXISTS
+                response.data = true
+            } else {
+                response.message = Exception.COMMON.VALUE_NOT_EXISTS
+                response.data = 'false'
+            }
+
             return res.jsonSuccess({
-                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
-                data: result,
+                message: Exception.getMessage(response.message, {field: req.query.name}),
+                data: response.data,
             })
         } catch (err) {
             next (err)
