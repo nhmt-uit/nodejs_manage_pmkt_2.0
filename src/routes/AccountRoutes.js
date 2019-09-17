@@ -10,7 +10,7 @@ const router = express.Router()
 router.get('/', AccountsController.list)
 router.post('/', ValidatorHandling(AccountsValidator.postCreateAccount), AccountsController.save)
 router.get('/:id', AccountsController.detail)
-router.put('/:id', AccountsController.update)
+router.put('/:id', ValidatorHandling(AccountsValidator.putUpdateAccount), AccountsController.update)
 router.delete('/:id', AccountsController.delete)
 
 export default router

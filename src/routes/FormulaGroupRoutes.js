@@ -8,6 +8,7 @@ import FormulaGroupsValidator from "../controllers/formula-groups/FormulaGroupsV
 const router = express.Router()
 
 router.get("/", FormulaGroupsController.list)
+router.get("/check-exists-name/", FormulaGroupsController.checkExistName)
 router.get("/:id", FormulaGroupsController.detail)
 router.post("/",ValidatorHandling(FormulaGroupsValidator.postCreate),FormulaGroupsController.save)
 router.post("/by-banker/:id",ValidatorHandling(FormulaGroupsValidator.postAddByBanker),FormulaGroupsController.addByBanker)
