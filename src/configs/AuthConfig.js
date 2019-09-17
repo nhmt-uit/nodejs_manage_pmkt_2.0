@@ -1,4 +1,4 @@
-import "./environments/LoadEnv"
+import "../utils/LoadEnv"
 
 const AuthConfig = {
     AUTH_ENABLE                     : JSON.parse(process.env.AUTH_ENABLE || true),

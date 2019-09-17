@@ -240,8 +240,8 @@ class SyncReport {
 			while (true) {
 				const data = await ReportDetailModel.find({
 														deleted: { $eq: 0 },
-														// chukybaocaotuan_id: mongoose.Types.ObjectId("5d7cba86cafddd607a4e65c5")
-														"_id" : mongoose.Types.ObjectId("5d7cba869247674a63cd0606")
+														chukybaocaotuan_id: mongoose.Types.ObjectId("5d7cba86cafddd607a4e65c5")
+														// "_id" : mongoose.Types.ObjectId("5d7cba869247674a63cd0606")
 													})
 													.limit(limit)
 													.skip(skip * limit)
@@ -255,26 +255,6 @@ class SyncReport {
 				await Promise.all(
 					data.map(async item => {
 						const _item = JSON.parse(JSON.stringify(item))
-
-
-						// _id: mongoose.Types.ObjectId,
-						// report_id: mongoose.Types.ObjectId,
-						// user_id: mongoose.Types.ObjectId,
-						// account_id: mongoose.Types.ObjectId,
-						// formula_detail: {
-						// 	t_currentcy_id: mongoose.Types.ObjectId,
-						// 	formula_id: mongoose.Types.ObjectId,
-						// 	name: String,
-						// 	rec_pay: Number,
-						// 	fields: [
-						// 		{
-						// 			formula_field_id: mongoose.Types.ObjectId,
-						// 			value: Number
-						// 		}
-						// 	],
-						// },
-						// flag: String,
-						// amount: Number,
 
 						const formulaDetailParse = _item.formula_detail ? JSON.parse(JSON.parse(_item.formula_detail)) : {}
 						// console.log("formulaDetailParse", formulaDetailParse, formulaDetailParse.f_pattern_id)
@@ -299,16 +279,15 @@ class SyncReport {
 							})
 						}
 
-						console.log(formulaInfo)
-						const formula_detail = formulaInfo ? {
-							t_currency_id			: mongoose.Types.ObjectId(formulaInfo.dv_tiente),
+						const formula_detail = formulaInfo && formulaInfo !== {} ? {
+							t_currency_id			: mongoose.Types.ObjectId(formulaInfo._id),
+							formula_id				: mongoose.Types.ObjectId(formulaInfo._id),
 							formula_format_id		: mongoose.Types.ObjectId(formulaInfo.f_format_id),
 							name					: formulaInfo.tenct ? String(formulaInfo.tenct) : "",
 							fields					: formulaFields,
 							rec_pay					: formulaInfo.giaonhan,
 						} : {}
 
-						console.log("formula_detail", formula_detail)
 
 						const accountInfo = await AccountModel.findOne({
 															acc_name: { "$regex": new RegExp(`^${_item.account_name}$`), "$options": "i" },

@@ -13,8 +13,9 @@ const ReportDetails_NSchema = new mongoose.Schema({
         member_id: mongoose.Types.ObjectId,
         account_id: mongoose.Types.ObjectId,
         formula_detail: {
-            t_currentcy_id: mongoose.SchemaType.ObjectId,
-            formula_id: mongoose.Schema.Types.ObjectId,
+            t_currency_id: mongoose.Types.ObjectId,
+            formula_id: mongoose.Types.ObjectId,
+            formula_format_id: mongoose.Types.ObjectId,
             name: String,
             rec_pay: Number,
             fields: [

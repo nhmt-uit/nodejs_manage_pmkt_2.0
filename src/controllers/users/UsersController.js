@@ -10,7 +10,6 @@ class UsersController {
     async list(req, res, next) {
         try {
             const query = req.query
-            console.log(query)
             let result = await UsersModel.findAllUser(query)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
@@ -51,16 +50,17 @@ class UsersController {
     async detailGenerate(req, res, next) {
         try {
             const query = req.query
-            let result = await UsersModel.generateUsername(query)
-            console.log(result.username)
-            // for (let i = 0 ; i < result.username.length-1; i++){
-            //     if(result.username[i+1] - result.username[i] !=1)
-            //     return (result.username[i])
-            //     }
+            let data = await UsersModel.generateUsername(query)
+            // const data = {
+            //     username: result.substring(result.length -3,0),
+            //     s0 : result.substring(result.length -2,result.length -3),
+            //     s1 : result.substring(result.length -1,result.length -2),
+            //     s2 : result.substring(result.length   ,result.length -1)
+            // }
 
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
-                data: result
+                data: data
             })
         } catch (err) {
             next(err)
@@ -89,11 +89,27 @@ class UsersController {
     async save(req, res, next) {
         try {
             const data = {
-                name: req.body.name,
-                type: req.body.type,
-                contents: req.body.contents,
+                
+        parent_id: mongoose.Types.parent_id,
+        username: req.body.username,
+        password: req.body.password,
+        password2: req.body.password2,
+        role: req.body.role,
+        secure_code: req.body.secure_code,
+        login_failed: req.body.login_failed,
+        login_ip: req.body.login_ip,
+        lang_code: req.body.lang_code,
+        allow_export: req.body.allow_export,
+        allow_report_detail: req.body.allow_report_detail,
+        enable_start: req.body.enable_start,
+        enable_end: req.body.enable_end,
+        old_password: req.body.old_password,
+        is_updated_password: req.body.is_updated_password,
+        old_password2: req.body.old_password2,
+        is_updated_password2: req.body.is_updated_password2,
+        is_lock: req.body.is_lock
             };
-            const result = await UsersModel.createNotices(data)
+            const result = await UsersModel.createUser(data)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_CREATE_SUCCESS),
                 data: result
