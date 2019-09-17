@@ -1,14 +1,14 @@
 import AccountsModel from '../../models/AccountsModel'
-import ExceptionConfig from '../../configs/ExceptionConfig'
 import Recursive from "../../utils/Recursive"
+import Exception from '../../utils/Exception'
 
 class AccountsController {
     async list(req, res, next) {
         try {
             const { query } = req;
 
-            let accountList = await AccountsModel.findDoc({ 
-                terms: { 
+            let accountList = await AccountsModel.findDoc({
+                terms: {
                     ...query,
                     typeFormat: query.typeFormat ? query.typeFormat : 'flat'
                 } 
@@ -23,7 +23,7 @@ class AccountsController {
             }
 
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: accountList
             })
         } catch (err) {
@@ -37,7 +37,7 @@ class AccountsController {
             const result = await AccountsModel.findDoc({ options: query})
 
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.REQUEST_SUCCESS,
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: result
             })
         } catch (err) {
@@ -47,10 +47,10 @@ class AccountsController {
 
     async save(req, res, next) {
         try {
-            await AccountsModel.createDoc(req.body)
+            const account = await AccountsModel.createDoc(req.body)
 
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.ITEM_CREATE_SUCCESS,
+                message: Exception.getMessage(Exception.COMMON.ITEM_CREATE_SUCCESS),
                 data: account
             })
         } catch (err) {
@@ -60,10 +60,10 @@ class AccountsController {
 
     async update(req, res, next) {
         try {
-            const result = await AccountsModel.updateDoc({ options: { _id: req.params.id }, formData: req.body })
+            const result = await AccountsModel.updateDoc(req.params.id, { formData: req.body })
 
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.ITEM_CREATE_SUCCESS,
+                message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
                 data: result
             })
         } catch(err) {
@@ -73,11 +73,14 @@ class AccountsController {
 
     async delete(req, res, next) {
         try {
-            await AccountsModel.softDelete(req.params.id)
+            // await AccountsModel.softDelete(req.params.id)
+            let accountList = await AccountsModel.findDoc()
+
+            accountList = Recursive.flatAllChild(req.params.id, accountList);
 
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.ITEM_DELETE_SUCCESS,
-                data: req.params.id
+                message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
+                data: accountList
             })
         } catch (err) {
             next(err)
