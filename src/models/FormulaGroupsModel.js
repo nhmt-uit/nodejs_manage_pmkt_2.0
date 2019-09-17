@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 import FormulasModel from "./FormulasModel"
-import bankersModel from "./BankersModel"
+import BankersModel from "./BankersModel"
 import Session from '../utils/Session'
 import { get } from "http"
 // Define collection name
@@ -32,7 +32,7 @@ FormulaGroupSchema.statics.findAll = async ( query) => {
                                         path: "formulas",
                                         select: "banker_id _id status",
                                         populate: {
-                                            model: bankersModel,
+                                            model: BankersModel,
                                             path: "banker_id",
                                             select: "_id name status",
                                         }
