@@ -107,11 +107,4 @@ TCurrenciesSchema.statics.updateStatus = (ids) => {
     return this.default.updateMany({user_id: Session.get('user._id'), m_currency_id: { $nin: ids}}, {status: "delete"}, {new: true})
 }
 
-
-TCurrenciesSchema.statics.checkId = id => {
-    const idTest = new mongoose.Types.ObjectId(id)
-    return idTest.toString() === id
-}
-
-
 export default mongoose.model(collectionName, TCurrenciesSchema, collectionName)
