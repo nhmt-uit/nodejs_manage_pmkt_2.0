@@ -40,7 +40,7 @@ FormulasSchema.statics.findAll = async (query) => {
 
 
 FormulasSchema.statics.find_id = async (id) => {
-    const result = await this.default.find({_id:id})
+    const result = await this.default.find({_id:id , status : 'active'})
                                      .select(excludeFields.join(' '))
                                      .lean()
     return result
