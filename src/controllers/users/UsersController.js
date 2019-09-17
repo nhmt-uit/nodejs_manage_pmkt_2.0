@@ -52,18 +52,15 @@ class UsersController {
         try {
             const query = req.query
             let result = await UsersModel.detailGenerate(query)
-            // console.log(result)
-            // result.username = result.map(item => {
-            //     const _item = JSON.parse(JSON.stringify(item))
-            //     console.log(_item)
-                //_item.username = _uniqBy(_item.username, "username").map(elem => elem.username)
-
-                // return result
-            // })
+            console.log(result.username)
+            for (let i = 0 ; i < result.username.length-1; i++){
+                if(result.username[i+1] - result.username[i] !=1)
+                return (result.username[i])
+                }
 
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
-                data: result
+                data: result.username
             })
         } catch (err) {
             next(err)

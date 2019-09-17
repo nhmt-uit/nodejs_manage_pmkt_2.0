@@ -64,4 +64,16 @@ LanguagesSchema.statics.updateLanguage = async (item) => {
                         .lean()
 }
 
+LanguagesSchema.statics.checkName = async (value) => {
+    const result = await this.default.findOne({ name: value }, { status: 'active' })
+    if (result) return false
+    return true
+}
+
+LanguagesSchema.statics.checkCode = async (value) => {
+    const result = await this.default.findOne({ code: value }, { status: 'active' })
+    if (result) return false
+    return true
+}
+
 export default mongoose.model(collectionName, LanguagesSchema, collectionName)

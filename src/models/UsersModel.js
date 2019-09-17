@@ -84,7 +84,7 @@ UsersSchema.statics.detailGenerate = async (query) => {
     if(query.type == 'sub'){
     const result = await this.default.find({
                                     status: 'active' ,
-                                    username: { "$regex": username, "$options": "i" } ,
+                                    username: { "$regex": query.username + query.type, "$options": "i" } ,
                                     parent_id : user_id , 
                                     role: 12
                                     })
@@ -92,15 +92,36 @@ UsersSchema.statics.detailGenerate = async (query) => {
                                      .sort(query.sort)
                                      .limit(limit)
                                      .skip(skip)
-                                     console.log(result)
+
+    result.username = result.map(item => {
+    const _item = JSON.parse(JSON.stringify(item))
+    const A = _item.username
+    const numbers = A.match(/\d+/g).map(Number)
+    return numbers[1]
+    
+    })
     return result
+
     }else if(query.type == 'member'){
-        const result = await this.default.find({status: 'active' ,username: /username/i, parent_id : user_id , role: 11})
+        const result = await this.default.find({
+                                        status: 'active' ,
+                                        username: { "$regex": query.username, "$options": "i" } , 
+                                        parent_id : user_id , 
+                                        role: 11})
                                      .select('username -_id').lean()
                                      .sort(query.sort)
                                      .limit(limit)
                                      .skip(skip)
-                                     console.log(result)
+                                     
+                                     result.username = result.map(item => {
+                                        const _item = JSON.parse(JSON.stringify(item))
+                                        const A = _item.username
+                                        const numbers = A.match(/\d+/g).map(Number)
+                                       return numbers[0]
+                                    })
+
+
+
     return result
     }
 }

@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.get("/", LanguagesController.list)
 router.get("/code", LanguagesController.detail)
-router.post("/", LanguagesController.save)
+router.post("/", ValidatorHandling(LanguagesValidator.postCreate),LanguagesController.save)
 router.put("/:id", LanguagesController.update)
 router.delete("/:id",LanguagesController.delete)
 
