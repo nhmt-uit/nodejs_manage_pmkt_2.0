@@ -14,6 +14,7 @@ Exception.COMMON = {
 
 Exception.VALIDATION = {
     REQUIRE_FIELD           : "This field is required",
+    REQUIRE_INCORECT        : "This field is incorect",
     INVALID_EMAIL           : "Please enter the valid email",
     INVALID_NUMBER          : "Please enter the number",
     IS_EXISTED              : "{{field}} is existed",
