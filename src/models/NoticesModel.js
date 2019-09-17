@@ -19,8 +19,6 @@ const NoticesSchema = new mongoose.Schema({
     ],
 })
 
-<<<<<<< HEAD
-=======
 // NoticesSchema.virtual('total_language', {
 //     ref: 'languages', // The model to use
 //     localField: 'contents.language_id', // Find people where `localField`
@@ -28,7 +26,6 @@ const NoticesSchema = new mongoose.Schema({
 //     count: true // And only get the number of docs
 // });
 
->>>>>>> 3839355274164d7173d2d314ab1ffecc1ba8c4e0
 // Load BaseModel
 NoticesSchema.loadClass(BaseModel);
 NoticesSchema.plugin(BaseSchema)
@@ -39,18 +36,10 @@ NoticesSchema.statics.findAll = async (language_id, query) => {
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10)*limit - 1
     const result = await this.default.find({"contents.language_id" : mongoose.Types.ObjectId(language_id)})
-<<<<<<< HEAD
-                                    .select(excludeFields.join(' '))
-                                    .sort(query.sort)
-                                    .limit(limit)
-                                    .skip(skip)
-                                    .lean()
-=======
                                      .select(excludeFields.join(' ')).lean()
                                      .sort(query.sort)
                                      .limit(limit)
                                      .skip(skip)
->>>>>>> 3839355274164d7173d2d314ab1ffecc1ba8c4e0
     return result
 }
 
@@ -71,7 +60,7 @@ NoticesSchema.statics.createNotices = async (data) => {
         type: data.type,
         contents: [{
             "_id": new mongoose.Types.ObjectId(),
-            "type": 1 , 
+            "type": 1 ,
             "date" : new Date(),
             "language_id": temp.language_id,
             "content": temp.content
