@@ -5,6 +5,9 @@ mongoose.Promise = global.Promise
 import ReportCycleModel from "./model/old/ReportCycleModel"
 import ReportDetailModel from "./model/old/ReportDetailModel"
 import ReportHandleModel from "./model/old/ReportHandleModel"
+import AccountModel from "./model/old/AccountModel"
+import FormulaPatternModel from "./model/old/FormulaPatternModel"
+import FormulaFieldValueModel from "./model/old/FormulaFieldValueModel"
 
 import ReportsModel_N from './model/ReportsModel_N'
 import ReportHandlesModel_N from './model/ReportHandlesModel_N'
@@ -35,10 +38,10 @@ class SyncReport {
 				const data = await ReportCycleModel.find({
 														deleted: { $eq: 0 }
 													})
-													.lean()
 													.limit(limit)
 													.skip(skip * limit)
 													.sort({ created: 1 })
+													.lean()
 				if (!data.length || (_maxSkip && skip > _maxSkip)) {
 					console.log("===================== Migration Reports Collection Done ================================")
 					break
@@ -70,8 +73,8 @@ class SyncReport {
 													deleted: { $eq: 0 },
 													type_report: 4
 												})
-												.lean()
 												.sort({ created: 1 })
+												.lean()
 			await Promise.all(
 				data.map(async item => {
 	
@@ -171,54 +174,166 @@ class SyncReport {
 		try {
 			let limit = Number(_skip) || 100
 			let skip = Number(_skip) || 0
-			let data = await ReportHandleModel.find({
-													deleted: { $eq: 0 },
-													type_report: {$ne: 4}
-												})
-												.lean()
-												.sort({ created: 1 })
-			if (!data.length || (_maxSkip && skip > _maxSkip)) {
-				console.log("===================== Migration Reports Handle Other Collection Done ================================")
-				break
-			}
-			skip++
-			await Promise.all(
-				data.map(async item => {
-	
-					const _item = JSON.parse(JSON.stringify(item))
+			while (true) {
+				const data = await ReportHandleModel.find({
+														deleted: { $eq: 0 },
+														type_report: {$ne: 4}
+													})
+													.limit(limit)
+													.skip(skip * limit)
+													.sort({ created: 1 })
+													.lean()
+				if (!data.length || (_maxSkip && skip > _maxSkip)) {
+					console.log("===================== Migration Reports Handle Other Collection Done ================================")
+					break
+				}
+				skip++
+				await Promise.all(
+					data.map(async item => {
+		
+						const _item = JSON.parse(JSON.stringify(item))
 
-					let type_report = _item.type_report ? Number(_item.type_report) : 9
-					type_report = type_report_enum[type_report]
+						let type_report = _item.type_report ? Number(_item.type_report) : 9
+						type_report = type_report_enum[type_report]
 
-					let origin_t_currentcy_id = null
-					let t_currentcy_id = null
-					let origin_amount = null
-					let amount = null
-					
-					origin_t_currentcy_id = mongoose.Types.ObjectId(_item.dv_tien_te_id)
-					t_currentcy_id = mongoose.Types.ObjectId(_item.dv_tien_te_id)
+						let origin_t_currentcy_id = null
+						let t_currentcy_id = null
+						let origin_amount = null
+						let amount = null
+						
+						origin_t_currentcy_id = mongoose.Types.ObjectId(_item.dv_tien_te_id)
+						t_currentcy_id = mongoose.Types.ObjectId(_item.dv_tien_te_id)
 
-					origin_amount = _item.result ? Number(_item.result) : null
-					amount = _item.result ? Number(_item.result) : null
+						origin_amount = _item.result ? Number(_item.result) : null
+						amount = _item.result ? Number(_item.result) : null
 
-					const query = new ReportHandlesModel_N({
-						_id							: mongoose.Types.ObjectId(_item._id),
-						report_id					: _item.chukybaocaotuan_id ? mongoose.Types.ObjectId(_item.chukybaocaotuan_id) : null,
-						user_id						: _item.user_id ? mongoose.Types.ObjectId(_item.user_id) : null,
-						member_id					: _item.uid ? mongoose.Types.ObjectId(_item.uid) : null,
-						origin_t_currentcy_id		: origin_t_currentcy_id,
-						t_currentcy_id				: t_currentcy_id,
-						ref_transaction_id			: _item.ref_transaction_id ? mongoose.Types.ObjectId(_item.ref_transaction_id) : null,
-						type						: type_report,
-						origin_amount				: origin_amount,
-						amount						: amount,
-						note						: _item.note ? String(_item.note).trim() : "",
-						status						: Number(_item.deleted) !== 0 ? "deleted" : "active"
+						const query = new ReportHandlesModel_N({
+							_id							: mongoose.Types.ObjectId(_item._id),
+							report_id					: _item.chukybaocaotuan_id ? mongoose.Types.ObjectId(_item.chukybaocaotuan_id) : null,
+							user_id						: _item.user_id ? mongoose.Types.ObjectId(_item.user_id) : null,
+							member_id					: _item.uid ? mongoose.Types.ObjectId(_item.uid) : null,
+							origin_t_currentcy_id		: origin_t_currentcy_id,
+							t_currentcy_id				: t_currentcy_id,
+							ref_transaction_id			: _item.ref_transaction_id ? mongoose.Types.ObjectId(_item.ref_transaction_id) : null,
+							type						: type_report,
+							origin_amount				: origin_amount,
+							amount						: amount,
+							note						: _item.note ? String(_item.note).trim() : "",
+							status						: Number(_item.deleted) !== 0 ? "deleted" : "active"
+						})
+						const result = await query.save()
+						console.log(result)
 					})
-					// const result = await query.save()
-					// console.log(result)
-				})
-			)
+				)
+			}
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
+	
+
+	async ReportDetail(_limit, _skip, _maxSkip) {
+		try {
+			let limit = Number(_skip) || 100
+			let skip = Number(_skip) || 0
+			while (true) {
+				const data = await ReportDetailModel.find({
+														deleted: { $eq: 0 },
+														// chukybaocaotuan_id: mongoose.Types.ObjectId("5d7cba86cafddd607a4e65c5")
+														"_id" : mongoose.Types.ObjectId("5d7cba869247674a63cd0606")
+													})
+													.limit(limit)
+													.skip(skip * limit)
+													.sort({ created: 1 })
+													.lean()
+				if (!data.length || (_maxSkip && skip > _maxSkip)) {
+					console.log("===================== Migration Reports Detail Collection Done ================================")
+					break
+				}
+				skip++
+				await Promise.all(
+					data.map(async item => {
+						const _item = JSON.parse(JSON.stringify(item))
+
+
+						// _id: mongoose.Types.ObjectId,
+						// report_id: mongoose.Types.ObjectId,
+						// user_id: mongoose.Types.ObjectId,
+						// account_id: mongoose.Types.ObjectId,
+						// formula_detail: {
+						// 	t_currentcy_id: mongoose.Types.ObjectId,
+						// 	formula_id: mongoose.Types.ObjectId,
+						// 	name: String,
+						// 	rec_pay: Number,
+						// 	fields: [
+						// 		{
+						// 			formula_field_id: mongoose.Types.ObjectId,
+						// 			value: Number
+						// 		}
+						// 	],
+						// },
+						// flag: String,
+						// amount: Number,
+
+						const formulaDetailParse = _item.formula_detail ? JSON.parse(JSON.parse(_item.formula_detail)) : {}
+						// console.log("formulaDetailParse", formulaDetailParse, formulaDetailParse.f_pattern_id)
+						const formulaInfo = await FormulaPatternModel.findOne({
+																			_id: mongoose.Types.ObjectId(formulaDetailParse.f_pattern_id)
+																		})
+																		.lean()
+
+						const formulaFieldValue = await FormulaFieldValueModel.find({
+																	f_pattern_id: mongoose.Types.ObjectId(formulaDetailParse.f_pattern_id),
+																	deleted: {$eq: 0}
+																})
+																.lean()
+						const formulaFields = []
+						if (formulaFieldValue && formulaFieldValue.length) {
+							formulaFieldValue.forEach(el => {
+								const _el = JSON.parse(JSON.stringify(el))
+								formulaFields.push({
+									formula_field_id	: mongoose.Types.ObjectId(_el.f_field_id),
+									value				: Number(_el.value)
+								})
+							})
+						}
+
+						console.log(formulaInfo)
+						const formula_detail = formulaInfo ? {
+							t_currency_id			: mongoose.Types.ObjectId(formulaInfo.dv_tiente),
+							formula_format_id		: mongoose.Types.ObjectId(formulaInfo.f_format_id),
+							name					: formulaInfo.tenct ? String(formulaInfo.tenct) : "",
+							fields					: formulaFields,
+							rec_pay					: formulaInfo.giaonhan,
+						} : {}
+
+						console.log("formula_detail", formula_detail)
+
+						const accountInfo = await AccountModel.findOne({
+															acc_name: { "$regex": new RegExp(`^${_item.account_name}$`), "$options": "i" },
+															deleted: 0,
+															uid: mongoose.Types.ObjectId(_item.uid)
+														})
+														.lean()
+						
+
+						const query = new ReportDetailsModel_N({
+							_id							: mongoose.Types.ObjectId(_item._id),
+							report_id					: _item.chukybaocaotuan_id ? mongoose.Types.ObjectId(_item.chukybaocaotuan_id) : null,
+							user_id						: _item.uid ? mongoose.Types.ObjectId(_item.uid) : null,
+							member_id					: _item.user_id ? mongoose.Types.ObjectId(_item.user_id) : null,
+							account_id					: accountInfo._id ? mongoose.Types.ObjectId(accountInfo._id) : null,
+							flag						: _item.flag ? String(_item.flag).trim() : "",
+							amount						: _item.result ? Number(_item.result) : 0,
+							formula_detail				: formula_detail
+							
+						})
+						const result = await query.save()
+						console.log(result)
+					})
+				)
+			}
 		} catch (error) {
 			console.error(error)
 		}

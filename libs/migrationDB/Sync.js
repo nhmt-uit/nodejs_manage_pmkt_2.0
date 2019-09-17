@@ -38,7 +38,8 @@ Promise.all([
 
     // Sync Report
     // SyncReport.ReportHandle(_limit, _skip, _maxSkip),
-    SyncReport.ReportHandleExchange()
+    // SyncReport.ReportHandleExchange()
+    SyncReport.ReportDetail(_limit, _skip, _maxSkip),
 
 ]).then(_ => {
     console.log("===================== Migration Data Done ================================")

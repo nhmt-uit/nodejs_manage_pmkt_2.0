@@ -87,6 +87,7 @@ class SyncLanguage {
 							noticeContent.forEach(el => {
 								const _el = JSON.parse(JSON.stringify(el))
 								contents.push({
+									_id				: mongoose.Types.ObjectId(_el._id),
 									language_id		: mongoose.Types.ObjectId(_el.language_id),
 									content			: String(_el.name).trim()
 								})
@@ -96,6 +97,8 @@ class SyncLanguage {
 						const query = new NoticesModel_N({
 							_id				: mongoose.Types.ObjectId(_item._id),
 							name			: _item.name ? String(_item.name).trim() : "",
+							type			: _item.type ? Number(_item.type) : 0,
+							date			: new Date(Number(_item.created) * 1000),
 							contents		: contents,
 							status			: Number(_item.deleted) !== 0 ? "deleted" : "active"
 						})
