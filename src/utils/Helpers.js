@@ -12,6 +12,10 @@ class Helpers {
         }
         return myIP
     }
+
+    getNumberPad(number, length = 3) {
+        return number.toLocaleString(undefined, {useGrouping: false, minimumIntegerDigits: length})
+    }
 }
 
 export default new Helpers

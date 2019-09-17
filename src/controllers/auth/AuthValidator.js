@@ -73,7 +73,7 @@ const AuthValidator = {
             .matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%])[0-9A-Za-z!@#$%]{8,}$/)
                 .withMessage(Exception.getMessage(Exception.VALIDATION.PASSWORD_FORMAT, {field: "Password"}))
             .custom(value => {
-                    return HashPassword.compareHash(value, Session.get("user.password"))
+                    return Session.get("user.password") && HashPassword.compareHash(value, Session.get("user.password"))
                 }).withMessage(Exception.getMessage(Exception.VALIDATION.INCORRECT_FIELD)),
         check("new_password")
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
@@ -101,7 +101,7 @@ const AuthValidator = {
             .matches(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%])[0-9A-Za-z!@#$%]{8,}$/)
                 .withMessage(Exception.getMessage(Exception.VALIDATION.PASSWORD_FORMAT, {field: "Password2"}))
             .custom(value => {
-                    return HashPassword.compareHash(value, Session.get("user.password2"))
+                    return Session.get("user.password2") && HashPassword.compareHash(value, Session.get("user.password2"))
                 }).withMessage(Exception.getMessage(Exception.VALIDATION.INCORRECT_FIELD)),
         check("new_password2")
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
