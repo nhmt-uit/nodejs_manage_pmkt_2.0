@@ -37,9 +37,8 @@ AccountsSchema.statics.findDoc = ({ options = {}, terms = {}} = {}) => {
     
     let query = this.default.find(options)
         .sort(terms.sort)
-
     
-    if (terms.typeFormat && terms.typeFormat === 'flat') {
+    if (terms.type && terms.type === 'flat') {
         query = query.limit(Number(terms.limit)).skip(Number(terms.skip))
     }
 

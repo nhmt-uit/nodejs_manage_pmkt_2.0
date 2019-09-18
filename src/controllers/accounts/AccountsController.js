@@ -1,3 +1,5 @@
+import
+
 import AccountsModel from '../../models/AccountsModel'
 import Recursive from "../../utils/Recursive"
 import Exception from '../../utils/Exception'
@@ -6,15 +8,17 @@ class AccountsController {
     async list(req, res, next) {
         try {
             const { query } = req;
+            const terms = {
+                type: query.type && query.type === 'flat' ? 'flat' : 'tree'
+            };
 
-            let accountList = await AccountsModel.findDoc({
-                terms: {
-                    ...query,
-                    typeFormat: query.typeFormat ? query.typeFormat : 'flat'
-                } 
-            })
+            if (query.sort) {
+                sort
+            }
 
-            if (query.typeFormat && query.typeFormat === 'tree') {
+            let accountList = await AccountsModel.findDoc({ terms })
+
+            if (query.type && query.type === 'tree') {
                 accountList = Recursive.flatToTree(accountList)
 
                 if (query.page && query.limit) {
@@ -73,14 +77,11 @@ class AccountsController {
 
     async delete(req, res, next) {
         try {
-            // await AccountsModel.softDelete(req.params.id)
-            let accountList = await AccountsModel.findDoc()
-
-            accountList = Recursive.flatAllChild(req.params.id, accountList);
+            await Recursive.softDeleteTree(AccountsModel, req.params.id)
 
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
-                data: accountList
+                data: req.params.id
             })
         } catch (err) {
             next(err)
