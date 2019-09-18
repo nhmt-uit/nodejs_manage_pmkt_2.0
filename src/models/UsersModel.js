@@ -76,32 +76,25 @@ UsersSchema.statics.detailSubUser = async (query) => {
 UsersSchema.statics.generateUsername = async (query) => {
     const user_id = Session.get('user._id')
     const username = Session.get('user.username')
+    let _username
     let options = {}
     let listUsernameCompare = []
     if (query.type === 'sub') {
+        _username = username + query.type
         options = {
             status: 'active',
-            username: { "$regex": username + query.type, "$options": "i" },
+            username: { "$regex": new RegExp(`^${_username}`), "$options": "i" },
             parent_id: user_id,
             role: 12
         }
-
-        for(let i = 0; i < 1000; i++ ) {
-            listUsernameCompare.push(`${username}${query.type}${Helpers.getNumberPad(i)}`)
-        }
-
     } else if (query.type === 'member') {
+        _username = username
         options = {
             status: 'active',
-            username: { "$regex": username, "$options": "i" },
+            username: { "$regex": new RegExp(`^${_username}`), "$options": "i" },
             parent_id: user_id,
             role: 11
         }
-
-        for(let i = 1; i < 1000; i++ ) {
-            listUsernameCompare.push(`${username}${Helpers.getNumberPad(i)}`)
-        }
-
     }
 
     const result = await this.default.find(options)
@@ -110,16 +103,8 @@ UsersSchema.statics.generateUsername = async (query) => {
                                     .lean()
 
 
-
-    const resultCompare = listUsernameCompare.filter(function(element){
-        if(result.indexOf(element) != -1){
-            console.log('1')
-        }
-    })
-
-        return resultCompare
-  //  return 'av8899sub002'
-   // return 'av8899006'
+    const arrUserName = result.map(item => item.username)
+    return getAvailableUserName(_username, arrUserName)
 }
 
 
@@ -182,6 +167,18 @@ UsersSchema.statics.checkUniqueUsername = (username) => {
 
 
 
+/*
+|--------------------------------------------------------------------------
+| Private function
+| Generate not exists username in array
+|--------------------------------------------------------------------------
+*/
+const getAvailableUserName = (username, arrCurrentUsername) => {
+    for (let i = 1; i < 1000; i++ ) {
+        const _username = `${username}${Helpers.getNumberPad(i)}`
+        if (arrCurrentUsername.indexOf(_username) === -1) return _username
+    }
+}
 
 // Export Model
 export default mongoose.model(collectionName, UsersSchema, collectionName)

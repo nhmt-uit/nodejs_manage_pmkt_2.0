@@ -24,30 +24,6 @@ const SessionMiddleware = session({
     cookie: { maxAge: SessionConfig.SESSION_MAX_AGE },
 })
 
-mongoSessionStore
-                .on('create', (sessionId) => {
-                    console.log({event: 'create', sessionId});
-                })
-                .on('touch', (sessionId) => {
-                    console.log({event: 'touch', sessionId});
-                })
-                .on('update', (sessionId) => {
-                    console.log({event: 'update', sessionId});
-                })
-                .on('set', (sessionId) => {
-                    console.log({event: 'set', sessionId});
-                })
-                .on('connect', (sessionId) => {
-                    console.log({event: 'connect', sessionId});
-                })
-                .on('disconnect', (sessionId) => {
-                    console.log({event: 'disconnect', sessionId});
-                })
-                .on('destroy', (sessionId) => {
-                    console.log({event: 'destroy', sessionId});
-                })
-
-
 const SessionHandling = ( req, res, next) => {
     Session.instance(req.session)
     next()
