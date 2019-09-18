@@ -41,6 +41,11 @@ const FormulaGroupsValidator = {
                 let isUnique = await FormulaGroupSchema.checkBanker_id(value)
                 if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
             }),
+    ],
+    checkExistName: [
+        check('name')
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
     ]
 }
 

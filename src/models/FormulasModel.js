@@ -52,11 +52,11 @@ FormulasSchema.statics.createFormula = async (data) => {
         banker_id: data.banker_id,
         t_currency_id: data.t_currency_id,
         formula_format_id: data.formula_format_id,
-        fields: [{
+        fields: {
             "_id": new mongoose.Types.ObjectId(),
             "formula_field_id": temp.formula_field_id,
             "value": temp.value
-        }],
+        },
         rec_pay: data.rec_pay,
     }
     const formula = await this.default.create(newObject)

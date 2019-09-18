@@ -136,11 +136,14 @@ FormulaGroupSchema.statics.checkName = async (value) => {
 
 
 FormulaGroupSchema.statics.checkExistName = async name => {
-    let result
-        if(name){
-            result = await this.default.findOne({name: name})
-            return !!result
-        }
+            const result = await this.default.findOne({name: name})
+                                             .select('name')
+                                             .lean()
+            if(result){
+                return result
+            }else{
+                return 'false'
+            }
 }
 
 

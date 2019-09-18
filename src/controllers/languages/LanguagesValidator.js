@@ -2,9 +2,8 @@ import { check } from "express-validator"
 
 import LanguagesSchema from "../../models/LanguagesModel"
 import Exception from "../../utils/Exception"
-import LanguagesModel from "../../models/LanguagesModel"
 
-const FormulaGroupsValidator = {
+const LanguagesValidator = {
 
     /*
     |--------------------------------------------------------------------------
@@ -12,7 +11,7 @@ const FormulaGroupsValidator = {
     | Method: POST
     |--------------------------------------------------------------------------
     */
-    GetList: [
+    getList: [
         check('sort[name]')
             .custom(async (value) => {
                 if(value){
@@ -90,4 +89,4 @@ const FormulaGroupsValidator = {
 
 }
 
-export default FormulaGroupsValidator
+export default LanguagesValidator

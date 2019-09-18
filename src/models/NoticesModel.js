@@ -2,7 +2,7 @@
 import mongoose from "mongoose"
 
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
-import languagesModel from "./LanguagesModel"
+
 // Define collection name
 const collectionName = "notices"
 
@@ -68,17 +68,12 @@ NoticesSchema.statics.find_id = async (id) => {
 
 NoticesSchema.statics.createNotices = async (data) => {
     const temp = JSON.parse(data.contents)
+    console.log(temp.language_id)
     let newObject = {
         _id: new mongoose.Types.ObjectId(),
         name: data.name,
         type: data.type,
-        contents: [{
-            "_id": new mongoose.Types.ObjectId(),
-            "type": 1 ,
-            "date" : new Date(),
-            "language_id": temp.language_id,
-            "content": temp.content
-        }]
+        contents: temp
     }
     const Notice = await this.default.create(newObject)
     return this.default.findById(Notice._id)
@@ -102,5 +97,10 @@ NoticesSchema.statics.updateNotice = async (data) => {
                         .select(excludeFields.join(' ')).lean()
 }
 
+NoticesSchema.statics.checkName = async (value) => {
+    const result = await this.default.findOne({ name: value }, { status: 'active' })
+    if (result) return false
+    return true
+}
 
 export default mongoose.model(collectionName, NoticesSchema, collectionName)

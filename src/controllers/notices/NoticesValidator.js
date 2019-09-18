@@ -1,10 +1,9 @@
 import { check } from "express-validator"
 
-import NoticesSchema from "../../models/LanguagesModel"
+import NoticesSchema from "../../models/NoticesModel"
 import Exception from "../../utils/Exception"
-import NoticesModel from "../../models/LanguagesModel"
 
-const FormulaGroupsValidator = {
+const NoticesValidator = {
 
     /*
     |--------------------------------------------------------------------------
@@ -12,7 +11,7 @@ const FormulaGroupsValidator = {
     | Method: POST
     |--------------------------------------------------------------------------
     */
-    GetList: [
+    getList: [
         check(`sort[${'*'}]`)
             .custom(async (value) => {
                 if(value){
@@ -34,7 +33,28 @@ const FormulaGroupsValidator = {
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.REQUIRE_INCORECT, { field: value }))
             }}),
     ],
+    postCreate: [
+        check('name')
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+
+            .custom(async (value) => {
+                let isUnique = await NoticesSchema.checkName(value)
+                if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
+            }),
+        check('type')
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+
+            .custom(async (value) => {
+                if(value){
+                    const type = parseInt(value, 10)
+                    if (isNaN(type - 1))
+                        return Promise.reject(Exception.getMessage(Exception.VALIDATION.REQUIRE_INCORECT, { field: value }))
+                }
+            }),
+    ],
 
 }
 
-export default FormulaGroupsValidator
+export default NoticesValidator
