@@ -3,31 +3,30 @@ import _isEmpty from 'lodash/isEmpty'
 
 import BaseModel, { BaseSchema, ExcludeFields } from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
+
 // Define collection name
-const collectionName = "formulas"
+const collectionName = "account_formula"
 
 // Define collection schema
-const FormulasSchema = new mongoose.Schema({
-    banker_id: mongoose.Schema.Types.ObjectId,
-    user_id: mongoose.Schema.Types.ObjectId,
-    t_currency_id: mongoose.Schema.Types.ObjectId,
-    formula_format_id: mongoose.Schema.Types.ObjectId,
-    name: String,
-    fields: [{
-        formula_field_id: mongoose.Schema.Types.ObjectId,
-        value: Number
-    }],
-    rec_pay: Number
+const Schema = mongoose.Schema
+const AccountFormulaSchema = new mongoose.Schema({
+    _id: mongoose.Types.ObjectId,
+    account_id: mongoose.Types.ObjectId,
+    member_id: mongoose.Types.ObjectId,
+    formula_id: mongoose.Types.ObjectId,
+    formula_group_id: mongoose.Types.ObjectId,
 })
-// Load BaseModel
-FormulasSchema.loadClass(BaseModel)
-FormulasSchema.plugin(BaseSchema)
 
+// Load BaseModel
+AccountFormulaSchema.loadClass(BaseModel)
+AccountFormulaSchema.plugin(BaseSchema)
+
+// Load Exclude Fields
 const excludeFields = [ ...ExcludeFields ]
 
-FormulasSchema.statics.findDoc = ({ options = {}, terms = {} } = {}) => {
+// Defined methods
+AccountFormulaSchema.statics.findDoc = ({ options = {}, terms = {}} = {}) => {
     options.status = 'active'
-    options.user_id = Session.get('user._id')
 
     terms = this.default.parseQuery(terms)
 
@@ -46,7 +45,7 @@ FormulasSchema.statics.findDoc = ({ options = {}, terms = {} } = {}) => {
     return query.select(excludeFields.join(' ')).lean()
 }
 
-FormulasSchema.statics.checkExisted = async (options) => {
+AccountFormulaSchema.statics.checkExisted = async (options) => {
     if (!options || _isEmpty(options)) return false
 
     options.status = 'active'
@@ -57,12 +56,12 @@ FormulasSchema.statics.checkExisted = async (options) => {
     return !!result
 }
 
-FormulasSchema.statics.createDoc = formData => {
+AccountFormulaSchema.statics.createDoc = formData => {
     const options = {
         status: 'active',
         user_id: Session.get('user._id'),
         banker_id: formData.banker_id,
-        name: formData.name
+        sub_user: formData.sub_user
     };
 
     formData.status = 'active'
@@ -73,15 +72,14 @@ FormulasSchema.statics.createDoc = formData => {
         .lean()
 }
 
-FormulasSchema.statics.updateDoc = (id, { formData }) => {
+AccountFormulaSchema.statics.updateDoc = (id, { formData }) => {
     delete formData.status
-    delete formData.banker_id
+    delete formData.name
 
     return this.default.findByIdAndUpdate(id, formData, { new: true })
         .select(excludeFields.join(' '))
         .lean()
 }
 
-export default mongoose.model(collectionName, FormulasSchema, collectionName)
-
-
+// Export Model
+export default mongoose.model(collectionName, AccountFormulaSchema, collectionName)

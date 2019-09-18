@@ -4,7 +4,7 @@ import Session from '../../utils/Session'
 
 import AccountsModel from '../../models/AccountsModel'
 
-const AccountValidator = {
+const AccountsValidator = {
 
     /*
     |--------------------------------------------------------------------------
@@ -53,7 +53,6 @@ const AccountValidator = {
                         _id: {$ne: req.params.id},
                         banker_id: req.body.banker_id,
                         sub_user: req.body.sub_user,
-                        user_id: Session.get('user._id')
                     }
 
                     const account = await AccountsModel.checkExisted(options)
@@ -66,4 +65,4 @@ const AccountValidator = {
     ]
 }
 
-export default AccountValidator
+export default AccountsValidator

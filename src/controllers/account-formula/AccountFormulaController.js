@@ -1,23 +1,25 @@
-import FormulasModel from "../../models/FormulasModel"
+import AccountFormulaModel from '../../models/AccountFormulaModel'
+import Recursive from "../../utils/Recursive"
+import Exception from '../../utils/Exception'
 
-import Exception from "../../utils/Exception"
-
-class FormulasController {
+class AccountFormulaController {
     async list(req, res, next) {
         try {
-            const formulaList = await FormulasModel.findDoc({ terms: req.query })
+            const accountFormulaList = await AccountFormulaModel.findDoc({ terms: req.query })
 
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
-                data: formulaList
+                data: accountFormulaList
             })
         } catch (err) {
             next(err)
         }
     }
+
     async detail(req, res, next) {
         try {
-            let result = await FormulasModel.findDoc({ options: { _id: req.params.id } })
+            const query = { _id: req.params.id }
+            const result = await AccountsModel.findDoc({ options: query})
 
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
@@ -27,34 +29,36 @@ class FormulasController {
             next(err)
         }
     }
+
     async save(req, res, next) {
         try {
-            const result = await FormulasModel.createDoc(req.body)
+            const account = await AccountsModel.createDoc(req.body)
 
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_CREATE_SUCCESS),
-                data: result
+                data: account
             })
         } catch (err) {
             next(err)
         }
     }
+
     async update(req, res, next) {
         try {
-            const result = await FormulasModel.updateDoc(req.params.id, { formData: req.body })
+            const result = await AccountsModel.updateDoc(req.params.id, { formData: req.body })
 
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
                 data: result
-
             })
-        } catch (err) {
+        } catch(err) {
             next(err)
         }
     }
+
     async delete(req, res, next) {
         try {
-            await FormulasModel.softDelete(req.params.id)
+            await Recursive.softDeleteTree(AccountsModel, req.params.id)
 
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
@@ -64,19 +68,6 @@ class FormulasController {
             next(err)
         }
     }
-
-    async checkExists(req, res, next) {
-        try {
-            const isExist = await FormulasModel.checkExisted({ name: req.query.name })
-
-            return res.jsonSuccess({
-                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
-                data: isExist
-            })
-        } catch (err) {
-            next(err)
-        }
-    }
 }
 
-export default new FormulasController()
+export default new AccountFormulaController()

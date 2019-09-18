@@ -13,6 +13,7 @@ import BankersRoutes from "./BankersRoutes"
 import BooksRoutes from "./BooksRoutes"
 import MCurrenciesRoutes from "./MCurrenciesRoutes"
 import TCurrenciesRoutes from "./TCurrenciesRoutes"
+import AccountFormulaRoutes from './AccountFormulaRoutes'
 
 const router = express.Router()
 
@@ -27,5 +28,6 @@ router.use("/api/v1/formulas", AuthHandling, FormulaRoutes)
 router.use("/api/v1/languages", AuthHandling, LanguageRoutes)
 router.use("/api/v1/notices", AuthHandling, NoticeRoutes)
 router.use("/api/v1/accounts", AuthHandling, AccountRoutes)
+router.use("/api/v1/account-formula", AuthHandling, AccountFormulaRoutes)
 
 export default router

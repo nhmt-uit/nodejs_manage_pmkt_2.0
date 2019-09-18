@@ -8,8 +8,10 @@ import mongoose from "mongoose"
 
 import Session from "../Session"
 
+// Exclude fields
+const ExcludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
 
-// Exteneral fields
+// External fields
 const BaseFields = {
     status: { type: String, lowercase: true, trim: true, enum: ["active", "inactive", "deleted"], default: "active" },
     createdBy: { type: mongoose.Schema.Types.ObjectId, default: null },
@@ -62,17 +64,14 @@ class BaseModel {
 
         if (query.sort) {
             Object.entries(query.sort).forEach(item => {
-                if (!(new RegExp('desc|asc|1|-1', 'i')).test(item[1])) {
+                if (!(new RegExp("desc|asc|1|-1", 'i')).test(item[1])) {
                     delete query.sort[item[0]]
                 }
             })
         }
-
         return query
     }
 }
-
-const ExcludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
 
 export default BaseModel
 export {

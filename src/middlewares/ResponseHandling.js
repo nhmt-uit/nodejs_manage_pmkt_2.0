@@ -4,7 +4,7 @@ export default ( req, res, next) => {
         let objRes = {
             success: true,
             message: args.message || null,
-            data: args.data || null
+            data: args.data !== undefined ? args.data : null
         }
 
         if (args.total && Number(args.total)) objRes.total = Number(args.total)
