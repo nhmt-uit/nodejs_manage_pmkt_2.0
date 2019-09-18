@@ -74,7 +74,7 @@ class MCurrenciesController {
                 response.data = true
             } else {
                 response.message = Exception.COMMON.VALUE_NOT_EXISTS
-                response.data = 'false'
+                response.data = false
             }
 
             return res.jsonSuccess({

@@ -78,6 +78,12 @@ const MCurrenciesValidator = {
             .isNumeric().withMessage(Exception.getMessage(Exception.VALIDATION.INVALID_NUMBER)),
     ],
 
+    checkExists: [
+        check('name')
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+    ],
+
     deleteMCurrency: [
         check('id')
             .custom( async value => {
