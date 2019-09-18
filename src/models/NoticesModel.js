@@ -34,13 +34,27 @@ const excludeFields = ['-status', '-createdAt', '-updatedAt', '-createdBy', '-up
 
 NoticesSchema.statics.findAll = async (language_id, query) => {
     const limit = parseInt(query.limit, 10)
-    const skip = parseInt(query.page, 10)*limit - 1
-    const result = await this.default.find({"contents.language_id" : mongoose.Types.ObjectId(language_id)})
+    const skip = (parseInt(query.page, 10) - 1)*limit
+    if(!language_id){
+        const result = await this.default.find({})
                                      .select(excludeFields.join(' ')).lean()
                                      .sort(query.sort)
                                      .limit(limit)
                                      .skip(skip)
-    return result
+                                     return result
+
+    } else{
+    const result = await this.default.find({"contents.language_id" : {$eq: language_id}},{contents: {$elemMatch:{ "language_id":language_id}}})
+                                     .select(excludeFields.join(' ')).lean()
+                                     .sort(query.sort)
+                                     .limit(limit)
+                                     .skip(skip)
+
+                                     return result
+
+    }
+ 
+   
 }
 
 
@@ -73,6 +87,7 @@ NoticesSchema.statics.createNotices = async (data) => {
 
 
 NoticesSchema.statics.updateNotice = async (data) => {
+    
     return this.default.findOneAndUpdate(
                         { _id: data.id },
                         {

@@ -25,7 +25,7 @@ const excludeFields = ['-status -createdAt -updatedAt -createdBy -updatedBy -upd
 FormulaGroupSchema.statics.findAll = async ( query) => {
     const user_id = Session.get('user._id');
     const limit = parseInt(query.limit, 10)
-    const skip = parseInt(query.page, 10) * limit - 1
+    const skip = (parseInt(query.page, 10) - 1)*limit
     const result = await this.default.find({ status: 'active', user_id : user_id })
                                      .populate({
                                         model: FormulasModel,
