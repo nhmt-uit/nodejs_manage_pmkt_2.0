@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import _isEmpty from 'lodash/isEmpty'
 
-import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
+import BaseModel, { BaseSchema, ExcludeFields } from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
 
 // Define collection name
@@ -28,18 +28,31 @@ const AccountsSchema = new mongoose.Schema({
     banker_locked: Boolean,
     banker_locked_reason: String
 })
-const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
+
+// Load BaseModel
+AccountsSchema.loadClass(BaseModel)
+AccountsSchema.plugin(BaseSchema)
+
+// Load Exclude Fields
+const excludeFields = [ ...ExcludeFields ]
 
 // Defined methods
 AccountsSchema.statics.findDoc = ({ options = {}, terms = {}} = {}) => {
     options.status = 'active'
     options.user_id = Session.get('user._id')
-    
+
+    terms = this.default.parseQuery(terms)
+
     let query = this.default.find(options)
-        .sort(terms.sort)
+
+    if (terms.sort) query = query.sort(terms.sort)
     
-    if (terms.type && terms.type === 'flat') {
-        query = query.limit(Number(terms.limit)).skip(Number(terms.skip))
+    if (terms.type !== 'tree' && Number(terms.limit) > 0) {
+        const skip = Number(terms.page) > 0
+            ? (Number(terms.page) - 1) * Number(terms.limit)
+            : 0
+
+        query = query.limit(Number(terms.limit)).skip(skip)
     }
 
     return query.select(excludeFields.join(' ')).lean()
@@ -80,10 +93,6 @@ AccountsSchema.statics.updateDoc = (id, { formData }) => {
         .select(excludeFields.join(' '))
         .lean()
 }
-
-// Load BaseModel
-AccountsSchema.loadClass(BaseModel)
-AccountsSchema.plugin(BaseSchema)
 
 // Export Model
 export default mongoose.model(collectionName, AccountsSchema, collectionName)

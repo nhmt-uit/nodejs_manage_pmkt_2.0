@@ -54,10 +54,29 @@ class BaseModel {
     static softDelete(id) {
         return this.updateOne({_id: id}, {status: "delete"})
     }
+
+    static parseQuery(query) {
+        if (query.limit && !Number(query.limit)) delete query.limit
+
+        if (query.page && !Number(query.page)) delete query.page
+
+        if (query.sort) {
+            Object.entries(query.sort).forEach(item => {
+                if (!(new RegExp('desc|asc|1|-1', 'i')).test(item[1])) {
+                    delete query.sort[item[0]]
+                }
+            })
+        }
+
+        return query
+    }
 }
+
+const ExcludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
 
 export default BaseModel
 export {
     BaseSchema,
-    BaseFields
+    BaseFields,
+    ExcludeFields
 }

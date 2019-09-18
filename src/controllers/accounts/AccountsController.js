@@ -1,5 +1,3 @@
-import
-
 import AccountsModel from '../../models/AccountsModel'
 import Recursive from "../../utils/Recursive"
 import Exception from '../../utils/Exception'
@@ -8,15 +6,8 @@ class AccountsController {
     async list(req, res, next) {
         try {
             const { query } = req;
-            const terms = {
-                type: query.type && query.type === 'flat' ? 'flat' : 'tree'
-            };
 
-            if (query.sort) {
-                sort
-            }
-
-            let accountList = await AccountsModel.findDoc({ terms })
+            let accountList = await AccountsModel.findDoc({ terms: query })
 
             if (query.type && query.type === 'tree') {
                 accountList = Recursive.flatToTree(accountList)

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
+import BaseModel, { BaseSchema, ExcludeFields } from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
 // Define collection name
 const collectionName = "formulas"
@@ -22,20 +22,27 @@ const FormulasSchema = new mongoose.Schema({
 FormulasSchema.loadClass(BaseModel)
 FormulasSchema.plugin(BaseSchema)
 
-const excludeFields = ['-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy']
+const excludeFields = [ ...ExcludeFields ]
 
-FormulasSchema.statics.findAll = async (query) => {
-    const user_id = Session.get('user._id');
-    const limit = parseInt(query.limit, 10)
-    const skip = parseInt(query.page, 10) * limit - 1
-    const result = await this.default.find({status: 'active', user_id: user_id})
-        .select(excludeFields.join(' '))
-        .sort(query.sort)
-        .limit(limit || 10)
-        .skip(skip || 0)
-        .lean()
+FormulasSchema.statics.findDoc = async ({ options = {}, terms = {} } = {}) => {
+    options.status = 'active'
+    options.user_id = Session.get('user._id')
 
-    return result
+    terms = this.default.parseQuery(terms)
+
+    let query = this.default.find(options)
+
+    if (terms.sort) query = query.sort(terms.sort)
+
+    if (terms.type !== 'tree' && Number(terms.limit) > 0) {
+        const skip = Number(terms.page) > 0
+            ? (Number(terms.page) - 1) * Number(terms.limit)
+            : 0
+
+        query = query.limit(Number(terms.limit)).skip(skip)
+    }
+
+    return query.select(excludeFields.join(' ')).lean()
 }
 
 FormulasSchema.statics.find_id = async (id) => {
