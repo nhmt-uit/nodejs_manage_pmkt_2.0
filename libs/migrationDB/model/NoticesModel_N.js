@@ -9,6 +9,8 @@ const collectionName_N = "notices"
 const Notices_NSchema = new mongoose.Schema({
 	_id: mongoose.Types.ObjectId,
     name: String,
+    type: Number,
+    date: Date,
     contents: [
         {
             _id: mongoose.Types.ObjectId,

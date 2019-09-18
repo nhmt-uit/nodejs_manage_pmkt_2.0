@@ -18,7 +18,7 @@ class LanguagesController {
     }
     async detail(req, res, next) {
         try {
-            const code = req.body.code
+            const code = req.query.code
             let result = await LanguagesModel.findByCode(code)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),

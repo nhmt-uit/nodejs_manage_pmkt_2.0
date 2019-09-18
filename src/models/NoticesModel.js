@@ -10,7 +10,7 @@ const collectionName = "notices"
 const NoticesSchema = new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
     name: String,
-    type: String,
+    type: Number,
     contents: [{
             _id: mongoose.Types.ObjectId,
             language_id: mongoose.Types.ObjectId,
@@ -19,12 +19,12 @@ const NoticesSchema = new mongoose.Schema({
     ],
 })
 
-NoticesSchema.virtual('total_language', {
-    ref: 'languages', // The model to use
-    localField: 'contents.language_id', // Find people where `localField`
-    foreignField: 'code', // is equal to `foreignField`
-    count: true // And only get the number of docs
-});
+// NoticesSchema.virtual('total_language', {
+//     ref: 'languages', // The model to use
+//     localField: 'contents.language_id', // Find people where `localField`
+//     foreignField: 'code', // is equal to `foreignField`
+//     count: true // And only get the number of docs
+// });
 
 // Load BaseModel
 NoticesSchema.loadClass(BaseModel);
@@ -36,7 +36,6 @@ NoticesSchema.statics.findAll = async (language_id, query) => {
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10)*limit - 1
     const result = await this.default.find({"contents.language_id" : mongoose.Types.ObjectId(language_id)})
-                                     .populate('total_language')
                                      .select(excludeFields.join(' ')).lean()
                                      .sort(query.sort)
                                      .limit(limit)
@@ -47,7 +46,7 @@ NoticesSchema.statics.findAll = async (language_id, query) => {
 
 NoticesSchema.statics.find_id = async (id) => {
     const result = await this.default.find({ _id: id, status: 'active' })
-                                     .select(excludeFields.join(' ')).lean()
+                                    .select(excludeFields.join(' ')).lean()
 
     return result
 }
@@ -61,28 +60,30 @@ NoticesSchema.statics.createNotices = async (data) => {
         type: data.type,
         contents: [{
             "_id": new mongoose.Types.ObjectId(),
+            "type": 1 ,
+            "date" : new Date(),
             "language_id": temp.language_id,
             "content": temp.content
         }]
     }
     const Notice = await this.default.create(newObject)
     return this.default.findById(Notice._id)
-                       .select(excludeFields.join(' ')).lean()
+                        .select(excludeFields.join(' ')).lean()
 }
 
 
 NoticesSchema.statics.updateNotice = async (data) => {
     return this.default.findOneAndUpdate(
-                        { _id: data.id },
-                        {
-                            '$set': {
-                                'name': data.name,
-                                'type': data.type,
-                                'contents': data.contents ,
-                            }
-                        },
-                        { new: true },
-                    )
+                            { _id: data.id },
+                            {
+                                '$set': {
+                                    'name': data.name,
+                                    'type': data.type,
+                                    'contents': data.contents ,
+                                }
+                            },
+                            { new: true },
+                        )
                         .select(excludeFields.join(' ')).lean()
 }
 

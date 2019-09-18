@@ -62,7 +62,6 @@ UsersSchema.statics.detailUser = async (query) => {
 
 
 UsersSchema.statics.detailSubUser = async (query) => {
-    const parent_id = Session.get('user.parent_id')
     const user_id = Session.get('user._id')
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10) * limit - 1
@@ -109,7 +108,18 @@ UsersSchema.statics.generateUsername = async (query) => {
                                     .select('username -_id').lean()
                                     .sort("username")
                                     .lean()
-    return "av8899sub002"
+
+
+
+    const resultCompare = listUsernameCompare.filter(function(element){
+        if(result.indexOf(element) != -1){
+            console.log('1')
+        }
+    })
+
+        return resultCompare
+  //  return 'av8899sub002'
+   // return 'av8899006'
 }
 
 
@@ -120,7 +130,7 @@ UsersSchema.statics.checkExist = async (options) => {
         return !!result
 }
 
-UsersSchema.statics.createNotices = async (data) => {
+UsersSchema.statics.createUser = async (data) => {
     const temp = JSON.parse(data.contents)
     let newObject = {
         _id: new mongoose.Types.ObjectId(),
@@ -130,7 +140,28 @@ UsersSchema.statics.createNotices = async (data) => {
             "_id": new mongoose.Types.ObjectId(),
             "language_id": temp.language_id,
             "content": temp.content
-        }]
+        }],
+
+
+
+        parent_id: mongoose.Types.ObjectId,
+    username: String,
+    password: String,
+    password2: String,
+    role: Number,
+    secure_code: Number,
+    login_failed: Number,
+    login_ip: String,
+    lang_code: String,
+    allow_export: Boolean,
+    allow_report_detail: Boolean,
+    enable_start: Date,
+    enable_end: Date,
+    old_password: String,
+    is_updated_password: Boolean,
+    old_password2: String,
+    is_updated_password2: Boolean,
+    is_lock: Boolean
     }
     const User = await this.default.create(newObject)
     return this.default.findById(Notice._id)

@@ -10,10 +10,14 @@ Exception.COMMON = {
     VALIDATION_ERROR        : "Validation errors in your request",
     SERVER_OVERLOAD         : "The server is up, but overloaded with requests. Try again later!",
     INTERNAL_ERROR          : "Unexpected Error",
+
+    VALUE_EXISTS            : "{{field}} already exists",
+    VALUE_NOT_EXISTS        : "{{field}} does not exists",
 }
 
 Exception.VALIDATION = {
     REQUIRE_FIELD           : "This field is required",
+    REQUIRE_INCORECT        : "This field is incorect",
     INVALID_EMAIL           : "Please enter the valid email",
     INVALID_NUMBER          : "Please enter the number",
     IS_EXISTED              : "{{field}} is existed",
@@ -22,7 +26,7 @@ Exception.VALIDATION = {
     NOT_SAME                : "Please enter the same {{field}}",
     INCORRECT_FIELD         : "This field is incorrect",
     PASSWORD_FORMAT         : "{{field}} had at least 8 char & contain 1 uppercase letter, 1 lowercase letter, 1 number, 1 special letter",
-    MUST_NOT_EQUAL          : "{{first_field}} must not equal {{second_field}}"
+    MUST_NOT_EQUAL          : "{{first_field}} must not equal {{second_field}}",
 }
 
 Exception.AUTH = {

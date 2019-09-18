@@ -1,4 +1,4 @@
-import "./environments/LoadEnv"
+import "../utils/LoadEnv"
 
 const AppConfig = {
 	API_SERVER_PORT						: process.env.API_SERVER_PORT || 8080,
