@@ -1,25 +1,15 @@
-import AccountsModel from '../../models/AccountsModel'
+import AccountFormulaModel from '../../models/AccountFormulaModel'
 import Recursive from "../../utils/Recursive"
 import Exception from '../../utils/Exception'
 
-class AccountsController {
+class AccountFormulaController {
     async list(req, res, next) {
         try {
-            const { query } = req;
-
-            let accountList = await AccountsModel.findDoc({ terms: query })
-
-            if (query.type && query.type === 'tree') {
-                accountList = Recursive.flatToTree(accountList)
-
-                if (query.page && query.limit) {
-                    accountList = accountList.splice((query.page - 1)*query.limit, query.limit);
-                }
-            }
+            const accountFormulaList = await AccountFormulaModel.findDoc({ terms: req.query })
 
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
-                data: accountList
+                data: accountFormulaList
             })
         } catch (err) {
             next(err)
@@ -80,4 +70,4 @@ class AccountsController {
     }
 }
 
-export default new AccountsController()
+export default new AccountFormulaController()

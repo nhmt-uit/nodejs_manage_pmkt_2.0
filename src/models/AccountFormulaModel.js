@@ -5,49 +5,36 @@ import BaseModel, { BaseSchema, ExcludeFields } from "../utils/mongoose/BaseMode
 import Session from '../utils/Session'
 
 // Define collection name
-const collectionName = "accounts"
+const collectionName = "account_formula"
 
 // Define collection schema
 const Schema = mongoose.Schema
-const AccountsSchema = new mongoose.Schema({
-    user_id: { type: Schema.Types.ObjectId, required: true, ref: 'Users' },
-    banker_id: { type: Schema.Types.ObjectId, required: true, ref: 'Bankers' },
-    parent_id: { type: Schema.Types.ObjectId, ref: collectionName },
-    name: { type: String, required: true },
-    checked: Boolean,
-    is_confirm: Boolean,
-    is_sub: Boolean,
-    sub_user: { type: String, required: true },
-    sub_pass: { type: String, required: true },
-    sub_code: String,
-    sub_login_num: Number,
-    sub_locked: Boolean,
-    sub_locked_reason: String,
-    flag_type: Number,
-    data_center_sync: Boolean,
-    banker_locked: Boolean,
-    banker_locked_reason: String
+const AccountFormulaSchema = new mongoose.Schema({
+    _id: mongoose.Types.ObjectId,
+    account_id: mongoose.Types.ObjectId,
+    member_id: mongoose.Types.ObjectId,
+    formula_id: mongoose.Types.ObjectId,
+    formula_group_id: mongoose.Types.ObjectId,
 })
 
 // Load BaseModel
-AccountsSchema.loadClass(BaseModel)
-AccountsSchema.plugin(BaseSchema)
+AccountFormulaSchema.loadClass(BaseModel)
+AccountFormulaSchema.plugin(BaseSchema)
 
 // Load Exclude Fields
 const excludeFields = [ ...ExcludeFields ]
 
 // Defined methods
-AccountsSchema.statics.findDoc = ({ options = {}, terms = {}} = {}) => {
+AccountFormulaSchema.statics.findDoc = ({ options = {}, terms = {}} = {}) => {
     options.status = 'active'
-    options.user_id = Session.get('user._id')
 
     terms = this.default.parseQuery(terms)
 
     let query = this.default.find(options)
 
     if (terms.sort) query = query.sort(terms.sort)
-    
-    if (terms.type !== 'tree' && Number(terms.limit) > 0) {
+
+    if (Number(terms.limit) > 0) {
         const skip = Number(terms.page) > 0
             ? (Number(terms.page) - 1) * Number(terms.limit)
             : 0
@@ -58,7 +45,7 @@ AccountsSchema.statics.findDoc = ({ options = {}, terms = {}} = {}) => {
     return query.select(excludeFields.join(' ')).lean()
 }
 
-AccountsSchema.statics.checkExisted = async (options) => {
+AccountFormulaSchema.statics.checkExisted = async (options) => {
     if (!options || _isEmpty(options)) return false
 
     options.status = 'active'
@@ -69,7 +56,7 @@ AccountsSchema.statics.checkExisted = async (options) => {
     return !!result
 }
 
-AccountsSchema.statics.createDoc = formData => {
+AccountFormulaSchema.statics.createDoc = formData => {
     const options = {
         status: 'active',
         user_id: Session.get('user._id'),
@@ -85,7 +72,7 @@ AccountsSchema.statics.createDoc = formData => {
         .lean()
 }
 
-AccountsSchema.statics.updateDoc = (id, { formData }) => {
+AccountFormulaSchema.statics.updateDoc = (id, { formData }) => {
     delete formData.status
     delete formData.name
 
@@ -95,4 +82,4 @@ AccountsSchema.statics.updateDoc = (id, { formData }) => {
 }
 
 // Export Model
-export default mongoose.model(collectionName, AccountsSchema, collectionName)
+export default mongoose.model(collectionName, AccountFormulaSchema, collectionName)

@@ -29,41 +29,35 @@ class Recursive {
         return roots
     }
 
-    async deleteParentAndChild (model, id, options) {
-        if (!list || !Array.isArray(list))  return []
+    async softDeleteTree (model, id, options) {
+        if (!id || !model)  return false
 
         options = {
             id: '_id',
             parentId: 'parent_id',
-            children: 'children',
             ...options
         }
 
         try {
-            let childMap = [id];
-            const parentItem = model.findDoc({ options: { _id: id } })
-
             const recursiveMap = async ids => {
-                await model.softDelete(req.params.id)
-
                 ids.forEach(async id => {
-                    const idMap = []
+                    await model.softDelete(id)
 
-                    list.forEach(acc => {
-                        if (String(acc[options.parentId]) === id) idMap.push(acc._id);
-                    });
+                    const lstChild = await model.find({ [options.parentId]: id }).lean()
 
-                    childMap = childMap.concat(idMap)
+                    if (!lstChild.length) return true
 
-                    if (idMap.length) await recursiveMap(idMap);
+                    return await recursiveMap(lstChild.map(child => child[options.id]))
                 });
             }
 
-            await recursiveMap(childMap)
+            await recursiveMap([id])
 
-            return childMap
+            return true
         } catch (e) {
-            return false;
+            console.error(e.stack)
+
+            return false
         }
     }
 }

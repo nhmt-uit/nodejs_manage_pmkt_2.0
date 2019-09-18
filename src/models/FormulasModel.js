@@ -1,19 +1,20 @@
 import mongoose from 'mongoose'
+import _isEmpty from 'lodash/isEmpty'
 
-import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
+import BaseModel, { BaseSchema, ExcludeFields } from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
 // Define collection name
 const collectionName = "formulas"
 
 // Define collection schema
 const FormulasSchema = new mongoose.Schema({
-    banker_id: mongoose.Types.ObjectId,
-    user_id: mongoose.Types.ObjectId,
-    t_currency_id: mongoose.Types.ObjectId,
-    formula_format_id: mongoose.Types.ObjectId,
+    banker_id: mongoose.Schema.Types.ObjectId,
+    user_id: mongoose.Schema.Types.ObjectId,
+    t_currency_id: mongoose.Schema.Types.ObjectId,
+    formula_format_id: mongoose.Schema.Types.ObjectId,
     name: String,
     fields: [{
-        formula_field_id: mongoose.Types.ObjectId,
+        formula_field_id: mongoose.Schema.Types.ObjectId,
         value: Number
     }],
     rec_pay: Number
@@ -22,67 +23,63 @@ const FormulasSchema = new mongoose.Schema({
 FormulasSchema.loadClass(BaseModel)
 FormulasSchema.plugin(BaseSchema)
 
-const excludeFields = ['-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy']
+const excludeFields = [ ...ExcludeFields ]
 
-FormulasSchema.statics.findAll = async (query) => {
-    const user_id = Session.get('user._id');
-    const limit = parseInt(query.limit, 10)
-    const skip = parseInt(query.page, 10) * limit - 1
-    const result = await this.default.find({status: 'active', user_id: user_id})
-        .select(excludeFields.join(' '))
-        .sort(query.sort)
-        .limit(limit || 10)
-        .skip(skip || 0)
-        .lean()
+FormulasSchema.statics.findDoc = ({ options = {}, terms = {} } = {}) => {
+    options.status = 'active'
+    options.user_id = Session.get('user._id')
 
-    return result
-}
+    terms = this.default.parseQuery(terms)
 
-FormulasSchema.statics.find_id = async (id) => {
-    const result = await this.default.find({_id:id , status : 'active'})
-                                     .select(excludeFields.join(' '))
-                                     .lean()
-    return result
-}
+    let query = this.default.find(options)
 
-FormulasSchema.statics.createFormula = async (data) => {
-    const temp = JSON.parse(data.fields)
-    let newObject = {
-        _id: new mongoose.Types.ObjectId(),
-        banker_id: data.banker_id,
-        t_currency_id: data.t_currency_id,
-        formula_format_id: data.formula_format_id,
-        fields: {
-            "_id": new mongoose.Types.ObjectId(),
-            "formula_field_id": temp.formula_field_id,
-            "value": temp.value
-        },
-        rec_pay: data.rec_pay,
+    if (terms.sort) query = query.sort(terms.sort)
+
+    if (Number(terms.limit) > 0) {
+        const skip = Number(terms.page) > 0
+            ? (Number(terms.page) - 1) * Number(terms.limit)
+            : 0
+
+        query = query.limit(Number(terms.limit)).skip(skip)
     }
-    const formula = await this.default.create(newObject)
 
-    return this.default.findById(formula._id)
+    return query.select(excludeFields.join(' ')).lean()
+}
+
+FormulasSchema.statics.checkExisted = async (options) => {
+    if (!options || _isEmpty(options)) return false
+
+    options.status = 'active'
+    options.user_id = Session.get('user._id')
+
+    const result = await this.default.countDocuments(options)
+
+    return !!result
+}
+
+FormulasSchema.statics.createDoc = formData => {
+    const options = {
+        status: 'active',
+        user_id: Session.get('user._id'),
+        banker_id: formData.banker_id,
+        name: formData.name
+    };
+
+    formData.status = 'active'
+    formData.user_id = Session.get('user._id')
+
+    return this.default.findOneAndUpdate(options, formData, { upsert: true, new: true })
         .select(excludeFields.join(' '))
         .lean()
 }
 
-FormulasSchema.statics.updateFormula = async (data) => {
-    return this.default.findByIdAndUpdate(
-        {_id: data.id},
-        {
-            '$set': {
-                'banker_id': data.banker_id,
-                't_currency_id': data.t_currency_id,
-                'formula_format_id': data.formula_format_id,
-                'type': data.formula_format_id,
-                'name': data.name,
-                'fields': data.fields,
-                'rec_pay': data.rec_pay,
-            }
-        },
-        {new: true},
-    )
-        .select(excludeFields.join(' ')).lean()
+FormulasSchema.statics.updateDoc = (id, { formData }) => {
+    delete formData.status
+    delete formData.banker_id
+
+    return this.default.findByIdAndUpdate(id, formData, { new: true })
+        .select(excludeFields.join(' '))
+        .lean()
 }
 
 export default mongoose.model(collectionName, FormulasSchema, collectionName)

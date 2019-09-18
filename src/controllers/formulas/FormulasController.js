@@ -2,15 +2,14 @@ import FormulasModel from "../../models/FormulasModel"
 
 import Exception from "../../utils/Exception"
 
-
 class FormulasController {
     async list(req, res, next) {
         try {
-            const query = req.query
-            let result = await FormulasModel.findAll(query)
+            const formulaList = await FormulasModel.findDoc({ terms: req.query })
+
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
-                data: result
+                data: formulaList
             })
         } catch (err) {
             next(err)
@@ -18,8 +17,8 @@ class FormulasController {
     }
     async detail(req, res, next) {
         try {
-            const id = req.params.id
-            let result = await FormulasModel.find_id(id)
+            let result = await FormulasModel.findDoc({ options: { _id: req.params.id } })
+
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: result
@@ -30,7 +29,8 @@ class FormulasController {
     }
     async save(req, res, next) {
         try {
-            const result = await FormulasModel.createFormula(req.body)
+            const result = await FormulasModel.createDoc(req.body)
+
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_CREATE_SUCCESS),
                 data: result
@@ -41,17 +41,8 @@ class FormulasController {
     }
     async update(req, res, next) {
         try {
-            const fields =JSON.parse(req.body.fields)
-            const data = {
-                id : req.params.id,
-                banker_id: req.body.banker_id,
-                t_currency_id: req.body.t_currency_id,
-                formula_format_id: req.body.formula_format_id,
-                name: req.body.name,
-                fields: fields,
-                rec_pay: req.body.rec_pay,
-            }
-            let result = await FormulasModel.updateFormula(data)
+            const result = await FormulasModel.updateDoc(req.params.id, { formData: req.body })
+
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_UPDATE_SUCCESS),
                 data: result
@@ -64,9 +55,23 @@ class FormulasController {
     async delete(req, res, next) {
         try {
             await FormulasModel.softDelete(req.params.id)
+
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
                 data: req.params.id
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    async checkExists(req, res, next) {
+        try {
+            const isExist = await FormulasModel.checkExisted({ name: req.query.name })
+
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: isExist
             })
         } catch (err) {
             next(err)
