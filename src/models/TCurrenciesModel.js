@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 
 import BaseModel, {BaseSchema} from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
-import formulasModel from "./FormulasModel";
+import MCurrenciesModel from "./MCurrenciesModel";
 
 // Define collection name
 const collectionName = "t_currencies"
@@ -12,7 +12,7 @@ const Schema = mongoose.Schema
 const TCurrenciesSchema = new mongoose.Schema({
     user_id: { type: Schema.Types.ObjectId, required: true, ref: 'Users' },
     m_currency_id: { type: Schema.Types.ObjectId, required: true, ref: 'MCurrency' },
-    round_type: Number,
+    round_type: {type: Number, required: true},
     note: String,
 })
 
@@ -34,9 +34,11 @@ TCurrenciesSchema.statics.findAll = (query) => {
         status : 'active',
         user_id: mongoose.Types.ObjectId(Session.get('user._id'))
     }
-
     return this.default.find(option).select(excludeFields.join(' '))
         .populate("total_formulas")
+        .populate({ model: MCurrenciesModel,
+                    path: "m_currency_id",
+                    select: "name",})
         .sort(query.sort)
         .limit(Number(query.limit))
         .skip(Number(query.limit)*Number(query.page - 1))
@@ -107,12 +109,5 @@ TCurrenciesSchema.statics.updateStatus = (ids) => {
 
     return this.default.updateMany({user_id: Session.get('user._id'), m_currency_id: { $nin: ids}}, {status: "delete"}, {new: true})
 }
-
-
-TCurrenciesSchema.statics.checkId = id => {
-    const idTest = new mongoose.Types.ObjectId(id)
-    return idTest.toString() === id
-}
-
 
 export default mongoose.model(collectionName, TCurrenciesSchema, collectionName)

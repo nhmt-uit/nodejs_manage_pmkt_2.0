@@ -10,20 +10,23 @@ const ReportDetails_NSchema = new mongoose.Schema({
         _id: mongoose.Types.ObjectId,
         report_id: mongoose.Types.ObjectId,
         user_id: mongoose.Types.ObjectId,
+        member_id: mongoose.Types.ObjectId,
         account_id: mongoose.Types.ObjectId,
         formula_detail: {
-            t_currentcy_id: mongoose.Types.ObjectId,
+            t_currency_id: mongoose.Types.ObjectId,
             formula_id: mongoose.Types.ObjectId,
+            formula_format_id: mongoose.Types.ObjectId,
             name: String,
             rec_pay: Number,
-            flag: String,
-            fields: {
-                gia_thau: Number,
-                he_so: Number,
-                he_so_1: Number,
-                he_so_2: Number
-            }
+            fields: [
+                {
+                    formula_field_id: mongoose.Types.ObjectId,
+                    value: Number
+                }
+            ],
         },
+        // formula_detail: mongoose.Schema.Types.Mixed,
+        flag: String,
         amount: Number,
 })
 

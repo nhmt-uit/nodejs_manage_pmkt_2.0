@@ -7,8 +7,8 @@ const collectionName = "m_currencies"
 
 // Define collection schema
 const MCurrenciesSchema = new mongoose.Schema({
-    name: String,
-    round_type: Number,
+    name: {type: String, required: true},
+    round_type: {type: Number, required: true},
 })
 
 MCurrenciesSchema.loadClass(BaseModel)
@@ -17,11 +17,11 @@ MCurrenciesSchema.plugin(BaseSchema)
 const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ];
 
 MCurrenciesSchema.statics.findAll = (query) => {
-    console.log(query.sort)
-    return this.default.find({status: 'active'}).select(excludeFields.join(' ')).lean()
+    return this.default.find({status: 'active'}).select(excludeFields.join(' '))
         .sort(query.sort)
         .limit(Number(query.limit))
         .skip(Number(query.limit)*Number(query.page - 1))
+        .lean()
 }
 
 
@@ -30,12 +30,13 @@ MCurrenciesSchema.statics.mCurrencyDetail = id => {
 }
 
 
-MCurrenciesSchema.statics.createMCurrency = item => {
+MCurrenciesSchema.statics.createMCurrency = async item => {
     const data = {
         name: item.name,
         round_type: item.round_type
     }
-    return this.default.create(data)
+    await this.default.create(data)
+    return this.default.findOne({name: item.name}).select(excludeFields.join(' ')).lean()
 }
 
 
@@ -55,13 +56,14 @@ MCurrenciesSchema.statics.checkId = (id) => {
 
 
 MCurrenciesSchema.statics.checkExists = async params => {
+
     let result
     switch (params.type) {
         case 'name':
-            result = await this.default.findOne({name: params.name.toUpperCase()})
+            result = await this.default.findOne({status: 'active', name: params.name.toUpperCase()})
             break
         case 'id':
-            result = await this.default.findOne({_id: params.id})
+            result = await this.default.findOne({status: 'active', _id: params.id})
             break
         default:
             return
@@ -72,7 +74,7 @@ MCurrenciesSchema.statics.checkExists = async params => {
 
 
 MCurrenciesSchema.statics.checkCurrency = async (name, m_currency_id) => {
-    const currency = await this.default.findOne({name: name, _id: { $nin: m_currency_id}}).lean()
+    const currency = await this.default.findOne({status: 'active', name: name, _id: { $nin: m_currency_id}}).lean()
 
     return !!currency
 }

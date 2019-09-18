@@ -60,7 +60,7 @@ NoticesSchema.statics.findAll = async (language_id, query) => {
 
 NoticesSchema.statics.find_id = async (id) => {
     const result = await this.default.find({ _id: id, status: 'active' })
-                                     .select(excludeFields.join(' ')).lean()
+                                    .select(excludeFields.join(' ')).lean()
 
     return result
 }
@@ -74,7 +74,7 @@ NoticesSchema.statics.createNotices = async (data) => {
         type: data.type,
         contents: [{
             "_id": new mongoose.Types.ObjectId(),
-            "type": 1 , 
+            "type": 1 ,
             "date" : new Date(),
             "language_id": temp.language_id,
             "content": temp.content
@@ -82,23 +82,23 @@ NoticesSchema.statics.createNotices = async (data) => {
     }
     const Notice = await this.default.create(newObject)
     return this.default.findById(Notice._id)
-                       .select(excludeFields.join(' ')).lean()
+                        .select(excludeFields.join(' ')).lean()
 }
 
 
 NoticesSchema.statics.updateNotice = async (data) => {
     
     return this.default.findOneAndUpdate(
-                        { _id: data.id },
-                        {
-                            '$set': {
-                                'name': data.name,
-                                'type': data.type,
-                                'contents': data.contents ,
-                            }
-                        },
-                        { new: true },
-                    )
+                            { _id: data.id },
+                            {
+                                '$set': {
+                                    'name': data.name,
+                                    'type': data.type,
+                                    'contents': data.contents ,
+                                }
+                            },
+                            { new: true },
+                        )
                         .select(excludeFields.join(' ')).lean()
 }
 

@@ -48,7 +48,18 @@ const MCurrenciesValidator = {
                 if(!isUnique){
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.INCORRECT_TYPE))
                 }
+            })
+            .custom(async value =>{
+                const params = {
+                    id: value,
+                    type: 'id'
+                }
+                let isUnique = await MCurrenciesModel.checkExists(params)
+                if(!isUnique){
+                    return Promise.reject(Exception.getMessage(Exception.VALIDATION.NOT_FOUND_ERR, {field: value}))
+                }
             }),
+
 
         check('name')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))

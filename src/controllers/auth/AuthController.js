@@ -3,6 +3,7 @@ import UserModel from "../../models/UsersModel"
 import Authentication from "../../utils/auth/Authentication"
 import Session from "../../utils/Session"
 import Exception from "../../utils/Exception"
+import HashPassword from "../../utils/HashPassword"
 
 class AuthController {
     async login (req, res, next) {
@@ -101,30 +102,59 @@ class AuthController {
         }
     }
 
-    changeSecureCode (req, res, next) {
+    async changeSecureCode (req, res, next) {
         try {
-            return res.jsonSuccess({
+            const { new_secure } = req.body
+            const userInfo = Session.get("user")
+            await UserModel.updateDoc({ options: { _id: userInfo._id }, formData: { secure_code: new_secure } })
 
+            // Update session user
+            const newUserInfo = {...userInfo, secure_code: new_secure}
+            Session.set("user", newUserInfo)
+
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: AuthModel.excludeFieldsUserInfo(newUserInfo)
             })
         } catch (err) {
             next(err)
         }
     }
 
-    changePassword (req, res, next) {
+    async changePassword (req, res, next) {
         try {
-            return res.jsonSuccess({
+            const { new_password } = req.body
+            const newPasswordHased = HashPassword.hash(new_password)
+            const userInfo = Session.get("user")
+            await UserModel.updateDoc({ options: { _id: userInfo._id }, formData: { password: newPasswordHased } })
 
+            // Update session user
+            const newUserInfo = {...userInfo, password: newPasswordHased}
+            Session.set("user", newUserInfo)
+
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: AuthModel.excludeFieldsUserInfo(newUserInfo)
             })
         } catch (err) {
             next(err)
         }
     }
 
-    changePassword2 (req, res, next) {
+    async changePassword2 (req, res, next) {
         try {
-            return res.jsonSuccess({
+            const { new_password2 } = req.body
+            const newPasswordHased = HashPassword.hash(new_password2)
+            const userInfo = Session.get("user")
+            await UserModel.updateDoc({ options: { _id: userInfo._id }, formData: { password2: newPasswordHased } })
 
+            // Update session user
+            const newUserInfo = {...userInfo, password2: newPasswordHased}
+            Session.set("user", newUserInfo)
+
+            return res.jsonSuccess({
+                message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
+                data: AuthModel.excludeFieldsUserInfo(newUserInfo)
             })
         } catch (err) {
             next(err)

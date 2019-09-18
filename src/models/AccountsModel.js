@@ -4,7 +4,6 @@ import _isEmpty from 'lodash/isEmpty'
 import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 import Session from '../utils/Session'
 
-
 // Define collection name
 const collectionName = "accounts"
 
@@ -32,24 +31,19 @@ const AccountsSchema = new mongoose.Schema({
 const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
 
 // Defined methods
-AccountsSchema.statics.findDoc = ({ options = {}, fields = null, terms = {}} = {}) => {
+AccountsSchema.statics.findDoc = ({ options = {}, terms = {}} = {}) => {
     options.status = 'active'
     options.user_id = Session.get('user._id')
-
-    fields = fields && Array.isArray(fields) 
-        ? fields.filter(item => !excludeFields.includes(`-${item}`)) 
-        : fields = excludeFields
     
-    const query = this.default.find(options)
-        .select(fields.join(' '))
+    let query = this.default.find(options)
         .sort(terms.sort)
-        .lean()
+
     
     if (terms.typeFormat && terms.typeFormat === 'flat') {
-        query.limit(Number(terms.limit)).skip(Number(terms.skip))
+        query = query.limit(Number(terms.limit)).skip(Number(terms.skip))
     }
 
-    return query
+    return query.select(excludeFields.join(' ')).lean()
 }
 
 AccountsSchema.statics.checkExisted = async (options) => {
@@ -58,26 +52,34 @@ AccountsSchema.statics.checkExisted = async (options) => {
     options.status = 'active'
     options.user_id = Session.get('user._id')
 
-    const result = await this.default.find(options)
+    const result = await this.default.countDocuments(options)
 
-    return !!(!result || !result.length)
+    return !!result
 }
 
 AccountsSchema.statics.createDoc = formData => {
+    const options = {
+        status: 'active',
+        user_id: Session.get('user._id'),
+        banker_id: formData.banker_id,
+        sub_user: formData.sub_user
+    };
+
     formData.status = 'active'
     formData.user_id = Session.get('user._id')
 
-    return this.default.save(body)
+    return this.default.findOneAndUpdate(options, formData, { upsert: true, new: true })
+        .select(excludeFields.join(' '))
+        .lean()
 }
 
-AccountsSchema.statics.updateDoc = ({ options, formData }) => {
-    options.status = 'active'
-    options.user_id = Session.get('user._id')
-
+AccountsSchema.statics.updateDoc = (id, { formData }) => {
     delete formData.status
     delete formData.name
 
-    return this.default.findOneAndUpdate(options, formData, { new: true })
+    return this.default.findByIdAndUpdate(id, formData, { new: true })
+        .select(excludeFields.join(' '))
+        .lean()
 }
 
 // Load BaseModel

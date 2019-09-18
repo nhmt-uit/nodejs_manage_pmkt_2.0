@@ -75,7 +75,7 @@ class AuthModel {
 							login_failed: 0,
 							login_ip: Helpers.getIPAddress()
 						}
-		const user = await UsersModel.findOneAndUpdate({ _id: userInfo._id}, formData)
+		const user = await UsersModel.findOneAndUpdate({ _id: userInfo._id}, formData, { new: true})
 										.select("-status -createdBy -createdAt -updatedBy -updatedAt")
 										.lean()
 		return { status: true, type: TYPE.LOGIN_SUCCESS, payload: this.excludeFieldsUserInfo(user), origin_payload: user }
@@ -90,7 +90,7 @@ class AuthModel {
 		const formData = { ...data,
 							login_failed: Number(userInfo.login_failed) + 1
 						}
-		await UsersModel.findOneAndUpdate({_id: userInfo._id}, formData)
+		await UsersModel.findOneAndUpdate({_id: userInfo._id}, formData, { new: true})
 	}
 	
 	/*

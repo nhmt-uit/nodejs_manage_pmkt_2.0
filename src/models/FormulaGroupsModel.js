@@ -4,7 +4,6 @@ import BaseModel, { BaseSchema } from "../utils/mongoose/BaseModel"
 import FormulasModel from "./FormulasModel"
 import BankersModel from "./BankersModel"
 import Session from '../utils/Session'
-import { get } from "http"
 // Define collection name
 const collectionName = "formula_groups"
 
@@ -36,12 +35,12 @@ FormulaGroupSchema.statics.findAll = async ( query) => {
                                             path: "banker_id",
                                             select: "_id name status",
                                         }
-                                    })                                                            
-                                    .select('status user_id name')                                  
+                                    })
+                                    .select('status user_id name')
                                     .sort(query.sort)
                                     .limit(limit)
                                     .skip(skip)
-                                    .lean() 
+                                    .lean()
     return result
 }
 

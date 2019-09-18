@@ -41,7 +41,7 @@ const BaseSchema = schema => {
     // Create a pre-findOneAndUpdate hook
     schema.pre("findOneAndUpdate", function(next) {
         const userID = Session.get("user._id")
-        if (userID) {
+        if (userID && this._update) {
             this._update.updatedBy = userID
         }
         next()
@@ -52,7 +52,7 @@ const BaseSchema = schema => {
 class BaseModel {
     // Update status => "delete"
     static softDelete(id) {
-        return this.updateOne({_id: id}, {status: "delete"})
+        return this.updateOne({_id: id}, {status: "deleted"})
     }
 }
 
