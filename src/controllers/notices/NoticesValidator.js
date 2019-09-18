@@ -19,25 +19,15 @@ const NoticesValidator = {
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.REQUIRE_INCORECT, { field: value }))
             }}),
         check('limit')
-            .custom(async (value) => {
-                if(value){
-                const limit = parseInt(value, 10)
-                if (isNaN(limit - 1) || limit < 0  )
-                    return Promise.reject(Exception.getMessage(Exception.VALIDATION.REQUIRE_INCORECT, { field: value }))
-            }}),
+            .isNumeric().withMessage(Exception.getMessage(Exception.VALIDATION.INVALID_NUMBER)),
+
         check('page')
-            .custom(async (value) => {
-                if(value){
-                const page = parseInt(value, 10)
-                if (isNaN(page - 1) || page < 0)
-                    return Promise.reject(Exception.getMessage(Exception.VALIDATION.REQUIRE_INCORECT, { field: value }))
-            }}),
+            .isNumeric().withMessage(Exception.getMessage(Exception.VALIDATION.INVALID_NUMBER)),
     ],
     postCreate: [
         check('name')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
-
             .custom(async (value) => {
                 let isUnique = await NoticesSchema.checkName(value)
                 if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
@@ -45,15 +35,19 @@ const NoticesValidator = {
         check('type')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
-
-            .custom(async (value) => {
-                if(value){
-                    const type = parseInt(value, 10)
-                    if (isNaN(type - 1))
-                        return Promise.reject(Exception.getMessage(Exception.VALIDATION.REQUIRE_INCORECT, { field: value }))
-                }
-            }),
+            .isNumeric().withMessage(Exception.getMessage(Exception.VALIDATION.INVALID_NUMBER)),       
     ],
+    putUpdate: [
+        check('name')
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD)),
+
+        check('type')
+            .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
+            .isNumeric().withMessage(Exception.getMessage(Exception.VALIDATION.INVALID_NUMBER)),
+            
+        ]
 
 }
 

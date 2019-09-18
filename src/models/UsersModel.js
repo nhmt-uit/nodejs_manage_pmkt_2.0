@@ -48,7 +48,7 @@ UsersSchema.statics.findAllUser = async (query) => {
 }
 
 
-UsersSchema.statics.detailUser = async (query) => {
+UsersSchema.statics.UsersMembers = async (query) => {
     const parent_id = Session.get('user.parent_id')
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10) * limit - 1
@@ -61,7 +61,7 @@ UsersSchema.statics.detailUser = async (query) => {
 }
 
 
-UsersSchema.statics.detailSubUser = async (query) => {
+UsersSchema.statics.usersSubUsers = async (query) => {
     const user_id = Session.get('user._id')
     const limit = parseInt(query.limit, 10)
     const skip = parseInt(query.page, 10) * limit - 1

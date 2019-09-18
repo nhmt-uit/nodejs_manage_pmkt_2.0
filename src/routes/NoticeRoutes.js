@@ -9,7 +9,7 @@ const router = express.Router()
 router.get("/",ValidatorHandling(NoticesValidator.getList) ,NoticesController.list)
 router.get("/:id", NoticesController.detail)
 router.post("/",ValidatorHandling(NoticesValidator.postCreate) ,NoticesController.save)
-router.put("/:id", NoticesController.update)
+router.put("/:id",ValidatorHandling(NoticesValidator.putUpdate), NoticesController.update)
 router.delete("/:id",NoticesController.delete)
 
 

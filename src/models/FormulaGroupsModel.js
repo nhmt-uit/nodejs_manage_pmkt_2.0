@@ -80,18 +80,12 @@ FormulaGroupSchema.statics.addByBanker = (item) => {
 
 FormulaGroupSchema.statics.updateFormulaGroup = async (item) => {
     return this.default.findOneAndUpdate(
-                            { _id: item._id },
+                            { _id: item._id , status :'active' },
                             { '$set': { 'name': item.name } },
                             { new: true },
                         )
                         .select(excludeFields.join(' '))
                         .lean()
-}
-
-FormulaGroupSchema.statics.delete = async (id) => {
-    return this.default.findOneAndDelete({ _id: id },{ status: 'active' })
-                       .select(excludeFields.join(' '))
-                       .lean()
 }
 
 
@@ -136,13 +130,13 @@ FormulaGroupSchema.statics.checkName = async (value) => {
 
 
 FormulaGroupSchema.statics.checkExistName = async name => {
-            const result = await this.default.findOne({name: name})
+            const result = await this.default.findOne({name: name, status : 'active'})
                                              .select('name')
                                              .lean()
             if(result){
                 return result
             }else{
-                return 'false'
+                return 'Username is not existed'
             }
 }
 

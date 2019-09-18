@@ -21,10 +21,10 @@ class UsersController {
     }
 
 
-    async detailUsers(req, res, next) {
+    async detailMembers(req, res, next) {
         try {
             const query = req.query
-            let result = await UsersModel.detailUser(query)
+            let result = await UsersModel.detailMembers(query)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: result
@@ -34,10 +34,11 @@ class UsersController {
         }
     }
 
-    async detailSubUsers(req, res, next) {
+
+    async detailSubUsers (req, res, next) {
         try {
             const query = req.query
-            let result = await UsersModel.detailSubUser(query)
+            let result = await UsersModel.detailSubUsers(query)
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: result
@@ -47,16 +48,16 @@ class UsersController {
         }
     }
 
-    async detailGenerate(req, res, next) {
+    async generateUsername(req, res, next) {
         try {
             const query = req.query
-            let data = await UsersModel.generateUsername(query)
-            // const data = {
-            //     username: result.substring(result.length -3,0),
-            //     s0 : result.substring(result.length -2,result.length -3),
-            //     s1 : result.substring(result.length -1,result.length -2),
-            //     s2 : result.substring(result.length   ,result.length -1)
-            // }
+            let result = await UsersModel.generateUsername(query)
+            const data = {
+                username: result.substring(result.length -3,0),
+                s0 : result.substring(result.length -2,result.length -3),
+                s1 : result.substring(result.length -1,result.length -2),
+                s2 : result.substring(result.length   ,result.length -1)
+            }
 
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
@@ -89,7 +90,6 @@ class UsersController {
     async save(req, res, next) {
         try {
             const data = {
-                
         parent_id: mongoose.Types.parent_id,
         username: req.body.username,
         password: req.body.password,

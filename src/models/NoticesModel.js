@@ -82,7 +82,6 @@ NoticesSchema.statics.createNotices = async (data) => {
 
 
 NoticesSchema.statics.updateNotice = async (data) => {
-    
     return this.default.findOneAndUpdate(
                             { _id: data.id },
                             {
