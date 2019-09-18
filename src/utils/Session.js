@@ -1,9 +1,6 @@
 import _get from "lodash/get"
 
 class Session {
-    constructor() {
-    }
-
     instance(session) {
         this.session = session
     }

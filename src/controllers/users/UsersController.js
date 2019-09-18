@@ -1,7 +1,6 @@
 import _uniqBy from "lodash/uniqBy"
 
 import UsersModel from "../../models/UsersModel"
-import ExceptionConfig from "../../configs/ExceptionConfig"
 import HashPassword from "../../utils/HashPassword"
 import Session from "../../utils/Session"
 import Exception from "../../utils/Exception"
@@ -157,7 +156,7 @@ class UsersController {
         try {
             await UsersModel.softDelete(id)
             return res.jsonSuccess({
-                message: ExceptionConfig.COMMON.ITEM_DELETE_SUCCESS,
+                message: Exception.getMessage(Exception.COMMON.ITEM_DELETE_SUCCESS),
                 data: id
             })
         } catch (err) {

@@ -9,11 +9,11 @@ import compression from "compression"
 import AppConfig from "./configs/AppConfig"
 import MongoDb from "./databases/MongoDb"
 
+import CommonHandling from "./middlewares/CommonHandling"
 import ErrorHandling from "./middlewares/ErrorHandling"
 import LoggerTrackingHandling from "./middlewares/LoggerTrackingHandling"
 import ResponseHandling from "./middlewares/ResponseHandling"
 import SessionMiddleware, { SessionHandling } from "./middlewares/SessionHandling"
-// import ValidatorHandling from "./middlewares/ValidatorHandling"
 
 // Import file routes config
 import Routes from "./routes/Routes"
@@ -31,6 +31,7 @@ app.use(cors())
     .use(express.urlencoded({
         extended: true
     }))
+    .use(CommonHandling)
     .use(SessionMiddleware)
     .use(SessionHandling)
     .use(LoggerTrackingHandling)

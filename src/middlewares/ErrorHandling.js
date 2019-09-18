@@ -1,6 +1,6 @@
 import Logger from "../utils/Logger"
 import Moment from "../utils/Moment"
-import ExceptionConfig from "../configs/ExceptionConfig"
+import Exception from "../utils/Exception"
 
 export default (err, req, res, next) => {
 	Logger.log({
@@ -22,7 +22,7 @@ export default (err, req, res, next) => {
     if (process.env.NODE_ENV === "production") {
         res.jsonError({
             code: 500,
-            message: ExceptionConfig.COMMON.INTERNAL_ERROR
+            message: Exception.getMessage(Exception.COMMON.INTERNAL_ERROR)
         })
     }
 

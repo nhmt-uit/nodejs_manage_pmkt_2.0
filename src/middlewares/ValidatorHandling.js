@@ -1,6 +1,6 @@
 import { validationResult } from "express-validator"
 
-import ExceptionConfig from "../configs/ExceptionConfig"
+import Exception from "../utils/Exception"
 
 /*
 |--------------------------------------------------------------------------
@@ -23,13 +23,11 @@ const ValidatorHandling = validations => {
         await Promise.all(validations.map(validation => validation.run(req)))
 
         const errors = ValidationFormatter(req)
-        if (errors.isEmpty()) {
-            return next()
-        }
+        if (errors.isEmpty()) return next()
 
         return res.jsonError({
             code: 400,
-            message: ExceptionConfig.COMMON.VALIDATION_ERROR,
+            message: Exception.getMessage(Exception.COMMON.VALIDATION_ERROR),
             errors: errors.mapped()
         })
     }

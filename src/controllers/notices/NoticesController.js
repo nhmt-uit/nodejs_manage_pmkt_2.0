@@ -48,12 +48,12 @@ class NoticesController {
 
     async update(req, res, next) {
         try {
-            const temp = JSON.parse(req.body.contents)
+            const contents = JSON.parse(req.body.contents)
             const data = {
                 id : req.params.id,
                 name: req.body.name,
                 type: req.body.type,
-                contents: temp,
+                contents: contents,
             }
             let result = await NoticesModel.updateNotice(data)
             return res.jsonSuccess({

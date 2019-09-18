@@ -67,13 +67,12 @@ NoticesSchema.statics.find_id = async (id) => {
 
 
 NoticesSchema.statics.createNotices = async (data) => {
-    const temp = JSON.parse(data.contents)
-    console.log(temp.language_id)
+    const contents = JSON.parse(data.contents)
     let newObject = {
         _id: new mongoose.Types.ObjectId(),
         name: data.name,
         type: data.type,
-        contents: temp
+        contents: contents
     }
     const Notice = await this.default.create(newObject)
     return this.default.findById(Notice._id)

@@ -73,7 +73,7 @@ class AuthModel {
 	async afterLoginSuccess(userInfo, data = {}) {
 		const formData = { ...data,
 							login_failed: 0,
-							login_ip: Helpers.getIPAddress()
+							login_ip: Helpers.getRemoteIpAddress()
 						}
 		const user = await UsersModel.findOneAndUpdate({ _id: userInfo._id}, formData, { new: true})
 										.select("-status -createdBy -createdAt -updatedBy -updatedAt")
@@ -115,9 +115,7 @@ class AuthModel {
 		const excludeFields = ["password", "password2", "old_password", "old_password2", "is_updated_password", "is_updated_password2"]
 		try {
 			payload = JSON.parse(JSON.stringify(payload))
-			excludeFields.forEach(item => {
-				delete payload[item]
-			})
+			excludeFields.forEach(item => delete payload[item])
 			return payload
 		} catch {
 			return payload
