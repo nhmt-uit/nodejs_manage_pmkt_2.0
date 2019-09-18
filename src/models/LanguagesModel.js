@@ -20,7 +20,7 @@ const excludeFields = ['-status', '-createdAt', '-updatedAt', '-createdBy', '-up
 
 LanguagesSchema.statics.findAll = async (query) => {
     const limit = parseInt(query.limit, 10)
-    const skip = parseInt(query.page, 10)*limit - 1
+    const skip = (parseInt(query.page, 10) - 1)*limit
     const result = await this.default.find({ status: ' active' })
                                      .select(excludeFields.join(' '))
                                      .sort(query.sort||'-order')

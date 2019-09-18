@@ -2,9 +2,8 @@ import { check } from "express-validator"
 
 import LanguagesSchema from "../../models/LanguagesModel"
 import Exception from "../../utils/Exception"
-import LanguagesModel from "../../models/LanguagesModel"
 
-const FormulaGroupsValidator = {
+const LanguagesValidator = {
 
     /*
     |--------------------------------------------------------------------------
@@ -12,7 +11,7 @@ const FormulaGroupsValidator = {
     | Method: POST
     |--------------------------------------------------------------------------
     */
-    GetList: [
+    getList: [
         check('sort[name]')
             .custom(async (value) => {
                 if(value){
@@ -20,19 +19,9 @@ const FormulaGroupsValidator = {
                     return Promise.reject(Exception.getMessage(Exception.VALIDATION.REQUIRE_INCORECT, { field: value }))
             }}),
         check('limit')
-            .custom(async (value) => {
-                if(value){
-                const limit = parseInt(value, 10)
-                if (isNaN(limit - 1) || limit < 0  )
-                    return Promise.reject(Exception.getMessage(Exception.VALIDATION.REQUIRE_INCORECT, { field: value }))
-            }}),
+            .isNumeric().withMessage(Exception.getMessage(Exception.VALIDATION.INVALID_NUMBER)),
         check('page')
-            .custom(async (value) => {
-                if(value){
-                const page = parseInt(value, 10)
-                if (isNaN(page - 1) || page < 0)
-                    return Promise.reject(Exception.getMessage(Exception.VALIDATION.REQUIRE_INCORECT, { field: value }))
-            }}),
+            .isNumeric().withMessage(Exception.getMessage(Exception.VALIDATION.INVALID_NUMBER)),
     ],
 
     postCreate: [
@@ -55,39 +44,21 @@ const FormulaGroupsValidator = {
         check('order')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
-            .custom(async (value) => {
-                const order = parseInt(value, 10)
-                if (isNaN(order - 1) || order <= 0)
-                    return Promise.reject(Exception.getMessage(Exception.VALIDATION.REQUIRE_INCORECT, { field: value }))
-            }),
+            .isNumeric().withMessage(Exception.getMessage(Exception.VALIDATION.INVALID_NUMBER)),
     ],
     UpdateLanguage: [
         check('name')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
-            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
-
-            .custom(async (value) => {
-                let isUnique = await LanguagesSchema.checkName(value)
-                if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
-            }),
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD)),
         check('code')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
-            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
-
-            .custom(async (value) => {
-                let isUnique = await LanguagesSchema.checkCode(value)
-                if (!isUnique) return Promise.reject(Exception.getMessage(Exception.VALIDATION.IS_EXISTED, { field: value }))
-            }),
+            .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD)),
         check('order')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
-            .custom(async (value) => {
-                const order = parseInt(value, 10)
-                if (isNaN(order - 1) || order <= 0)
-                    return Promise.reject(Exception.getMessage(Exception.VALIDATION.REQUIRE_INCORECT, { field: value }))
-            }),
+            .isNumeric().withMessage(Exception.getMessage(Exception.VALIDATION.INVALID_NUMBER)),
     ],
 
 }
 
-export default FormulaGroupsValidator
+export default LanguagesValidator

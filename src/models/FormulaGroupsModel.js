@@ -24,7 +24,7 @@ const excludeFields = ['-status -createdAt -updatedAt -createdBy -updatedBy -upd
 FormulaGroupSchema.statics.findAll = async ( query) => {
     const user_id = Session.get('user._id');
     const limit = parseInt(query.limit, 10)
-    const skip = parseInt(query.page, 10) * limit - 1
+    const skip = (parseInt(query.page, 10) - 1)*limit
     const result = await this.default.find({ status: 'active', user_id : user_id })
                                      .populate({
                                         model: FormulasModel,
@@ -80,18 +80,12 @@ FormulaGroupSchema.statics.addByBanker = (item) => {
 
 FormulaGroupSchema.statics.updateFormulaGroup = async (item) => {
     return this.default.findOneAndUpdate(
-                            { _id: item._id },
+                            { _id: item._id , status :'active' },
                             { '$set': { 'name': item.name } },
                             { new: true },
                         )
                         .select(excludeFields.join(' '))
                         .lean()
-}
-
-FormulaGroupSchema.statics.delete = async (id) => {
-    return this.default.findOneAndDelete({ _id: id },{ status: 'active' })
-                       .select(excludeFields.join(' '))
-                       .lean()
 }
 
 
@@ -136,11 +130,14 @@ FormulaGroupSchema.statics.checkName = async (value) => {
 
 
 FormulaGroupSchema.statics.checkExistName = async name => {
-    let result
-        if(name){
-            result = await this.default.findOne({name: name})
-            return !!result
-        }
+            const result = await this.default.findOne({name: name, status : 'active'})
+                                             .select('name')
+                                             .lean()
+            if(result){
+                return result
+            }else{
+                return 'Username is not existed'
+            }
 }
 
 
