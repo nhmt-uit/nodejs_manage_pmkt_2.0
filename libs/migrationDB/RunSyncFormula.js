@@ -12,10 +12,15 @@ const _maxSkip = Number(process.argv[4])
 
 Promise.all([
 
-    // Sync Report
-    SyncReport.ReportHandle(_limit, _skip, _maxSkip),
-    SyncReport.ReportDetail(_limit, _skip, _maxSkip),
+    // Sync accounts
+    SyncAccount.Account(_limit, _skip, _maxSkip),
+    SyncAccount.AccountFormula(_limit, _skip, _maxSkip),
 
+    // Sync formula
+    SyncFormula.FormulaField(_limit, _skip, _maxSkip),
+    SyncFormula.FormulaFormat(_limit, _skip, _maxSkip),
+    SyncFormula.Formula(_limit, _skip, _maxSkip),
+    SyncFormula.FormulaGroup(_limit, _skip, _maxSkip),
 ]).then(_ => {
     console.log("===================== Migration Data Done ================================")
 })
