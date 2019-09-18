@@ -6,6 +6,7 @@ import AccountModel from "./model/old/AccountModel"
 import CongthuctinModel from "./model/old/CongthuctinModel"
 
 import AccountFormulaModel_N from './model/AccountFormulaModel_N'
+import AccountModel_N from './model/AccountModel_N'
 
 class SyncAccount {
 	async Truncate() {
@@ -91,7 +92,7 @@ class SyncAccount {
 						const query = new AccountFormulaModel_N({
 							_id						: mongoose.Types.ObjectId(_item._id),
 							account_id				: _item.account_id ? mongoose.Types.ObjectId(_item.account_id) : null,
-							user_id					: _item.user_id ? mongoose.Types.ObjectId(_item.user_id) : null,
+							member_id				: _item.user_id ? mongoose.Types.ObjectId(_item.user_id) : null,
 							formula_id				: _item.congthucmau_id ? mongoose.Types.ObjectId(_item.congthucmau_id) : null,
 							formula_group_id		: _item.formula_group_id ? mongoose.Types.ObjectId(_item.formula_group_id) : null,
 							status					: Number(_item.deleted) !== 0 ? "deleted" : "active"

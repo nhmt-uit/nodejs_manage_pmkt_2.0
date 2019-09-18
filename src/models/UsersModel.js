@@ -165,8 +165,6 @@ UsersSchema.statics.checkUniqueUsername = (username) => {
         })
 }
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Private function

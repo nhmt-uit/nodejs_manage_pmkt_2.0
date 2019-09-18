@@ -114,7 +114,6 @@ class SyncReport {
 						},
 						{ $sort: { created: 1 }}
 					])
-					.lean()
 
 					if (sameData && sameData.length === 2) {
 						let __ITEM = null
@@ -240,8 +239,6 @@ class SyncReport {
 			while (true) {
 				const data = await ReportDetailModel.find({
 														deleted: { $eq: 0 },
-														chukybaocaotuan_id: mongoose.Types.ObjectId("5d7cba86cafddd607a4e65c5")
-														// "_id" : mongoose.Types.ObjectId("5d7cba869247674a63cd0606")
 													})
 													.limit(limit)
 													.skip(skip * limit)

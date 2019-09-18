@@ -1,6 +1,6 @@
 import uuidv4 from "uuid/v4"
 
-import AppConfig from "../configs/AppConfig"
+import LoggerConfig from "../configs/LoggerConfig"
 import Logger from "../utils/Logger"
 import Moment from "../utils/Moment"
 
@@ -15,7 +15,7 @@ const exceptedPath = [
 
 export default (req, res, next) => {
 	// Tracking request data
-	if (AppConfig.LOGGER_ENABLE_TRACKING && exceptedPath.indexOf(req.url) === -1 && process.env.NODE_ENV !== "test") {
+	if (LoggerConfig.LOGGER_ENABLE_TRACKING && exceptedPath.indexOf(req.url) === -1 && process.env.NODE_ENV !== "test") {
 		const objLogger = {
 			level: "info",
 			label: "REQUEST_TRACKING",
@@ -34,7 +34,7 @@ export default (req, res, next) => {
 		Logger.log(objLogger)
 
 		// Tracking response data
-		if (AppConfig.LOGGER_ENABLE_TRACKING_RESPONSE) {
+		if (LoggerConfig.LOGGER_ENABLE_TRACKING_RESPONSE) {
 			// Parse Response body
 			const { write, end } = res
 			const chunks = []
