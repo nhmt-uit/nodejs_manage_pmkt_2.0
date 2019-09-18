@@ -25,7 +25,7 @@ LanguagesSchema.statics.findAll = async (query) => {
                                      .select(excludeFields.join(' '))
                                      .sort(query.sort||'-order')
                                      .limit(limit)
-                                     .skip(skip)
+                                     .skip(skip||0)
                                      .lean()
     return result
 }
@@ -57,11 +57,47 @@ LanguagesSchema.statics.updateLanguage = async (item) => {
 
     return this.default.findOneAndUpdate(
                         { _id: item._id },
-                        { '$set': { 'name': item.name } },
-                        { new: true },
+                        { '$set': 
+                    { 
+                        'name': item.name,
+                        'code' : item.code,
+                        'order' : item.order 
+                    } },{ new: true },
                     )
                         .select(excludeFields.join(' '))
                         .lean()
+}
+LanguagesSchema.statics.checkSortName = async (value) => {
+    const result = await this.default.findOne({ name: value }, { status: 'active' })
+    if (result) return false
+    return true
+}
+LanguagesSchema.statics.checkLimit = async (value) => {
+    const result = await this.default.findOne({ name: value }, { status: 'active' })
+    if (result) return false
+    return true
+}
+LanguagesSchema.statics.checkPage = async (value) => {
+    const result = await this.default.findOne({ name: value }, { status: 'active' })
+    if (result) return false
+    return true
+}
+LanguagesSchema.statics.checkName = async (value) => {
+    const result = await this.default.findOne({ name: value }, { status: 'active' })
+    if (result) return false
+    return true
+}
+
+LanguagesSchema.statics.checkName = async (value) => {
+    const result = await this.default.findOne({ name: value }, { status: 'active' })
+    if (result) return false
+    return true
+}
+
+LanguagesSchema.statics.checkCode = async (value) => {
+    const result = await this.default.findOne({ code: value }, { status: 'active' })
+    if (result) return false
+    return true
 }
 
 export default mongoose.model(collectionName, LanguagesSchema, collectionName)

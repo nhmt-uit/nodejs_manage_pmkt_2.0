@@ -1,4 +1,4 @@
-import "./environments/LoadEnv"
+import "../utils/LoadEnv"
 
 const MongoDbConfig = {
 	DB_SCHEME       : process.env.DB_SCHEME || "mongodb",
