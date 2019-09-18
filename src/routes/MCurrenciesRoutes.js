@@ -7,7 +7,7 @@ import MCurrenciesValidator from "../controllers/m_currencies/MCurrenciesValidat
 
 const router = express.Router()
 
-router.get("/check-exists", MCurrenciesController.checkExists)
+router.get("/check-exists", ValidatorHandling(MCurrenciesValidator.checkExists), MCurrenciesController.checkExists)
 
 router.get("/", MCurrenciesController.list)
 router.get("/:id", ValidatorHandling(MCurrenciesValidator.getMCurrenciesDetail), MCurrenciesController.detail)
