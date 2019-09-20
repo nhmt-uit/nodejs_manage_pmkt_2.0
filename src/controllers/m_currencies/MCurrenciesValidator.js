@@ -4,6 +4,14 @@ import MCurrenciesModel from "../../models/MCurrenciesModel"
 import Exception from "../../utils/Exception"
 
 const MCurrenciesValidator = {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/mcurrencies
+    | Method: GET
+    |--------------------------------------------------------------------------
+    */
+
     getMCurrenciesDetail: [
         check('id')
             .custom( async value => {
@@ -24,6 +32,13 @@ const MCurrenciesValidator = {
             }),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/mcurrencies
+    | Method: POST
+    |--------------------------------------------------------------------------
+    */
+
     createMCurrency: [
         check('name')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
@@ -40,6 +55,13 @@ const MCurrenciesValidator = {
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .isNumeric().withMessage(Exception.getMessage(Exception.VALIDATION.INVALID_NUMBER)),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/mcurrencies/:id
+    | Method: PUT
+    |--------------------------------------------------------------------------
+    */
 
     updateMCurrency: [
         check('id')
@@ -78,11 +100,25 @@ const MCurrenciesValidator = {
             .isNumeric().withMessage(Exception.getMessage(Exception.VALIDATION.INVALID_NUMBER)),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/mcurrencies/check-exists
+    | Method: GET
+    |--------------------------------------------------------------------------
+    */
+
     checkExists: [
         check('name')
             .exists().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
             .not().isEmpty().withMessage(Exception.getMessage(Exception.VALIDATION.REQUIRE_FIELD))
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/mcurrencies/:id
+    | Method: DELETE
+    |--------------------------------------------------------------------------
+    */
 
     deleteMCurrency: [
         check('id')

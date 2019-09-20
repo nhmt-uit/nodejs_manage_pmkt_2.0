@@ -5,9 +5,9 @@ import Exception from "../../utils/Exception"
 class TCurrenciesController {
     async list (req, res, next) {
         try {
-            const query = req.query
+            const { query } = req
 
-            const tcurrencies = await TCurrenciesModel.findAll(query)
+            const tcurrencies = await TCurrenciesModel.findAll({terms: query})
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: tcurrencies,

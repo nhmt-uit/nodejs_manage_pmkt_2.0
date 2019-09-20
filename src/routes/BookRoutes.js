@@ -7,6 +7,6 @@ import BooksValidator from "../controllers/books/BooksValidator"
 
 const router = express.Router()
 
-router.get("/", ValidatorHandling(BooksValidator.getBooks), BooksController.list)
+router.get("/", BooksController.list)
 
 export default router

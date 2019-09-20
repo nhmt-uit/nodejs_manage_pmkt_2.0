@@ -3,11 +3,19 @@ import Exception from "../../utils/Exception"
 
 
 class MCurrenciesController {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/mcurrencies
+    | Method: GET
+    |--------------------------------------------------------------------------
+    */
+
     async list (req, res, next) {
         try {
-            const query = req.query
+            const { query } = req
 
-            const mcurrencies = await MCurrenciesModel.findAll(query)
+            const mcurrencies = await MCurrenciesModel.findAll({terms: query})
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: mcurrencies,
@@ -16,6 +24,13 @@ class MCurrenciesController {
             next (err)
         }
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/mcurrencies/:id
+    | Method: GET
+    |--------------------------------------------------------------------------
+    */
 
     async detail (req, res, next) {
         try {
@@ -31,6 +46,13 @@ class MCurrenciesController {
         }
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/mcurrencies
+    | Method: POST
+    |--------------------------------------------------------------------------
+    */
+
     async save (req, res, next) {
         try {
             const item = req.body
@@ -44,6 +66,13 @@ class MCurrenciesController {
             next (err)
         }
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/mcurrencies/:id
+    | Method: PUT
+    |--------------------------------------------------------------------------
+    */
 
     async update (req, res, next) {
         try {
@@ -59,6 +88,13 @@ class MCurrenciesController {
             next (err)
         }
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/mcurrencies/check-exists
+    | Method: GET
+    |--------------------------------------------------------------------------
+    */
 
     async checkExists (req, res, next) {
         try {
@@ -85,6 +121,13 @@ class MCurrenciesController {
             next (err)
         }
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes /api/v1/mcurrencies/:id
+    | Method: DELETE
+    |--------------------------------------------------------------------------
+    */
 
     async delete (req, res, next) {
         try {

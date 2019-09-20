@@ -8,7 +8,7 @@ import ReportsValidator from "../controllers/reports/ReportsValidator"
 const router = express.Router()
 
 router.get("/", ReportsController.list)
-router.get("/:id", ReportsController.detail)
+router.get("/detail/:id", ReportsController.detail)
 router.delete("/:id", ReportsController.delete)
 
 export default router

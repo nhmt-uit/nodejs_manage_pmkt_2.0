@@ -6,9 +6,9 @@ import MCurrenciesModel from "../../models/MCurrenciesModel";
 class ReportsController {
     async list (req, res, next) {
         try {
-            const query = req.query
+            const { query } = req
 
-            const reports = await ReportsModel.findAll(query)
+            let reports = await ReportsModel.findAll({terms: query})
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: reports,
@@ -20,9 +20,9 @@ class ReportsController {
 
     async detail (req, res, next) {
         try {
-            const report_id = req.params.id
+            const { id } = req.params
 
-            const report_detail = await ReportsModel.reportDetail(report_id)
+            const report_detail = await ReportsModel.reportDetail({report_id: id})
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: report_detail,

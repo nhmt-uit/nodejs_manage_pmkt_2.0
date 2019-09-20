@@ -4,9 +4,9 @@ import Exception from "../../utils/Exception"
 class BankersController {
     async list (req, res, next) {
         try {
-            const query = req.query
+            const { query } = req
 
-            const bankers = await BankersModel.findAll(query)
+            const bankers = await BankersModel.findAll({terms: query})
             return res.jsonSuccess({
                 message: Exception.getMessage(Exception.COMMON.REQUEST_SUCCESS),
                 data: bankers,

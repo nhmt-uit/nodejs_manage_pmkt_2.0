@@ -29,19 +29,25 @@ TCurrenciesSchema.plugin(BaseSchema)
 const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
 
 
-TCurrenciesSchema.statics.findAll = (query) => {
-    const option = {
-        status : 'active',
-        user_id: mongoose.Types.ObjectId(Session.get('user._id'))
+TCurrenciesSchema.statics.findAll = ({ options = {}, terms = {}} = {}) => {
+    options.status = 'active'
+    options.user_id = Session.get('user._id')
+
+    terms = this.default.parseQuery(terms)
+
+    let query = this.default.find(options)
+
+    if (terms.sort) query = query.sort(terms.sort)
+    if(Number(terms.limit) > 0){
+        const skip = Number(terms.page) > 0
+            ? (Number(terms.page) - 1) * Number(terms.limit)
+            : 0
+
+        query = query.limit(Number(terms.limit)).skip(skip)
     }
-    return this.default.find(option).select(excludeFields.join(' '))
+
+    return query.select(excludeFields.join(' '))
         .populate("total_formulas")
-        .populate({ model: MCurrenciesModel,
-                    path: "m_currency_id",
-                    select: "name",})
-        .sort(query.sort)
-        .limit(Number(query.limit))
-        .skip(Number(query.limit)*Number(query.page - 1))
         .lean()
 }
 

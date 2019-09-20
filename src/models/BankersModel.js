@@ -24,12 +24,23 @@ BankersSchema.plugin(BaseSchema)
 
 const excludeFields = [ '-status', '-createdAt', '-updatedAt', '-createdBy', '-updatedBy' ]
 
-BankersSchema.statics.findAll = (query) => {
-    return this.default.find({status: 'active'}).select(excludeFields.join(' '))
-        .sort(query.sort)
-        .limit(Number(query.limit))
-        .skip(Number(query.limit)*Number(query.page - 1))
-        .lean()
+BankersSchema.statics.findAll = ({ options = {}, terms = {}} = {}) => {
+    options.status = 'active'
+
+    terms = this.default.parseQuery(terms)
+
+    let query = this.default.find(options)
+
+    if (terms.sort) query = query.sort(terms.sort)
+    if(Number(terms.limit) > 0){
+        const skip = Number(terms.page) > 0
+            ? (Number(terms.page) - 1) * Number(terms.limit)
+            : 0
+
+        query = query.limit(Number(terms.limit)).skip(skip)
+    }
+
+    return query.select(excludeFields.join(' ')).lean()
 }
 
 
